@@ -20,9 +20,9 @@ from edx_proctoring.api import (
     mark_exam_attempt_as_ready,
     update_exam_attempt
 )
-from edx_proctoring.backends import get_backend_provider
-from edx_proctoring.exceptions import ProctoredBaseException
 from edx_proctoring.models import ProctoredExamStudentAttemptStatus
+from edx_proctoring.exceptions import ProctoredBaseException
+from edx_proctoring.backends import get_backend_provider, get_proctoring_settings, get_provider_name_by_course_id
 
 log = logging.getLogger(__name__)
 
@@ -59,12 +59,14 @@ def start_exam_callback(request, attempt_code):  # pylint: disable=unused-argume
         args=[attempt_code]
     )
 
+    provider_name = get_provider_name_by_course_id(attempt['proctored_exam']['course_id'])
+    proctoring_settings = get_proctoring_settings(provider_name)
     return HttpResponse(
         template.render(
             Context({
                 'exam_attempt_status_url': poll_url,
                 'platform_name': settings.PLATFORM_NAME,
-                'link_urls': settings.PROCTORING_SETTINGS.get('LINK_URLS', {})
+                'link_urls': proctoring_settings.get('LINK_URLS', {})
             })
         )
     )
@@ -106,7 +108,20 @@ class ExamReviewCallback(APIView):
         """
         Post callback handler
         """
-        provider = get_backend_provider()
+        try:
+            attempt_code = request.DATA['examMetaData']['examCode']
+        except KeyError, ex:
+            log.exception(ex)
+            return Response(
+                data={
+                    'reason': unicode(ex)
+                },
+                status=400
+            )
+        attempt_obj = locate_attempt_by_attempt_code(attempt_code)
+        course_id = attempt_obj.proctored_exam['course_id']
+        provider_name = get_provider_name_by_course_id(course_id)
+        provider = get_backend_provider(provider_name)
 
         # call down into the underlying provider code
         try:

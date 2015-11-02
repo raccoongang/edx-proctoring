@@ -48,8 +48,11 @@ from edx_proctoring.utils import (
     emit_event
 )
 
-from edx_proctoring.backends import get_backend_provider
+from edx_proctoring.backends import (get_backend_provider,
+             get_proctoring_settings, get_provider_name_by_course_id,
+                                     get_proctor_settings_param)
 from edx_proctoring.runtime import get_runtime_service
+
 
 log = logging.getLogger(__name__)
 
@@ -587,7 +590,9 @@ def create_exam_attempt(exam_id, user_id, taking_as_proctored=False):
             })
 
         # now call into the backend provider to register exam attempt
-        external_id = get_backend_provider().register_exam_attempt(
+
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
+        external_id = get_backend_provider(provider_name).register_exam_attempt(
             exam,
             context=context,
         )
@@ -719,11 +724,14 @@ def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, 
     )
     log.info(log_msg)
 
+    exam = get_exam_by_id(exam_id)
+    provider_name = get_provider_name_by_course_id(exam['course_id'])
+    proctoring_settings = get_proctoring_settings(provider_name)
     # In some configuration we may treat timeouts the same
     # as the user saying he/she wises to submit the exam
     alias_timeout = (
         to_status == ProctoredExamStudentAttemptStatus.timed_out and
-        not settings.PROCTORING_SETTINGS.get('ALLOW_TIMED_OUT_STATE', False)
+        not proctoring_settings.get('ALLOW_TIMED_OUT_STATE', False)
     )
     if alias_timeout:
         to_status = ProctoredExamStudentAttemptStatus.submitted
@@ -921,10 +929,13 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
         # (for example unit tests)
         pass
 
+    course_id = exam_attempt_obj.proctored_exam.course_id
+    provider_name = get_provider_name_by_course_id(course_id)
+    proctor_settings = get_proctoring_settings(provider_name)
     scheme = 'https' if getattr(settings, 'HTTPS', 'on') == 'on' else 'http'
     course_url = '{scheme}://{site_name}{course_info_url}'.format(
         scheme=scheme,
-        site_name=constants.SITE_NAME,
+        site_name=get_proctor_settings_param(proctor_settings, 'SITE_NAME'),
         course_info_url=course_info_url
     )
 
@@ -934,8 +945,8 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
             'course_name': course_name,
             'exam_name': exam_attempt_obj.proctored_exam.exam_name,
             'status': ProctoredExamStudentAttemptStatus.get_status_alias(exam_attempt_obj.status),
-            'platform': constants.PLATFORM_NAME,
-            'contact_email': constants.CONTACT_EMAIL,
+            'platform': get_proctor_settings_param(proctor_settings, 'PLATFORM_NAME'),
+            'contact_email': get_proctor_settings_param(proctor_settings, 'CONTACT_EMAIL'),
         })
     )
 
@@ -948,7 +959,7 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
 
     email = EmailMessage(
         body=body,
-        from_email=constants.FROM_EMAIL,
+        from_email=get_proctor_settings_param(proctor_settings, 'FROM_EMAIL'),
         to=[exam_attempt_obj.user.email],
         subject=subject
     )
@@ -1482,6 +1493,9 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
             # (for example unit tests)
             pass
 
+        provider_name = get_provider_name_by_course_id(course_id)
+        proctoring_settings = get_proctoring_settings(provider_name)
+
         django_context.update({
             'total_time': total_time,
             'has_due_date': has_due_date,
@@ -1495,6 +1509,7 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
                 'edx_proctoring.proctored_exam.attempt',
                 args=[attempt['id']]
             ) if attempt else '',
+            'link_urls': proctoring_settings.get('LINK_URLS', {}),
         })
         return template.render(django_context)
 
