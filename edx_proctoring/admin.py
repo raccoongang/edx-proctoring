@@ -27,6 +27,8 @@ from edx_proctoring.exceptions import (
 )
 from edx_proctoring.backends import get_backend_provider, get_provider_name_by_course_id
 
+from xmodule.modulestore.django import modulestore
+from opaque_keys.edx.keys import CourseKey
 
 class ProctoredExamReviewPolicyAdmin(admin.ModelAdmin):
     """
@@ -296,10 +298,10 @@ class ProctoredExamSoftwareSecureReviewAdmin(admin.ModelAdmin):
         review.save()
         # call the review saved and since it's coming from
         # the Django admin will we accept failures
-
-        #get_backend_provider().on_review_saved(review, allow_rejects=True)
-
-        provider_name = get_provider_name_by_course_id(review.exam['course_id'])
+        course_id = review.exam.course_id
+        course_key = CourseKey.from_string(course_id)
+        course = modulestore().get_course(course_key)
+        provider_name = course.proctoring_service
         get_backend_provider(provider_name).on_review_saved(review, allow_status_update_on_fail=True)
 
     def get_form(self, request, obj=None, **kwargs):
