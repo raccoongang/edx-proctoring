@@ -1498,7 +1498,7 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
             # (for example unit tests)
             pass
 
-        provider_name = get_provider_name_by_course_id(course_id)
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
         proctoring_settings = get_proctoring_settings(provider_name)
 
         django_context.update({
