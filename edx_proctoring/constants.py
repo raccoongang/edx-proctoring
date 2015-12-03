@@ -31,3 +31,5 @@ SOFTWARE_SECURE_SHUT_DOWN_GRACEPERIOD = (
 )
 
 MINIMUM_TIME = datetime.datetime.fromtimestamp(0)
+
+ALLOW_REVIEW_UPDATES = False
