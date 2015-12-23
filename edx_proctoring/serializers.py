@@ -26,7 +26,7 @@ class ProctoredExamSerializer(serializers.ModelSerializer):
     is_proctored = serializers.BooleanField(required=True)
     due_date = serializers.DateTimeField(required=False, format=None)
     
-    attempt_hash = serializers.CharField(required=True)
+    # attempt_hash = serializers.CharField(required=True)
 
     class Meta:
         """
