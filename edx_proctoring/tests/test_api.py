@@ -840,6 +840,43 @@ class ProctoredExamApiTests(LoggedInTestCase):
         with self.assertRaises(StudentExamAttemptDoesNotExistsException):
             remove_exam_attempt(proctored_exam_student_attempt.id)
 
+    @ddt.data(
+        (ProctoredExamStudentAttemptStatus.verified, 'satisfied'),
+        (ProctoredExamStudentAttemptStatus.submitted, 'submitted'),
+        (ProctoredExamStudentAttemptStatus.error, 'failed')
+    )
+    @ddt.unpack
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
+    def test_remove_exam_attempt_with_status(self, to_status, requirement_status, provider):
+        """
+        Test to remove the exam attempt which calls
+        the Credit Service method `remove_credit_requirement_status`.
+        """
+        exam_attempt = self._create_started_exam_attempt()
+        update_attempt_status(
+            exam_attempt.proctored_exam_id,
+            self.user.id,
+            to_status
+        )
+
+        # make sure the credit requirement status is there
+        credit_service = get_runtime_service('credit')
+        credit_status = credit_service.get_credit_state(self.user.id, exam_attempt.proctored_exam.course_id)
+
+        self.assertEqual(len(credit_status['credit_requirement_status']), 1)
+        self.assertEqual(
+            credit_status['credit_requirement_status'][0]['status'],
+            requirement_status
+        )
+
+        # now remove exam attempt which calls the credit service method 'remove_credit_requirement_status'
+        remove_exam_attempt(exam_attempt.proctored_exam_id)
+
+        # make sure the credit requirement status is no longer there
+        credit_status = credit_service.get_credit_state(self.user.id, exam_attempt.proctored_exam.course_id)
+
+        self.assertEqual(len(credit_status['credit_requirement_status']), 0)
+
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
     def test_stop_a_non_started_exam(self, provider):
         """
@@ -2495,17 +2532,17 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertEquals(attempt['last_poll_timestamp'], now)
         self.assertEquals(attempt['last_poll_ipaddr'], '1.1.1.1')
 
-    @ddt.data(
-        ProctoredExamStudentAttemptStatus.submitted,
-        ProctoredExamStudentAttemptStatus.verified,
-        ProctoredExamStudentAttemptStatus.rejected
-    )
+    # @ddt.data(
+    #     ProctoredExamStudentAttemptStatus.submitted,
+    #     ProctoredExamStudentAttemptStatus.verified,
+    #     ProctoredExamStudentAttemptStatus.rejected
+    # )
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_send_email(self, status, provider):
+    def test_send_email(self,  provider):
         """
         Assert that email is sent on the following statuses of proctoring attempt.
         """
-
+        status= 'submitted'
         exam_attempt = self._create_started_exam_attempt()
         credit_state = get_runtime_service('credit').get_credit_state(self.user_id, self.course_id)
         update_attempt_status(
@@ -2517,6 +2554,8 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertIn(self.proctored_exam_email_subject, mail.outbox[0].subject)
         self.assertIn(self.proctored_exam_email_body, mail.outbox[0].body)
         self.assertIn(ProctoredExamStudentAttemptStatus.get_status_alias(status), mail.outbox[0].body)
+        print "*"*88
+        print credit_state
         self.assertIn(credit_state['course_name'], mail.outbox[0].body)
 
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
