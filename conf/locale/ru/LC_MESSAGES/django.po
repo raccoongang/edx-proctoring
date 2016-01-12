@@ -954,18 +954,3 @@ msgstr "Этим письмом мы извещаем вас, что ваша с
 msgid "This email is to let you know that the status of your proctoring session review for"
 msgstr "Уважаемый слушатель курса!<br><br>Этим письмом мы уведомляем вас о том, что сессия контрольного мероприятия  <br><b> «"
 
-msgid "proctoring1"
-msgstr "» </b> в рамках курса "
-
-msgid "proctoring2"
-msgstr ", проводившаяся в режиме подтверждения личности, получила статус <b>«"
-
-msgid "proctoring3"
-msgstr "»</b> <br><br> Если у вас возникли вопросы по статусу сессии, работе службы прокторинга и идентификации личности, пожалуйста, свяжитесь со службой поддержки Национальной платформы открытого образования по адресу "
-
-msgid "proctoring4"
-msgstr " или разместите сообщение через <a href=\"https://openedu.ru/feedback\">форму</a> обратной связи."
-
-msgid "proctoring5"
-msgstr "С уважением,<br>Служба поддержки НПОО<br>"
-
