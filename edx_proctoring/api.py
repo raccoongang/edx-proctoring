@@ -732,6 +732,12 @@ def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, 
     proctoring_settings = get_proctoring_settings(provider_name)
     exam_attempt_obj = ProctoredExamStudentAttempt.objects.get_exam_attempt(exam_id, user_id)
 
+    if exam_attempt_obj is None:
+        if raise_if_not_found:
+            raise StudentExamAttemptDoesNotExistsException('Error. Trying to look up an exam that does not exist.')
+        else:
+            return
+
     timed_out_state = False
     if exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.created:
         timed_out_state = True
@@ -1015,15 +1021,15 @@ def remove_exam_attempt(attempt_id):
         instructor_service.delete_student_attempt(username, course_id, content_id)
 
     # see if the status transition this changes credit requirement status
-    # if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):
-    #     # trigger credit workflow, as needed
-    #     credit_service = get_runtime_service('credit')
-    #     credit_service.remove_credit_requirement_status(
-    #         user_id=user_id,
-    #         course_key_or_id=course_id,
-    #         req_namespace=u'proctored_exam',
-    #         req_name=content_id
-    #     )
+    if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):
+        # trigger credit workflow, as needed
+        credit_service = get_runtime_service('credit')
+        credit_service.remove_credit_requirement_status(
+            user_id=user_id,
+            course_key_or_id=course_id,
+            req_namespace=u'proctored_exam',
+            req_name=content_id
+        )
 
     # emit an event for 'deleted'
     exam = get_exam_by_content_id(course_id, content_id)
