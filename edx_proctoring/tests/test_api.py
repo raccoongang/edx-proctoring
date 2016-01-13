@@ -862,7 +862,6 @@ class ProctoredExamApiTests(LoggedInTestCase):
         # make sure the credit requirement status is there
         credit_service = get_runtime_service('credit')
         credit_status = credit_service.get_credit_state(self.user.id, exam_attempt.proctored_exam.course_id)
-        print "*"*88
         self.assertEqual(len(credit_status['credit_requirement_status']), 1)
         self.assertEqual(
             credit_status['credit_requirement_status'][0]['status'],
@@ -2553,8 +2552,6 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertIn(self.proctored_exam_email_subject, mail.outbox[0].subject)
         self.assertIn(self.proctored_exam_email_body, mail.outbox[0].body)
         self.assertIn(ProctoredExamStudentAttemptStatus.get_status_alias(status), mail.outbox[0].body)
-        print "*"*88
-        print credit_state
         self.assertIn(credit_state['course_name'], mail.outbox[0].body)
 
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
