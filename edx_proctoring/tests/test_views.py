@@ -1835,7 +1835,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     @patch('edx_proctoring.api.reverse', return_value="")
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
     @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_callback(self, url_string, provider, provider2):
+    def test_review_callback(self, url_path, provider, provider2):
         """
         Simulates a callback from the proctoring service with the
         review data
@@ -1875,7 +1875,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     @patch('edx_proctoring.api.reverse', return_value="")
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
     @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_caseinsensitive(self, url_string, provider, provider2):
+    def test_review_caseinsensitive(self, url_path, provider, provider2):
         """
         Simulates a callback from the proctoring service with the
         review data when we have different casing on the
@@ -1916,7 +1916,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     @patch('edx_proctoring.api.reverse', return_value="")
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
     @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_bad_contenttype(self,url_string, provider, provider2):
+    def test_review_bad_contenttype(self,url_path, provider, provider2):
         """
         Simulates a callback from the proctoring service when the
         Content-Type is malformed
@@ -1956,7 +1956,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     @patch('edx_proctoring.api.reverse', return_value="")
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
     @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_mismatch(self, url_string, provider, provider2):
+    def test_review_mismatch(self, url_path, provider, provider2):
         """
         Simulates a callback from the proctoring service with the
         review data but the external_ids don't match
