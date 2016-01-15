@@ -16,6 +16,7 @@ class TestClient(Client):
     """
     Allows for 'fake logins' of a user so we don't need to expose a 'login' HTTP endpoint
     """
+
     def login_user(self, user):
         """
         Login as specified user, does not depend on auth backend (hopefully)
@@ -24,7 +25,8 @@ class TestClient(Client):
         require the call to authenticate()
         """
         if 'django.contrib.sessions' not in settings.INSTALLED_APPS:
-            raise AssertionError("Unable to login without django.contrib.sessions in INSTALLED_APPS")
+            raise AssertionError(
+                "Unable to login without django.contrib.sessions in INSTALLED_APPS")
         user.backend = "django.contrib.auth.backends.ModelBackend"
         engine = import_module(settings.SESSION_ENGINE)
 
@@ -64,3 +66,11 @@ class LoggedInTestCase(TestCase):
         self.user = User(username='tester', email='tester@test.com')
         self.user.save()
         self.client.login_user(self.user)
+
+
+def GetProviderNameTest(*args, **kwargs):
+    return "TEST"
+
+def GetProviderNameSoftwareSecure(*args, **kwargs):
+    return "SOFTWARE_SECURE"
+

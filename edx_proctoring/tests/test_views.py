@@ -32,7 +32,8 @@ from edx_proctoring.api import (
 )
 
 from .utils import (
-    LoggedInTestCase
+    LoggedInTestCase,
+    GetProviderNameTest
 )
 
 from edx_proctoring.urls import urlpatterns
@@ -491,8 +492,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         self.assertEqual(attempt['status'], "started")
         self.assertFalse(attempt['status'] == "ready_to_start")
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_start_exam_create(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_start_exam_create(self):
         """
         Start an exam (create an exam attempt)
         """
@@ -518,8 +519,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         response_data = json.loads(response.content)
         self.assertGreater(response_data['exam_attempt_id'], 0)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_start_exam(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_start_exam(self):
         """
         Start an exam (create an exam attempt)
         """
@@ -590,8 +591,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
 
         self._test_repeated_start_exam_callbacks(attempt)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_attempt_readback(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_attempt_readback(self):
         """
         Confirms that an attempt can be read
         """
@@ -672,8 +673,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         self.assertIsNone(response_data['completed_at'])
         self.assertEqual(response_data['time_remaining_seconds'], 0)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_attempt_status_error(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_attempt_status_error(self):
         """
         Test to confirm that attempt status is marked as error, because client
         has stopped sending it's polling timestamp
@@ -773,8 +774,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
                 )
                 self.assertEqual(response.status_code, 200)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_attempt_status_stickiness(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_attempt_status_stickiness(self):
         """
         Test to confirm that a status timeout error will not alter a completed state
         """
@@ -845,8 +846,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         ProctoredExamStudentAttemptStatus.started,
         ProctoredExamStudentAttemptStatus.ready_to_submit
     )
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_attempt_callback_timeout(self, running_status, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_attempt_callback_timeout(self, running_status):
         """
         Ensures that the polling from the client will cause the
         server to transition to timed_out if the user runs out of time
@@ -937,8 +938,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertRaises(ProctoredExamPermissionDenied)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_remove_attempt(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_remove_attempt(self):
         """
         Confirms that an attempt can be removed
         """
@@ -1023,8 +1024,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         response_data = json.loads(response.content)
         self.assertEqual(response_data['detail'], 'Must be a Staff User to Perform this request.')
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_read_others_attempt(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_read_others_attempt(self):
         """
         Confirms that we cnanot read someone elses attempt
         """
@@ -1102,8 +1103,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             'Cannot create new exam attempt for exam_id = 1 and user_id = 1 because it already exists!'
         )
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_stop_exam_attempt(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_stop_exam_attempt(self):
         """
         Stop an exam
         """
@@ -1190,8 +1191,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         ('decline', ProctoredExamStudentAttemptStatus.declined)
     )
     @ddt.unpack
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_submit_exam_attempt(self, action, expected_status, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_submit_exam_attempt(self, action, expected_status):
         """
         Tries to submit an exam
         """
@@ -1549,8 +1550,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         response_data = json.loads(response.content)
         self.assertEqual(response_data['detail'], 'Attempted to access attempt_id 0 but it does not exist.')
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_get_exam_attempt(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_get_exam_attempt(self):
         """
         Test Case for retrieving student proctored exam attempt status.
         """
@@ -1634,8 +1635,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         # make sure we have the accessible human string
         self.assertEqual(data['accessibility_time_string'], 'you have 1 hour and 30 minutes remaining')
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_get_expired_attempt(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_get_expired_attempt(self):
         """
         Test Case for retrieving student proctored exam attempt status after it has expired
         """
@@ -1713,8 +1714,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_declined_attempt(self, provider):
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_declined_attempt(self):
         """
         Makes sure that a declined proctored attempt means that he/she fails credit requirement.
         """
@@ -1750,9 +1751,9 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             'declined'
         )
 
-    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_exam_callback(self, provider, provider2):
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_exam_callback(self):
         """
         Start an exam (create an exam attempt)
         """
@@ -1831,10 +1832,10 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    @patch('edx_proctoring.api.reverse', return_value="")
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_callback(self, url_path, provider, provider2):
+    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_review_callback(self):
         """
         Simulates a callback from the proctoring service with the
         review data
@@ -1871,10 +1872,10 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @patch('edx_proctoring.api.reverse', return_value="")
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_caseinsensitive(self, url_path, provider, provider2):
+    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_review_caseinsensitive(self):
         """
         Simulates a callback from the proctoring service with the
         review data when we have different casing on the
@@ -1912,10 +1913,10 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @patch('edx_proctoring.api.reverse', return_value="")
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_bad_contenttype(self,url_path, provider, provider2):
+    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_review_bad_contenttype(self,):
         """
         Simulates a callback from the proctoring service when the
         Content-Type is malformed
@@ -1952,10 +1953,10 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @patch('edx_proctoring.api.reverse', return_value="")
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', return_value="TEST")
-    def test_review_mismatch(self, url_path, provider, provider2):
+    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_review_mismatch(self):
         """
         Simulates a callback from the proctoring service with the
         review data but the external_ids don't match
