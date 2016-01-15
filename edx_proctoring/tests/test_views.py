@@ -839,19 +839,18 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
                 ProctoredExamStudentAttemptStatus.submitted
             )
 
-    # @ddt.data(
-    #     ProctoredExamStudentAttemptStatus.created,
-    #     ProctoredExamStudentAttemptStatus.ready_to_start,
-    #     ProctoredExamStudentAttemptStatus.started,
-    #     ProctoredExamStudentAttemptStatus.ready_to_submit
-    # )
+    @ddt.data(
+        # ProctoredExamStudentAttemptStatus.created,
+        ProctoredExamStudentAttemptStatus.ready_to_start,
+        ProctoredExamStudentAttemptStatus.started,
+        ProctoredExamStudentAttemptStatus.ready_to_submit
+    )
     @patch('edx_proctoring.api.get_provider_name_by_course_id', return_value="TEST")
-    def test_attempt_callback_timeout(self, provider):
+    def test_attempt_callback_timeout(self, running_status, provider):
         """
         Ensures that the polling from the client will cause the
         server to transition to timed_out if the user runs out of time
         """
-        running_status = ProctoredExamStudentAttemptStatus.created
         # Create an exam.
         proctored_exam = ProctoredExam.objects.create(
             course_id='a/b/c',

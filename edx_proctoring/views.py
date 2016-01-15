@@ -855,7 +855,7 @@ class ProctoringServices(AuthenticatedAPIView):
         Send PUT request to change current proctoring provider. JSON example:
 
         ```
-        {"proctoring_service":"ITMO"}
+        {"proctoring_service":"SOFTWARE_SECURE"}
         ```
 
         """
