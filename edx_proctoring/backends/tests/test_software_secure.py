@@ -325,9 +325,7 @@ class SoftwareSecureTests(TestCase):
             )
 
             # patch the _get_payload method on the backend provider
-            # so that we can assert that we are called with the review policy
-            # undefined and that we use the system default
-            with patch.object(get_backend_provider("SOFTWARE_SECURE"), '_get_payload', assert_get_payload_mock_no_policy):  # pylint: disable=protected-access
+            with patch.object(get_backend_provider("SOFTWARE_SECURE"), '_get_payload', assert_get_payload_mock_unicode_characters):  # pylint: disable=protected-access
                 attempt_id = create_exam_attempt(
                     exam_id,
                     self.user.id,
@@ -345,7 +343,7 @@ class SoftwareSecureTests(TestCase):
             )
 
             # patch the _get_payload method on the backend provider
-            with patch.object(get_backend_provider(), '_get_payload', assert_get_payload_mock_unicode_characters):  # pylint: disable=protected-access
+            with patch.object(get_backend_provider("SOFTWARE_SECURE"), '_get_payload', assert_get_payload_mock_unicode_characters):  # pylint: disable=protected-access
                 attempt_id = create_exam_attempt(
                     exam_id,
                     self.user.id,

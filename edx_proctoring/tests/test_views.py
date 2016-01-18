@@ -568,7 +568,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         attempt = get_exam_attempt_by_id(old_attempt_id)
         self.assertIsNotNone(attempt['started_at'])
 
-    def test_start_exam_callback_when_created(self):
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_start_exam_callback(self):
         """
         Test that hitting software secure callback URL twice when the attempt state begins at
         'created' does not change the state from 'started' back to 'ready to start'
@@ -729,6 +730,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             response_data = json.loads(response.content)
             self.assertEqual(response_data['status'], ProctoredExamStudentAttemptStatus.error)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.utils.get_provider_name_by_course_id', GetProviderNameTest)
     def test_attempt_status_waiting_for_app_shutdown(self):
         """
         Test to confirm that attempt status is submitted when proctored client is shutdown
@@ -756,6 +759,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             response_data = json.loads(response.content)
             self.assertTrue(response_data['client_has_shutdown'])
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_attempt_status_for_exception(self):
         """
         Test to confirm that exception will not effect the API call
@@ -774,6 +778,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
                 )
                 self.assertEqual(response.status_code, 200)
 
+    @patch('edx_proctoring.utils.get_provider_name_by_course_id', GetProviderNameTest)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_attempt_status_stickiness(self):
         """
@@ -982,6 +987,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_remove_attempt_non_staff(self):
         """
         Confirms that an attempt cannot be removed
@@ -1144,6 +1150,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         response_data = json.loads(response.content)
         self.assertEqual(response_data['exam_attempt_id'], old_attempt_id)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_download_software_clicked_action(self):
         """
         Test if the download_software_clicked state is set
@@ -1295,6 +1302,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         response_data = json.loads(response.content)
         self.assertEqual(len(response_data['proctored_exam_attempts']), 1)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_exam_attempts_not_staff(self):
         """
         Test to get the exam attempts in a course as a not
@@ -1594,6 +1602,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         # make sure we have the accessible human string
         self.assertEqual(data['accessibility_time_string'], 'you have 1 hour and 30 minutes remaining')
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_get_exam_attempt_with_non_staff_user(self):  # pylint: disable=invalid-name
         """
         Test Case for retrieving student proctored exam attempt status.

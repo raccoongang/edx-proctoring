@@ -12,8 +12,6 @@
       If you have questions about the status of your proctored exam results, contact {{ platform_name }} Support.
     {% endblocktrans %}
   </p>
-  {% include 'proctored_exam/visit_exam_content.html' %}
-
   <hr>
   <p>
     {% blocktrans %}
@@ -23,7 +21,9 @@
 </div>
 <div class="footer-sequence border-b-0 padding-b-0">
   <p>
-{% blocktrans %}View your credit eligibility status on your{% endblocktrans %} <a href="{{progress_page_url}}">{% blocktrans %}Progress{% endblocktrans %}</a>
+    {% blocktrans %}
+      If you have concerns about your proctoring session results, contact your course team.
+    {% endblocktrans %}
   </p>
   <div class="clearfix"></div>
 </div>

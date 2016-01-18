@@ -78,7 +78,7 @@ PROCTORING_SETTINGS = {
     "ALLOW_CALLBACK_SIMULATION": False,
     "CLIENT_TIMEOUT": 30,
     "DEFAULT_REVIEW_POLICY": "Closed Book",
-    "REQUIRE_FAILURE_SECOND_REVIEWS": False
+    "REQUIRE_FAILURE_SECOND_REVIEWS": False,
 }
 
 PROCTORING_BACKEND_PROVIDERS = {
@@ -91,7 +91,8 @@ PROCTORING_BACKEND_PROVIDERS = {
                 "faq": "{add link here}",
                 "online_proctoring_rules": "{add link here}",
                 "tech_requirements": "{add link here}"
-            }
+            },
+            "SHUT_DOWN_GRACEPERIOD" : 10
         }
     }
 }

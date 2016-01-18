@@ -65,7 +65,7 @@ class ProctoredExam(TimeStampedModel):
 
         return u"{course_id}: {exam_name} ({active})".format(
             course_id=self.course_id,
-            exam_name=self.exam_name.encode('utf-8'),
+            exam_name=self.exam_name,
             active='active' if self.is_active else 'inactive',
         )
 
@@ -110,6 +110,15 @@ class ProctoredExam(TimeStampedModel):
 
         return cls.objects.filter(filtered_query)
         
+    def generate_hash(self):
+        """
+        Generate hash for proctored exam
+        Refreshed every time when student retakes attempt for the same exam
+        :return: string
+        """
+        str_to_hash = str(self.content_id) + str(self.course_id)
+        return hashlib.md5(str_to_hash).hexdigest()
+
     def generate_hash(self):
         """
         Generate hash for proctored exam
