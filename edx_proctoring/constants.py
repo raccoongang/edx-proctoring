@@ -43,3 +43,5 @@ CLIENT_TIMEOUT = (
     'CLIENT_TIMEOUT' in settings.PROCTORING_SETTINGS
     else getattr(settings, 'CLIENT_TIMEOUT', 30)
 )
+
+MINIMUM_TIME = datetime.datetime.fromtimestamp(0)

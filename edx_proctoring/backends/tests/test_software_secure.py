@@ -476,8 +476,7 @@ class SoftwareSecureTests(TestCase):
     @patch('edx_proctoring.constants.REQUIRE_FAILURE_SECOND_REVIEWS', False)
     @patch('edx_proctoring.api.reverse', GetProviderNameTest)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
-    def test_review_callback(self, review_status, credit_requirement_status,
-                             ):
+    def test_review_callback(self, review_status, credit_requirement_status):
         """
         Simulates callbacks from SoftwareSecure with various statuses
         """
@@ -845,6 +844,7 @@ class SoftwareSecureTests(TestCase):
             external_id=attempt['external_id']
         )
         test_payload = test_payload.replace('Clean', 'Suspicious')
+
         # submit a Suspicious review payload
         provider.on_review_callback(json.loads(test_payload))
 
@@ -852,7 +852,7 @@ class SoftwareSecureTests(TestCase):
         # transition to failure on the callback,
         # as we'll need a manual confirmation via Django Admin pages
         attempt = get_exam_attempt_by_id(attempt_id)
-        # self.assertNotEqual(attempt['status'], ProctoredExamStudentAttemptStatus.rejected)
+        self.assertNotEqual(attempt['status'], ProctoredExamStudentAttemptStatus.rejected)
 
         review = ProctoredExamSoftwareSecureReview.objects.get(attempt_code=attempt['attempt_code'])
 

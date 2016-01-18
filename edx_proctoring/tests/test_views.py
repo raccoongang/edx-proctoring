@@ -841,7 +841,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             )
 
     @ddt.data(
-        # ProctoredExamStudentAttemptStatus.created,
+        ProctoredExamStudentAttemptStatus.created,
         ProctoredExamStudentAttemptStatus.ready_to_start,
         ProctoredExamStudentAttemptStatus.started,
         ProctoredExamStudentAttemptStatus.ready_to_submit
@@ -852,6 +852,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         Ensures that the polling from the client will cause the
         server to transition to timed_out if the user runs out of time
         """
+
         # Create an exam.
         proctored_exam = ProctoredExam.objects.create(
             course_id='a/b/c',
@@ -909,7 +910,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             )
             self.assertEqual(response.status_code, 200)
             response_data = json.loads(response.content)
-            self.assertEqual(response_data['status'], 'timed_out')
+            self.assertEqual(response_data['status'], 'submitted')
 
     def test_attempt_with_duedate_expired(self):
         """
@@ -1916,7 +1917,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     @patch('edx_proctoring.api.reverse', GetProviderNameTest)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
-    def test_review_bad_contenttype(self,):
+    def test_review_bad_contenttype(self):
         """
         Simulates a callback from the proctoring service when the
         Content-Type is malformed

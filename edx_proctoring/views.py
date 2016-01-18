@@ -361,19 +361,6 @@ class StudentProctoredExamAttempt(AuthenticatedAPIView):
                             # don't transition a completed state to an error state
                             pass
 
-            #if last_poll_timestamp is not None \
-            #        and (datetime.now(pytz.UTC) - last_poll_timestamp).total_seconds() > CLIENT_TIMEOUT:
-            #    try:
-            #        update_attempt_status(
-            #            attempt['proctored_exam']['id'],
-            #            attempt['user']['id'],
-            #            ProctoredExamStudentAttemptStatus.error
-            #        )
-            #        attempt['status'] = ProctoredExamStudentAttemptStatus.error
-            #    except ProctoredExamIllegalStatusTransition:
-            #        # don't transition a completed state to an error state
-            #        pass
-
             # add in the computed time remaining as a helper to a client app
             time_remaining_seconds = get_time_remaining_for_attempt(attempt)
 
@@ -639,9 +626,7 @@ class StudentProctoredExamAttemptCollection(AuthenticatedAPIView):
             return Response({'exam_attempt_id': exam_attempt_id})
 
         except ProctoredBaseException, ex:
-            LOG.exception(
-                u' '.join((ex.message,)).encode('utf-8').strip()
-            )
+            LOG.exception(ex)
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"detail": unicode(ex)}

@@ -655,7 +655,7 @@ def on_attempt_updated(sender, instance, **kwargs):  # pylint: disable=unused-ar
             archive_object.save()
 
 
-class QuerySetWithUpdateOverride(models.QuerySet):
+class QuerySetWithUpdateOverride(models.query.QuerySet):
     """
     Custom QuerySet class to make an archive copy
     every time the object is updated.
