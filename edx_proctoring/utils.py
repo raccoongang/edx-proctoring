@@ -142,8 +142,6 @@ def emit_event(exam, event_short_name, attempt=None, override_data=None):
     """
     Helper method to emit an analytics event
     """
-    print "**"*88
-    print exam
 
     exam_type = (
         'timed' if not exam['is_proctored'] else

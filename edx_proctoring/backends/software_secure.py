@@ -14,7 +14,8 @@ import logging
 import unicodedata
 
 from django.conf import settings
-from edx_proctoring.backends import get_proctoring_settings
+from edx_proctoring.backends import get_proctoring_settings, \
+    get_provider_name_by_course_id
 
 from edx_proctoring.backends.backend import ProctoringBackendProvider
 from edx_proctoring.exceptions import (
@@ -193,12 +194,13 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
 
         # do some limited parsing of the JSON payload
         review_status = payload['reviewStatus']
-        print "**"*88
-        print payload
+        provider_name = get_provider_name_by_course_id(attempt_obj.proctored_exam.course_id)
         proctoring_settings = get_proctoring_settings(provider_name)
 
         # do we already have a review for this attempt?!? We may not allow updates
         review = ProctoredExamSoftwareSecureReview.get_review_by_attempt_code(attempt_code)
+        print "**"*88
+        print proctoring_settings.get('ALLOW_REVIEW_UPDATES')
         if review:
             if not proctoring_settings.get('ALLOW_REVIEW_UPDATES'):
                 err_msg = (
@@ -357,6 +359,7 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
         """
         Constructs the data payload that Software Secure expects
         """
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
         proctoring_settings = get_proctoring_settings(provider_name)
         attempt_code = context['attempt_code']
         time_limit_mins = context['time_limit_mins']

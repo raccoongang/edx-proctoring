@@ -49,7 +49,7 @@ from edx_proctoring.tests.test_services import MockCreditService
 from edx_proctoring.backends.software_secure import SOFTWARE_SECURE_INVALID_CHARS
 
 from edx_proctoring.tests.utils import (
-    GetProviderNameTest,
+    GetProviderNameSoftwareSecure,
     GetProviderNameSoftwareSecure
 )
 
@@ -139,8 +139,9 @@ class SoftwareSecureTests(TestCase):
         provider = get_backend_provider("SOFTWARE_SECURE")
         self.assertEqual(provider.get_software_download_url(), 'http://example.com')
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_register_attempt(self):
         """
         Makes sure we can register an attempt
@@ -163,8 +164,10 @@ class SoftwareSecureTests(TestCase):
             self.assertIsNone(attempt['started_at'])
 
     @ddt.data(None, 'additional person allowed in room')
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_attempt_with_review_policy(self, review_policy_exception):
         """
         Create an unstarted proctoring attempt with a review policy associated with it.
@@ -231,8 +234,9 @@ class SoftwareSecureTests(TestCase):
                 attempt = get_exam_attempt_by_id(attempt_id)
                 self.assertEqual(attempt['review_policy_id'], policy.id)
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_attempt_with_no_review_policy(self):
         """
         Create an unstarted proctoring attempt with no review policy associated with it.
@@ -285,6 +289,8 @@ class SoftwareSecureTests(TestCase):
                     attempt = get_exam_attempt_by_id(attempt_id)
                     self.assertIsNone(attempt['review_policy_id'])
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_attempt_with_unicode_characters(self):
         """
         test that the unicode characters are removed from exam names before registering with
@@ -351,8 +357,9 @@ class SoftwareSecureTests(TestCase):
                 )
                 self.assertGreater(attempt_id, 0)
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_single_name_attempt(self):
         """
         Tests to make sure we can parse a fullname which does not have any spaces in it
@@ -372,8 +379,9 @@ class SoftwareSecureTests(TestCase):
             attempt_id = create_exam_attempt(exam_id, self.user.id, taking_as_proctored=True)
             self.assertIsNotNone(attempt_id)
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_unicode_attempt(self):
         """
         Tests to make sure we can handle an attempt when a user's fullname has unicode characters in it
@@ -406,8 +414,9 @@ class SoftwareSecureTests(TestCase):
             attempt_id = create_exam_attempt(exam_id, self.user.id, taking_as_proctored=True)
             self.assertIsNotNone(attempt_id)
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_failing_register_attempt(self):
         """
         Makes sure we can register an attempt
@@ -472,8 +481,9 @@ class SoftwareSecureTests(TestCase):
     )
     @ddt.unpack
     @patch('edx_proctoring.constants.REQUIRE_FAILURE_SECOND_REVIEWS', False)
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_review_callback(self, review_status, credit_requirement_status):
         """
         Simulates callbacks from SoftwareSecure with various statuses
@@ -564,8 +574,9 @@ class SoftwareSecureTests(TestCase):
         with self.assertRaises(ProctoredExamBadReviewStatus):
             provider.on_review_callback(json.loads(test_payload))
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_review_mistmatched_tokens(self):
         """
         Asserts raising of an exception if we get a report for
@@ -604,8 +615,9 @@ class SoftwareSecureTests(TestCase):
 
     @patch.dict('django.conf.settings.PROCTORING_SETTINGS', {'ALLOW_CALLBACK_SIMULATION': True})
     @patch('edx_proctoring.constants.REQUIRE_FAILURE_SECOND_REVIEWS', False)
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_allow_simulated_callbacks(self):
         """
         Verify that the configuration switch to
@@ -646,8 +658,9 @@ class SoftwareSecureTests(TestCase):
         self.assertEqual(attempt['status'], ProctoredExamStudentAttemptStatus.verified)
 
     @patch('edx_proctoring.constants.REQUIRE_FAILURE_SECOND_REVIEWS', False)
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_review_on_archived_attempt(self):
         """
         Make sure we can process a review report for
@@ -702,8 +715,9 @@ class SoftwareSecureTests(TestCase):
 
     @patch('edx_proctoring.constants.ALLOW_REVIEW_UPDATES', False)
     @patch('edx_proctoring.constants.REQUIRE_FAILURE_SECOND_REVIEWS', False)
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_disallow_review_resubmission(self):
         """
         Tests that an exception is raised if a review report is resubmitted for the same
@@ -742,10 +756,11 @@ class SoftwareSecureTests(TestCase):
         with self.assertRaises(ProctoredExamReviewAlreadyExists):
             provider.on_review_callback(json.loads(test_payload))
 
-    @patch('edx_proctoring.constants.ALLOW_REVIEW_UPDATES', True)
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.backends.software_secure.get_proctoring_settings', return_value={'ALLOW_REVIEW_UPDATES': True})
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
-    def test_allow_review_resubmission(self):
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    def test_allow_review_resubmission(self, proctoring_settings):
         """
         Tests that an resubmission is allowed
         """
@@ -809,14 +824,16 @@ class SoftwareSecureTests(TestCase):
         self.assertEqual(records[0].review_status, 'Clean')
         self.assertEqual(records[1].review_status, 'Suspicious')
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @ddt.data(False, True)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
-    def test_failure_submission(self):
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_proctoring_settings', return_value={'REQUIRE_FAILURE_SECOND_REVIEWS': True})
+    def test_failure_submission(self, allow_rejects, proctoring_settings):
         """
         Tests that a submission of a failed test and make sure that we
         don't automatically update the status to failure
         """
-
         provider = get_backend_provider("SOFTWARE_SECURE")
 
         exam_id = create_exam(
@@ -869,7 +886,8 @@ class SoftwareSecureTests(TestCase):
         )
         self.assertEqual(attempt['status'], expected_status)
 
-    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.reverse', GetProviderNameSoftwareSecure)
+    @patch('edx_proctoring.backends.software_secure.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameSoftwareSecure)
     def test_update_archived_attempt(self):
         """
@@ -901,7 +919,8 @@ class SoftwareSecureTests(TestCase):
             attempt_code=attempt['attempt_code'],
             external_id=attempt['external_id']
         )
-
+        print "**"*88
+        print test_payload
         # now process the report
         provider.on_review_callback(json.loads(test_payload))
 
