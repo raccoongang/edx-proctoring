@@ -2295,7 +2295,7 @@ class TestExamAllowanceView(LoggedInTestCase):
 
         response = self.client.delete(
             reverse('edx_proctoring.proctored_exam.allowance'),
-            json.dumps(allowance_data),
+            allowance_data,
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
@@ -2551,7 +2551,7 @@ class TestExamAllowanceView(LoggedInTestCase):
 
         response = self.client.delete(
             reverse('edx_proctoring.proctored_exam.allowance'),
-            json.dumps(allowance_data),
+            allowance_data,
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)

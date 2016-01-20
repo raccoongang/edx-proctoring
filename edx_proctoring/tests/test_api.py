@@ -44,7 +44,7 @@ from edx_proctoring.api import (
     get_review_policy_by_exam_id,
     update_review_policy,
     remove_review_policy,
-)
+    _check_eligibility_of_prerequisites)
 from edx_proctoring.exceptions import (
     ProctoredExamAlreadyExists,
     ProctoredExamNotFoundException,
@@ -964,6 +964,28 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertEqual(len(student_active_exams), 2)
         self.assertEqual(len(student_active_exams[0]['allowances']), 0)
         self.assertEqual(len(student_active_exams[1]['allowances']), 2)
+
+    def test_check_eligibility_of_prerequisites(self):
+        """
+        Test to eligibility of prerequisites checking method.
+        """
+        credit_state = {
+            "credit_requirement_status": [
+                {
+                    "namespace": "test",
+                    "status": "test"
+                },
+            ]
+        }
+        self.assertTrue(_check_eligibility_of_prerequisites(credit_state))
+        credit_state["credit_requirement_status"].append(
+            {
+                "namespace": "reverification",
+                "status": "failed"
+            }
+        )
+        self.assertFalse(_check_eligibility_of_prerequisites(credit_state))
+
 
     def test_get_filtered_exam_attempts(self):
         """
