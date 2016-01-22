@@ -95,7 +95,7 @@ def bulk_start_exams_callback(request, attempt_codes):
     attempts = ProctoredExamStudentAttempt.objects.filter(
          attempt_code__in=code_list
     )
-    if len(attempts):
+    if not len(attempts):
         return HttpResponse(
             content='You have entered an exam codes that are not valid.',
             status=404
@@ -109,7 +109,7 @@ def bulk_start_exams_callback(request, attempt_codes):
         proctoring_settings = get_proctoring_settings(provider_name)
 
     template = loader.get_template(
-        'proctoring/proctoring_launch_callback.html'
+        'proctored_exam/proctoring_launch_callback.html'
     )
     return HttpResponse(
         template.render(

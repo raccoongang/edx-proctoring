@@ -91,7 +91,7 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
         name='edx_proctoring.anonymous.proctoring_launch_callback.start_exam'
     ),
     url(
-        r'edx_proctoring/proctoring_launch_callback/bulk_start_exams/(?P<attempt_codes>[A-z0-9\_\,]+)$',
+        r'edx_proctoring/proctoring_launch_callback/bulk_start_exams/(?P<attempt_codes>[A-Za-z0-9\-\_\,]+)$',
         callbacks.bulk_start_exams_callback,
         name='edx_proctoring.anonymous.proctoring_launch_callback.bulk_start_exams_callback'
     ),

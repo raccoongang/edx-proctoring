@@ -592,6 +592,45 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
 
         self._test_repeated_start_exam_callbacks(attempt)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id',
+           GetProviderNameTest)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id',
+           GetProviderNameTest)
+    def test_bulk_start_exams_callback(self):
+        """
+        Test that call star exam callback which changes the state
+        from 'created' to 'ready to start'
+        """
+        # Send wrong attempt
+        response = self.client.get(
+            reverse(
+                'edx_proctoring.anonymous.proctoring_launch_callback.bulk_start_exams_callback',
+                args=['wrong'])
+        )
+        self.assertEqual(response.status_code, 404)
+        # Create an exam.
+        proctored_exam = ProctoredExam.objects.create(
+            course_id='a/b/c',
+            content_id='test_content',
+            exam_name='Test Exam',
+            external_id='123aXqe3',
+            time_limit_mins=90,
+            is_proctored=True
+        )
+        attempt_id = create_exam_attempt(proctored_exam.id, self.user.id)
+        attempt = get_exam_attempt_by_id(attempt_id)
+        self.assertEqual(attempt['status'], "created")
+
+        # hit callback and verify that exam status is 'ready to start'
+        code = attempt['attempt_code']
+        self.client.get(
+            reverse(
+                'edx_proctoring.anonymous.proctoring_launch_callback.bulk_start_exams_callback',
+                args=[code])
+        )
+        attempt = get_exam_attempt_by_id(attempt_id)
+        self.assertEqual(attempt['status'], "ready_to_start")
+
     @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
     def test_attempt_readback(self):
         """
@@ -1866,7 +1905,15 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
                 self.user.id,
                 taking_as_proctored=True
             )
+        # send wong data
+        response = self.client.post(
+            reverse('edx_proctoring.anonymous.proctoring_review_callback'),
+            data='{"examMetaData":{}}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
 
+        # send correct data
         attempt = get_exam_attempt_by_id(attempt_id)
         self.assertIsNotNone(attempt['external_id'])
 
@@ -1878,6 +1925,54 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         response = self.client.post(
             reverse('edx_proctoring.anonymous.proctoring_review_callback'),
             data=test_payload,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    @patch('edx_proctoring.api.reverse', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', GetProviderNameTest)
+    def test_bulk_review_callback(self):
+        """
+        Simulates a callback from the proctoring service with the
+        review data for a few exams
+        """
+
+        exam_id = create_exam(
+            course_id='foo/bar/baz',
+            content_id='content',
+            exam_name='Sample Exam',
+            time_limit_mins=10,
+            is_proctored=True
+        )
+
+        # be sure to use the mocked out SoftwareSecure handlers
+        with HTTMock(mock_response_content):
+            attempt_id = create_exam_attempt(
+                exam_id,
+                self.user.id,
+                taking_as_proctored=True
+            )
+
+        # send list with wrong payload
+        response = self.client.post(
+            reverse('edx_proctoring.anonymous.proctoring_bulk_review_callback'),
+            data="""[{"examMetaData":{}}]""",
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # send correct payload list
+        attempt = get_exam_attempt_by_id(attempt_id)
+        self.assertIsNotNone(attempt['external_id'])
+
+        test_payload = Template(TEST_REVIEW_PAYLOAD).substitute(
+            attempt_code=attempt['attempt_code'],
+            external_id=attempt['external_id']
+        )
+        response = self.client.post(
+            reverse('edx_proctoring.anonymous.proctoring_bulk_review_callback'),
+            data="["+test_payload+"]",
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)

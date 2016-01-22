@@ -1560,7 +1560,6 @@ def get_attempt_status_summary(user_id, course_id, content_id):
 
     return summary
 
-
 def _does_time_remain(attempt):
     """
     Helper function returns True if time remains for an attempt and False
