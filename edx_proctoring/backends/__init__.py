@@ -6,7 +6,6 @@ from importlib import import_module
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from xmodule.modulestore.django import modulestore
 from opaque_keys.edx.keys import CourseKey
 
 # Cached instance of backend provider
@@ -14,7 +13,7 @@ _BACKEND_PROVIDER = None
 
 def get_provider_name_by_course_id(course_id):
     course_key = CourseKey.from_string(course_id)
-    course = modulestore().get_course(course_key)
+    course = get_course(course_key)
     return course.proctoring_service
 
 
