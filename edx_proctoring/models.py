@@ -1022,10 +1022,10 @@ class ProctoredExamSoftwareSecureComment(TimeStampedModel):
     review = models.ForeignKey(ProctoredExamSoftwareSecureReview)
 
     # start time in the video, in seconds, regarding the comment
-    start_time = models.IntegerField()
+    start_time = models.BigIntegerField()
 
     # stop time in the video, in seconds, regarding the comment
-    stop_time = models.IntegerField()
+    stop_time = models.BigIntegerField()
 
     # length of time, in seconds, regarding the comment
     duration = models.IntegerField()

@@ -159,7 +159,7 @@ class ExamReviewCallback(APIView):
         Post callback handler
         """
         try:
-            attempt_code = request.DATA['examMetaData']['examCode']
+            attempt_code = request.data['examMetaData']['examCode']
         except KeyError, ex:
             log.exception(ex)
             return Response(

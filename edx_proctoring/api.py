@@ -1777,7 +1777,7 @@ def _get_practice_exam_view(exam, context, exam_id, user_id, course_id):
         return None
     elif attempt_status in [ProctoredExamStudentAttemptStatus.created,
                             ProctoredExamStudentAttemptStatus.download_software_clicked]:
-        provider_name = get_provider_name_by_course_id('course_id')
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
         provider = get_backend_provider(provider_name)
         student_view_template = 'proctored_exam/instructions.html'
         context.update({
@@ -1899,7 +1899,7 @@ def _get_proctored_exam_view(exam, context, exam_id, user_id, course_id):
         return None
     elif attempt_status in [ProctoredExamStudentAttemptStatus.created,
                             ProctoredExamStudentAttemptStatus.download_software_clicked]:
-        provider_name = get_provider_name_by_course_id('course_id')
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
         provider = get_backend_provider(provider_name)
         student_view_template = 'proctored_exam/instructions.html'
         context.update({

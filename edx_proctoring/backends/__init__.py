@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 from opaque_keys.edx.keys import CourseKey
+from courseware.courses import get_course
 
 # Cached instance of backend provider
 _BACKEND_PROVIDER = None
