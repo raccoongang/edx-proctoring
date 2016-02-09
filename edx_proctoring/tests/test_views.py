@@ -209,6 +209,7 @@ class ProctoredExamViewTests(LoggedInTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertFalse(func.called)
 
+    @patch('edx_proctoring.utils.get_provider_name_by_course_id', get_provider_name_test)
     def test_decorator_require_course_or_global_staff(self):  # pylint: disable=invalid-name
         """
         Test assert require_course_or_global_staff before hitting any api url.

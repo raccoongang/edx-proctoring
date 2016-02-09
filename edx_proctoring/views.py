@@ -868,7 +868,7 @@ class ProctoringServices(AuthenticatedAPIView):
             return Response("Course with this course id doesn't exist",
                             status=404)
         available_providers = course.available_proctoring_services.split(',')
-        proctoring_service = request.DATA.get("proctoring_service")
+        proctoring_service = request.data.get("proctoring_service")
         if proctoring_service not in available_providers:
             return Response(
                 {"error", "This proctoring service is not available"},

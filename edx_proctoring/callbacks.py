@@ -206,7 +206,7 @@ class BulkExamReviewCallback(APIView):
         """
         Post callback handler
         """
-        data = request.DATA
+        data = request.data
         course_id = ""
         for review in data:
             try:
