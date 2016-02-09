@@ -2270,7 +2270,8 @@ class TestProctoringServicesView(LoggedInTestCase):
                 'edx_proctoring.proctoring_services',
                 kwargs={"course_id": "a/b/c"},
             ),
-            data={"proctoring_service": "x"}
+            data=json.dumps({"proctoring_service": "x"}),
+            content_type='application/json'
         )
         self.assertEqual(response.status_code, 403)
 
@@ -2280,7 +2281,8 @@ class TestProctoringServicesView(LoggedInTestCase):
                 'edx_proctoring.proctoring_services',
                 kwargs={"course_id": "a/b/c"},
             ),
-            data={"proctoring_service": "b"}
+            data=json.dumps({"proctoring_service": "b"}),
+            content_type='application/json'
         )
         response_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
@@ -2446,7 +2448,7 @@ class TestExamAllowanceView(LoggedInTestCase):
 
         response = self.client.delete(
             reverse('edx_proctoring.proctored_exam.allowance'),
-            allowance_data,
+            json.dumps(allowance_data),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
@@ -2680,10 +2682,10 @@ class TestExamAllowanceView(LoggedInTestCase):
             is_active=True
         )
         allowance_data = {
-            'exam_id': proctored_exam.id,
-            'user_info': self.student_taking_exam.email,
-            'key': 'a_key',
-            'value': '30'
+            "exam_id": proctored_exam.id,
+            "user_info": self.student_taking_exam.email,
+            "key": "a_key",
+            "value": "30"
         }
 
         # Add allowance
@@ -2696,13 +2698,16 @@ class TestExamAllowanceView(LoggedInTestCase):
 
         allowance_data.pop('value')
 
+        #allowance_data.pop('user_info')
+        allowance_data['user_id'] = self.student_taking_exam.id
+
         # now make the exam inactive
         proctored_exam.is_active = False
         proctored_exam.save()
 
         response = self.client.delete(
             reverse('edx_proctoring.proctored_exam.allowance'),
-            allowance_data,
+            json.dumps(allowance_data),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
