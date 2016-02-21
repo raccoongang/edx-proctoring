@@ -12,8 +12,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='proctoredexamsoftwaresecurecomment',
-            name='start_time',
-            field=models.BigIntegerField(),
+            model_name='proctoredexamsoftwaresecurereview',
+            name='attempt_code',
+            field=models.CharField(unique=True, max_length=255, db_index=True),
         ),
     ]
