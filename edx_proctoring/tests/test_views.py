@@ -579,6 +579,8 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         attempt = self._test_exam_attempt_creation()
         self._test_repeated_start_exam_callbacks(attempt)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
+    @patch('edx_proctoring.callbacks.get_provider_name_by_course_id', get_provider_name_test)
     def test_start_exam_callback_when_download_software_clicked(self):
         """
         Test that hitting software secure callback URL twice when the attempt state begins at

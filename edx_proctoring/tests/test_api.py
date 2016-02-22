@@ -43,8 +43,7 @@ from edx_proctoring.api import (
     create_exam_review_policy,
     get_review_policy_by_exam_id,
     update_review_policy,
-    remove_review_policy,
-    _check_eligibility_of_prerequisites)
+    remove_review_policy)
 from edx_proctoring.exceptions import (
     ProctoredExamAlreadyExists,
     ProctoredExamNotFoundException,
@@ -965,28 +964,6 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertEqual(len(student_active_exams[0]['allowances']), 0)
         self.assertEqual(len(student_active_exams[1]['allowances']), 2)
 
-    def test_check_eligibility_of_prerequisites(self):
-        """
-        Test to eligibility of prerequisites checking method.
-        """
-        credit_state = {
-            "credit_requirement_status": [
-                {
-                    "namespace": "test",
-                    "status": "test"
-                },
-            ]
-        }
-        self.assertTrue(_check_eligibility_of_prerequisites(credit_state))
-        credit_state["credit_requirement_status"].append(
-            {
-                "namespace": "reverification",
-                "status": "failed"
-            }
-        )
-        self.assertFalse(_check_eligibility_of_prerequisites(credit_state))
-
-
     def test_get_filtered_exam_attempts(self):
         """
         Test to get all the exams filtered by the course_id
@@ -1420,6 +1397,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
         (datetime.now(pytz.UTC) - timedelta(days=1), True),
     )
     @ddt.unpack
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_submitted_timed_exam_with_past_due_date(self, due_date, has_due_date_passed):
         """
         Test for get_student_view timed exam with the due date.
@@ -1488,6 +1466,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
             )
             self.assertIn(self.exam_expired_msg, rendered_response)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_timed_exam_attempt_with_past_due_datetime(self):
         """
         Test for get_student_view for timed exam with past due datetime
@@ -1533,6 +1512,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
             self.assertIn(self.exam_expired_msg, rendered_response)
 
     @patch('edx_proctoring.api.get_proctoring_settings', return_value={'ALLOW_TIMED_OUT_STATE': True})
+    #@patch.dict('django.conf.settings.PROCTORING_SETTINGS', {'ALLOW_TIMED_OUT_STATE': True})
     @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_timedout(self, proctoring_settings):
         """
@@ -1692,7 +1672,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
         )
         self.assertIn(self.proctored_exam_waiting_for_app_shutdown_msg, rendered_response)
 
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_ready(self):
         reset_time = datetime.now(pytz.UTC) + timedelta(minutes=2)
         with freeze_time(reset_time):
@@ -1749,32 +1729,6 @@ class ProctoredExamApiTests(LoggedInTestCase):
             }
         )
         self.assertIsNone(rendered_response)
-
-    @patch('edx_proctoring.api.get_proctoring_settings', return_value={'ALLOW_TIMED_OUT_STATE': True})
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', GetProviderNameTest)
-    def test_get_studentview_timedout(self, proctoring_settings):
-        """
-        Verifies that if we call get_studentview when the timer has expired
-        it will automatically state transition into timed_out
-        """
-
-        attempt_obj = self._create_started_exam_attempt()
-
-        reset_time = datetime.now(pytz.UTC) + timedelta(days=1)
-        with freeze_time(reset_time):
-            get_student_view(
-                user_id=self.user_id,
-                course_id=self.course_id,
-                content_id=self.content_id,
-                context={
-                    'is_proctored': True,
-                    'display_name': self.exam_name,
-                    'default_time_limit_mins': 90
-                }
-            )
-
-        attempt = get_exam_attempt_by_id(attempt_obj.id)
-        self.assertEqual(attempt['status'], 'timed_out')
 
     @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_compelete_status_practiceexam(self):
@@ -1954,6 +1908,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertIn('1 hour and 30 minutes', rendered_response)
         self.assertNotIn(self.start_an_exam_msg.format(exam_name=self.exam_name), rendered_response)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_unstarted_timed_exam_with_allowance(self):
         """
         Test for get_student_view Timed exam which is not proctored and has not started yet.
@@ -2015,6 +1970,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
         )
         self.assertIn(expected_content, rendered_response)
 
+    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_expired_exam(self):
         """
         Test that an expired exam shows a difference message when the exam is expired just recently

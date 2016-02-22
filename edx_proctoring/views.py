@@ -931,20 +931,6 @@ class StudentProctoredExamAttemptByCode(APIView):
                     user_id,
                     ProctoredExamStudentAttemptStatus.submitted
                 )
-                
-            if action and action == 'fail':
-                exam_attempt_id = update_attempt_status(
-                    exam_id,
-                    user_id,
-                    ProctoredExamStudentAttemptStatus.error
-                )
-                
-            if action and action == 'decline':
-                exam_attempt_id = update_attempt_status(
-                    exam_id,
-                    user_id,
-                    ProctoredExamStudentAttemptStatus.timed_out
-                )
 
             return Response({"exam_attempt_id": exam_attempt_id})
 

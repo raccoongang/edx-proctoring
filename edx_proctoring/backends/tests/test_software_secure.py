@@ -204,7 +204,7 @@ class SoftwareSecureTests(TestCase):
             self.assertEqual(policy.review_policy, context['review_policy'])
 
             # call into real implementation
-            result = get_backend_provider(emphemeral=True)._get_payload(exam, context)
+            result = get_backend_provider('SOFTWARE_SECURE', emphemeral=True)._get_payload(exam, context)
 
             # assert that this is in the 'reviewerNotes' field that is passed to SoftwareSecure
             expected = context['review_policy']
@@ -250,7 +250,7 @@ class SoftwareSecureTests(TestCase):
             self.assertNotIn('review_policy', context)
 
             # call into real implementation
-            result = get_backend_provider(emphemeral=True)._get_payload(exam, context)  # pylint: disable=protected-access
+            result = get_backend_provider('SOFTWARE_SECURE', emphemeral=True)._get_payload(exam, context)  # pylint: disable=protected-access
 
             # assert that we use the default that is defined in system configuration
             self.assertEqual(result['reviewerNotes'], constants.DEFAULT_SOFTWARE_SECURE_REVIEW_POLICY)
@@ -277,7 +277,7 @@ class SoftwareSecureTests(TestCase):
                 # patch the _get_payload method on the backend provider
                 # so that we can assert that we are called with the review policy
                 # undefined and that we use the system default
-                with patch.object(get_backend_provider(), '_get_payload', assert_get_payload_mock_no_policy):  # pylint: disable=protected-access
+                with patch.object(get_backend_provider('SOFTWARE_SECURE'), '_get_payload', assert_get_payload_mock_no_policy):  # pylint: disable=protected-access
                     attempt_id = create_exam_attempt(
                         exam_id,
                         self.user.id,
@@ -314,7 +314,7 @@ class SoftwareSecureTests(TestCase):
             """
 
             # call into real implementation
-            result = get_backend_provider(emphemeral=True)._get_payload(exam, context)  # pylint: disable=protected-access
+            result = get_backend_provider('SOFTWARE_SECURE', emphemeral=True)._get_payload(exam, context)  # pylint: disable=protected-access
             self.assertFalse(isinstance(result['examName'], unicode))
             self.assertTrue(is_ascii(result['examName']))
             self.assertGreater(len(result['examName']), 0)

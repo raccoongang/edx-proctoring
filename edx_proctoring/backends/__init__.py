@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 from opaque_keys.edx.keys import CourseKey
-#from courseware.courses import get_course
 
 # Cached instance of backend provider
 _BACKEND_PROVIDER = None
@@ -47,7 +46,7 @@ def get_backend_provider(provider_name, emphemeral=True):
 
         if 'class' not in config or 'options' not in config:
             msg = (
-                "Misconfigured PROCTORING_BACKEND_PROVIDER settings, "
+                "Misconfigured PROCTORING_BACKEND_PROVIDERS settings, "
                 "must have both 'class' and 'options' keys."
             )
             raise ImproperlyConfigured(msg)
@@ -61,8 +60,6 @@ def get_backend_provider(provider_name, emphemeral=True):
             _BACKEND_PROVIDER = provider
 
     return provider
-
-
 
 
 def get_proctoring_settings(provider_name):
