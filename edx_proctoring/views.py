@@ -44,6 +44,7 @@ from edx_proctoring.exceptions import (
     ProctoredExamNotActiveException,
     AllowanceValueNotAllowedException
 )
+from edx_proctoring import constants
 from edx_proctoring.runtime import get_runtime_service
 from edx_proctoring.serializers import ProctoredExamSerializer, ProctoredExamStudentAttemptSerializer
 from edx_proctoring.models import ProctoredExamStudentAttemptStatus, ProctoredExamStudentAttempt, ProctoredExam
