@@ -1673,22 +1673,6 @@ class ProctoredExamApiTests(LoggedInTestCase):
         self.assertIn(self.proctored_exam_waiting_for_app_shutdown_msg, rendered_response)
 
     @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
-    def test_get_studentview_ready(self):
-        reset_time = datetime.now(pytz.UTC) + timedelta(minutes=2)
-        with freeze_time(reset_time):
-            rendered_response = get_student_view(
-                user_id=self.user_id,
-                course_id=self.course_id,
-                content_id=self.content_id_practice,
-                context={
-                    'is_proctored': True,
-                    'display_name': self.exam_name,
-                    'default_time_limit_mins': 90
-                }
-            )
-            self.assertIn(self.practice_exam_submitted_msg, rendered_response)
-
-    @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_created_status_practiceexam(self):
         """
         Test for get_student_view practice exam which has been created.
@@ -1728,7 +1712,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
                 'default_time_limit_mins': 90
             }
         )
-        self.assertIsNone(rendered_response)
+        self.assertIn(self.ready_to_start_msg, rendered_response)
 
     @patch('edx_proctoring.api.get_provider_name_by_course_id', get_provider_name_test)
     def test_get_studentview_compelete_status_practiceexam(self):
