@@ -54,3 +54,4 @@ htmlcov/
 acceptance_tests/*.png
 
 node_modules/
+edx_proctoring.egg-info
