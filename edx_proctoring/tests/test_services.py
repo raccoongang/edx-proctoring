@@ -34,7 +34,7 @@ class MockCreditService(object):
             'credit_requirement_status': []
         }
 
-    def get_credit_state(self, user_id, course_key, return_course_info=False):  # pylint: disable=unused-argument
+    def get_credit_state(self, user_id, course_key, return_course_name=False):  # pylint: disable=unused-argument
         """
         Mock implementation
         """
@@ -91,10 +91,11 @@ class MockCreditService(object):
 
 class MockCreditServiceWithCourseEndDate(MockCreditService):
     """
-    mock of the Credit Service but overrides get_credit_state to return a past course_end_date
+    mock of the Credit Service but overrides get_credit_state
+    to return a past course_end_date
     """
 
-    def get_credit_state(self, user_id, course_key, return_course_info=False):  # pylint: disable=unused-argument
+    def get_credit_state(self, user_id, course_key, return_course_name=False):  # pylint: disable=unused-argument
         """
         Mock implementation
         """
