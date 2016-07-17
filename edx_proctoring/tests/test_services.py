@@ -5,9 +5,12 @@ Test for the xBlock service
 """
 
 import unittest
+import pytz
+from datetime import datetime, timedelta
 from edx_proctoring.services import (
     ProctoringService
 )
+from edx_proctoring.exceptions import UserNotFoundException
 from edx_proctoring import api as edx_proctoring_api
 import types
 
@@ -31,11 +34,10 @@ class MockCreditService(object):
             'credit_requirement_status': []
         }
 
-    def get_credit_state(self, user_id, course_key, return_course_name=False):  # pylint: disable=unused-argument
+    def get_credit_state(self, user_id, course_key, return_course_info=False):  # pylint: disable=unused-argument
         """
         Mock implementation
         """
-
         return self.status
 
     # pylint: disable=unused-argument
@@ -87,6 +89,20 @@ class MockCreditService(object):
         return True
 
 
+class MockCreditServiceWithCourseEndDate(MockCreditService):
+    """
+    mock of the Credit Service but overrides get_credit_state
+    to return a past course_end_date
+    """
+
+    def get_credit_state(self, user_id, course_key, return_course_info=False):  # pylint: disable=unused-argument
+        """
+        Mock implementation
+        """
+        self.status['course_end_date'] = datetime.now(pytz.UTC) + timedelta(days=-1)
+        return self.status
+
+
 class MockInstructorService(object):
     """
     Simple mock of the Instructor Service
@@ -97,10 +113,14 @@ class MockInstructorService(object):
         """
         self.is_user_course_staff = is_user_course_staff
 
-    def delete_student_attempt(self, student_identifier, course_id, content_id):  # pylint: disable=unused-argument
+    # pylint: disable=unused-argument
+    def delete_student_attempt(self, student_identifier, course_id, content_id, requesting_user):
         """
         Mock implementation
         """
+        # Ensure that this method was called with a real user object
+        if not hasattr(requesting_user, 'id'):
+            raise UserNotFoundException
         return True
 
     def is_course_staff(self, user, course_id):
@@ -108,6 +128,12 @@ class MockInstructorService(object):
         Mocked implementation of is_course_staff
         """
         return self.is_user_course_staff
+
+    def send_support_notification(self, course_id, exam_name, student_username, review_status):
+        """
+        Mocked implementation of send_support_notification
+        """
+        pass
 
 
 class TestProctoringService(unittest.TestCase):

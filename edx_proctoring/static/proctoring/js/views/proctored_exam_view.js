@@ -136,15 +136,15 @@ var edx = edx || {};
         updateRemainingTime: function (self) {
             self.timerTick ++;
             self.secondsLeft --;
-            if (self.timerTick % 5 === 0){
+            if (self.timerTick % 30 === 0){
                 var url = self.model.url + '/' + self.model.get('attempt_id');
-                $.ajax(url).success(function(data) {
-                    if (data.status === 'error') {
-                        // The proctoring session is in error state
-                        // refresh the page to
+                var queryString = '?sourceid=in_exam&proctored=' + self.model.get('taking_as_proctored');
+                $.ajax(url + queryString).success(function(data) {
+                    if (data.status === 'error' || data.status === 'submitted') {
+                        // The proctoring session is in error state or has ended
+                        // refresh the page to bring up the new Proctoring state from the backend.
                         clearInterval(self.timerId); // stop the timer once the time finishes.
                         $(window).unbind('beforeunload', self.unloadMessage);
-                        // refresh the page when the timer expired
                         location.reload();
                     }
                     else {

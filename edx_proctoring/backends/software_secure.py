@@ -15,8 +15,11 @@ import unicodedata
 
 from django.conf import settings
 
+from edx_proctoring.backends import (
+    get_proctoring_settings,
+    get_provider_name_by_course_id
+)
 from edx_proctoring.backends.backend import ProctoringBackendProvider
-from edx_proctoring import constants
 from edx_proctoring.exceptions import (
     BackendProvideCannotRegisterAttempt,
     StudentExamAttemptDoesNotExistsException,
@@ -24,6 +27,7 @@ from edx_proctoring.exceptions import (
     ProctoredExamReviewAlreadyExists,
     ProctoredExamBadReviewStatus,
 )
+from edx_proctoring.runtime import get_runtime_service
 from edx_proctoring.utils import locate_attempt_by_attempt_code, emit_event
 from edx_proctoring. models import (
     ProctoredExamSoftwareSecureReview,
@@ -64,6 +68,7 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
         self.send_email = send_email
         self.passing_review_status = ['Clean', 'Rules Violation']
         self.failing_review_status = ['Not Reviewed', 'Suspicious']
+        self.notify_support_for_status = ['Suspicious']
 
     def register_exam_attempt(self, exam, context):
         """
@@ -193,11 +198,21 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
             )
             raise ProctoredExamSuspiciousLookup(err_msg)
 
-        # do we already have a review for this attempt?!? We may not allow updates
-        review = ProctoredExamSoftwareSecureReview.get_review_by_attempt_code(attempt_code)
+        # do some limited parsing of the JSON payload
+        review_status = payload['reviewStatus']
+        provider_name = get_provider_name_by_course_id(
+            attempt_obj.proctored_exam.course_id
+        )
+        proctoring_settings = get_proctoring_settings(provider_name)
+
+        # do we already have a review for this attempt?!?
+        # We may not allow updates
+        review = ProctoredExamSoftwareSecureReview.get_review_by_attempt_code(
+            attempt_code
+        )
 
         if review:
-            if not constants.ALLOW_REVIEW_UPDATES:
+            if not proctoring_settings.get('ALLOW_REVIEW_UPDATES'):
                 err_msg = (
                     'We already have a review submitted from SoftwareSecure regarding '
                     'attempt_code {attempt_code}. We do not allow for updates!'.format(
@@ -245,8 +260,9 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
             # update our attempt status, note we have to import api.py here because
             # api.py imports software_secure.py, so we'll get an import circular reference
 
-            allow_rejects = not constants.REQUIRE_FAILURE_SECOND_REVIEWS
-
+            allow_rejects = not proctoring_settings.get(
+                'REQUIRE_FAILURE_SECOND_REVIEWS'
+            )
             self.on_review_saved(review, allow_rejects=allow_rejects)
 
         # emit an event for 'review_received'
@@ -255,11 +271,11 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
             'review_status': review.review_status,
         }
 
-        serialized_attempt_obj = ProctoredExamStudentAttemptSerializer(attempt_obj)
-        attempt = serialized_attempt_obj.data
-        serialized_exam_object = ProctoredExamSerializer(attempt_obj.proctored_exam)
-        exam = serialized_exam_object.data
+        attempt = ProctoredExamStudentAttemptSerializer(attempt_obj).data
+        exam = ProctoredExamSerializer(attempt_obj.proctored_exam).data
         emit_event(exam, 'review_received', attempt=attempt, override_data=data)
+
+        self._create_zendesk_ticket(review, exam, attempt)
 
     def on_review_saved(self, review, allow_rejects=False):  # pylint: disable=arguments-differ
         """
@@ -349,17 +365,36 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
 
         return (first_name, last_name)
 
+    def _create_zendesk_ticket(self, review, serialized_exam_object, serialized_attempt_obj):
+        """
+        Creates a Zendesk ticket for reviews with status listed in self.notify_support_for_status.
+        """
+        if review.review_status in self.notify_support_for_status:
+            instructor_service = get_runtime_service('instructor')
+            if instructor_service:
+                instructor_service.send_support_notification(
+                    course_id=serialized_exam_object["course_id"],
+                    exam_name=serialized_exam_object["exam_name"],
+                    student_username=serialized_attempt_obj["user"]["username"],
+                    review_status=review.review_status
+                )
+
     def _get_payload(self, exam, context):
         """
         Constructs the data payload that Software Secure expects
         """
 
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
+        proctoring_settings = get_proctoring_settings(provider_name)
         attempt_code = context['attempt_code']
         time_limit_mins = context['time_limit_mins']
         is_sample_attempt = context['is_sample_attempt']
         callback_url = context['callback_url']
         full_name = context['full_name']
-        review_policy = context.get('review_policy', constants.DEFAULT_SOFTWARE_SECURE_REVIEW_POLICY)
+        review_policy = context.get(
+            'review_policy',
+            proctoring_settings.get('DEFAULT_SOFTWARE_SECURE_REVIEW_POLICY')
+        )
         review_policy_exception = context.get('review_policy_exception')
 
         # compile the notes to the reviewer
@@ -376,7 +411,9 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
 
         now = datetime.datetime.utcnow()
         start_time_str = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
-        end_time_str = (now + datetime.timedelta(minutes=time_limit_mins)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+        end_time_str = (
+            now + datetime.timedelta(minutes=time_limit_mins)
+        ).strftime("%a, %d %b %Y %H:%M:%S GMT")
         # remove all illegal characters from the exam name
         exam_name = exam['exam_name']
         exam_name = unicodedata.normalize('NFKD', exam_name).encode('ascii', 'ignore')
@@ -384,7 +421,8 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
         for character in SOFTWARE_SECURE_INVALID_CHARS:
             exam_name = exam_name.replace(character, '_')
 
-        # if exam_name is blank because we can't normalize a potential unicode (like Chinese) exam name
+        # if exam_name is blank because we can't normalize a potential unicode
+        # (like Chinese) exam name
         # into something ascii-like, then we have use a default otherwise
         # SoftwareSecure will fail on the exam registration API call
         if not exam_name:

@@ -1,7 +1,8 @@
 # pylint: disable=too-many-branches, too-many-lines, too-many-statements
 
 """
-In-Proc API (aka Library) for the edx_proctoring subsystem. This is not to be confused with a HTTP REST
+In-Proc API (aka Library) for the edx_proctoring subsystem.
+This is not to be confused with a HTTP REST
 API which is in the views.py file, per edX coding standards
 """
 import pytz
@@ -15,6 +16,9 @@ from django.conf import settings
 from django.template import Context, loader
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.core.mail.message import EmailMessage
+from django.contrib.auth.models import User
+
+from rest_framework.generics import get_object_or_404
 
 from edx_proctoring import constants
 from edx_proctoring.exceptions import (
@@ -47,8 +51,12 @@ from edx_proctoring.utils import (
     has_client_app_shutdown,
     emit_event
 )
-
-from edx_proctoring.backends import get_backend_provider
+from edx_proctoring.backends import (
+    get_backend_provider,
+    get_proctoring_settings,
+    get_provider_name_by_course_id,
+    get_proctor_settings_param
+)
 from edx_proctoring.runtime import get_runtime_service
 
 log = logging.getLogger(__name__)
@@ -57,7 +65,7 @@ SHOW_EXPIRY_MESSAGE_DURATION = 1 * 60  # duration within which expiry message is
 
 
 def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None,
-                is_proctored=True, is_practice_exam=False, external_id=None, is_active=True):
+                is_proctored=True, is_practice_exam=False, external_id=None, is_active=True, hide_after_due=False):
     """
     Creates a new ProctoredExam entity, if the course_id/content_id pair do not already exist.
     If that pair already exists, then raise exception.
@@ -77,19 +85,25 @@ def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None
         due_date=due_date,
         is_proctored=is_proctored,
         is_practice_exam=is_practice_exam,
-        is_active=is_active
+        is_active=is_active,
+        hide_after_due=hide_after_due,
     )
 
     log_msg = (
         u'Created exam ({exam_id}) with parameters: course_id={course_id}, '
         u'content_id={content_id}, exam_name={exam_name}, time_limit_mins={time_limit_mins}, '
         u'is_proctored={is_proctored}, is_practice_exam={is_practice_exam}, '
-        u'external_id={external_id}, is_active={is_active}'.format(
+        u'external_id={external_id}, is_active={is_active}, hide_after_due={hide_after_due}'.format(
             exam_id=proctored_exam.id,
-            course_id=course_id, content_id=content_id,
-            exam_name=exam_name, time_limit_mins=time_limit_mins,
-            is_proctored=is_proctored, is_practice_exam=is_practice_exam,
-            external_id=external_id, is_active=is_active
+            course_id=course_id,
+            content_id=content_id,
+            exam_name=exam_name,
+            time_limit_mins=time_limit_mins,
+            is_proctored=is_proctored,
+            is_practice_exam=is_practice_exam,
+            external_id=external_id,
+            is_active=is_active,
+            hide_after_due=hide_after_due
         )
     )
     log.info(log_msg)
@@ -134,7 +148,8 @@ def create_exam_review_policy(exam_id, set_by_user_id, review_policy):
 
 def update_review_policy(exam_id, set_by_user_id, review_policy):
     """
-    Given a exam id, update/remove the existing record, otherwise raise exception if not found.
+    Given a exam id, update/remove the existing record,
+    otherwise raise exception if not found.
     Returns: review_policy_id
     """
 
@@ -142,7 +157,9 @@ def update_review_policy(exam_id, set_by_user_id, review_policy):
         u'Updating exam review policy with exam_id {exam_id}'
         u'set_by_user_id={set_by_user_id}, review_policy={review_policy}'
         .format(
-            exam_id=exam_id, set_by_user_id=set_by_user_id, review_policy=review_policy,
+            exam_id=exam_id,
+            set_by_user_id=set_by_user_id,
+            review_policy=review_policy,
         )
     )
     log.info(log_msg)
@@ -164,7 +181,8 @@ def update_review_policy(exam_id, set_by_user_id, review_policy):
 
 def remove_review_policy(exam_id):
     """
-    Given a exam id, remove the existing record, otherwise raise exception if not found.
+    Given a exam id, remove the existing record,
+    otherwise raise exception if not found.
     """
 
     log_msg = (
@@ -202,7 +220,7 @@ def get_review_policy_by_exam_id(exam_id):
 
 
 def update_exam(exam_id, exam_name=None, time_limit_mins=None, due_date=constants.MINIMUM_TIME,
-                is_proctored=None, is_practice_exam=None, external_id=None, is_active=None):
+                is_proctored=None, is_practice_exam=None, external_id=None, is_active=None, hide_after_due=None):
     """
     Given a Django ORM id, update the existing record, otherwise raise exception if not found.
     If an argument is not passed in, then do not change it's current value.
@@ -214,10 +232,10 @@ def update_exam(exam_id, exam_name=None, time_limit_mins=None, due_date=constant
         u'Updating exam_id {exam_id} with parameters '
         u'exam_name={exam_name}, time_limit_mins={time_limit_mins}, due_date={due_date}'
         u'is_proctored={is_proctored}, is_practice_exam={is_practice_exam}, '
-        u'external_id={external_id}, is_active={is_active}'.format(
+        u'external_id={external_id}, is_active={is_active}, hide_after_due={hide_after_due}'.format(
             exam_id=exam_id, exam_name=exam_name, time_limit_mins=time_limit_mins,
             due_date=due_date, is_proctored=is_proctored, is_practice_exam=is_practice_exam,
-            external_id=external_id, is_active=is_active
+            external_id=external_id, is_active=is_active, hide_after_due=hide_after_due
         )
     )
     log.info(log_msg)
@@ -240,6 +258,8 @@ def update_exam(exam_id, exam_name=None, time_limit_mins=None, due_date=constant
         proctored_exam.external_id = external_id
     if is_active is not None:
         proctored_exam.is_active = is_active
+    if hide_after_due is not None:
+        proctored_exam.hide_after_due = hide_after_due
     proctored_exam.save()
 
     # read back exam so we can emit an event on it
@@ -544,6 +564,8 @@ def create_exam_attempt(exam_id, user_id, taking_as_proctored=False):
     review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(exam_id)
     review_policy_exception = ProctoredExamStudentAllowance.get_review_policy_exception(exam_id, user_id)
 
+    log.info(is_exam_past_due_date)
+    log.info(taking_as_proctored)
     if not is_exam_past_due_date and taking_as_proctored:
         scheme = 'https' if getattr(settings, 'HTTPS', 'on') == 'on' else 'http'
         callback_url = '{scheme}://{hostname}{path}'.format(
@@ -555,23 +577,23 @@ def create_exam_attempt(exam_id, user_id, taking_as_proctored=False):
             )
         )
 
-        # get the name of the user, if the service is available
-        full_name = None
-        email = None
-
         credit_service = get_runtime_service('credit')
         if credit_service:
             credit_state = credit_service.get_credit_state(user_id, exam['course_id'])
             full_name = credit_state['profile_fullname']
-            email = credit_state['student_email']
 
+        user = get_object_or_404(User, pk=user_id)
+        full_name = full_name or user.get_full_name()
         context = {
             'time_limit_mins': allowed_time_limit_mins,
             'attempt_code': attempt_code,
             'is_sample_attempt': exam['is_practice_exam'],
             'callback_url': callback_url,
             'full_name': full_name,
-            'email': email
+            'user_id': user_id,
+            'credit_state': credit_state,
+            'username': user.username,
+            'email': user.email
         }
 
         # see if there is an exam review policy for this exam
@@ -590,7 +612,8 @@ def create_exam_attempt(exam_id, user_id, taking_as_proctored=False):
             })
 
         # now call into the backend provider to register exam attempt
-        external_id = get_backend_provider().register_exam_attempt(
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
+        external_id = get_backend_provider(provider_name).register_exam_attempt(
             exam,
             context=context,
         )
@@ -693,23 +716,36 @@ def _start_exam_attempt(existing_attempt):
 
 def stop_exam_attempt(exam_id, user_id):
     """
-    Marks the exam attempt as completed (sets the completed_at field and updates the record)
+    Marks the exam attempt as completed
+    (sets the completed_at field and updates the record)
     """
-    return update_attempt_status(exam_id, user_id, ProctoredExamStudentAttemptStatus.ready_to_submit)
+    return update_attempt_status(
+        exam_id,
+        user_id,
+        ProctoredExamStudentAttemptStatus.ready_to_submit
+    )
 
 
 def mark_exam_attempt_timeout(exam_id, user_id):
     """
     Marks the exam attempt as timed_out
     """
-    return update_attempt_status(exam_id, user_id, ProctoredExamStudentAttemptStatus.timed_out)
+    return update_attempt_status(
+        exam_id,
+        user_id,
+        ProctoredExamStudentAttemptStatus.timed_out
+    )
 
 
 def mark_exam_attempt_as_ready(exam_id, user_id):
     """
     Marks the exam attemp as ready to start
     """
-    return update_attempt_status(exam_id, user_id, ProctoredExamStudentAttemptStatus.ready_to_start)
+    return update_attempt_status(
+        exam_id,
+        user_id,
+        ProctoredExamStudentAttemptStatus.ready_to_start
+    )
 
 
 def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, cascade_effects=True):
@@ -725,21 +761,29 @@ def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, 
     )
     log.info(log_msg)
 
-    # In some configuration we may treat timeouts the same
-    # as the user saying he/she wises to submit the exam
-    alias_timeout = (
-        to_status == ProctoredExamStudentAttemptStatus.timed_out and
-        not settings.PROCTORING_SETTINGS.get('ALLOW_TIMED_OUT_STATE', False)
-    )
-    if alias_timeout:
-        to_status = ProctoredExamStudentAttemptStatus.submitted
-
+    exam = get_exam_by_id(exam_id)
+    provider_name = get_provider_name_by_course_id(exam['course_id'])
+    proctoring_settings = get_proctoring_settings(provider_name)
     exam_attempt_obj = ProctoredExamStudentAttempt.objects.get_exam_attempt(exam_id, user_id)
     if exam_attempt_obj is None:
         if raise_if_not_found:
-            raise StudentExamAttemptDoesNotExistsException('Error. Trying to look up an exam that does not exist.')
+            raise StudentExamAttemptDoesNotExistsException(
+                'Error. Trying to look up an exam that does not exist.'
+            )
         else:
             return
+
+    timed_out_state = False
+    if exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.created:
+        timed_out_state = True
+    # In some configuration we may treat timeouts the same
+    # as the user saying he/she wishes to submit the exam
+    alias_timeout = (
+        to_status == ProctoredExamStudentAttemptStatus.timed_out and
+        not proctoring_settings.get('ALLOW_TIMED_OUT_STATE', timed_out_state)
+    )
+    if alias_timeout:
+        to_status = ProctoredExamStudentAttemptStatus.submitted
 
     exam = get_exam_by_id(exam_id)
 
@@ -893,7 +937,7 @@ def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, 
         credit_state = credit_service.get_credit_state(
             exam_attempt_obj.user_id,
             exam_attempt_obj.proctored_exam.course_id,
-            return_course_name=True
+            return_course_info=True
         )
 
         send_proctoring_attempt_status_email(
@@ -918,19 +962,27 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
     """
 
     course_info_url = ''
-    email_template = loader.get_template('emails/proctoring_attempt_status_email.html')
+    email_template = loader.get_template(
+        'emails/proctoring_attempt_status_email.html'
+    )
     try:
-        course_info_url = reverse('courseware.views.course_info', args=[exam_attempt_obj.proctored_exam.course_id])
+        course_info_url = reverse(
+            'courseware.views.course_info',
+            args=[exam_attempt_obj.proctored_exam.course_id]
+        )
     except NoReverseMatch:
         # we are allowing a failure here since we can't guarantee
         # that we are running in-proc with the edx-platform LMS
         # (for example unit tests)
         pass
 
+    course_id = exam_attempt_obj.proctored_exam.course_id
+    provider_name = get_provider_name_by_course_id(course_id)
+    proctor_settings = get_proctoring_settings(provider_name)
     scheme = 'https' if getattr(settings, 'HTTPS', 'on') == 'on' else 'http'
     course_url = '{scheme}://{site_name}{course_info_url}'.format(
         scheme=scheme,
-        site_name=constants.SITE_NAME,
+        site_name=get_proctor_settings_param(proctor_settings, 'SITE_NAME'),
         course_info_url=course_info_url
     )
 
@@ -939,9 +991,15 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
             'course_url': course_url,
             'course_name': course_name,
             'exam_name': exam_attempt_obj.proctored_exam.exam_name,
-            'status': ProctoredExamStudentAttemptStatus.get_status_alias(exam_attempt_obj.status),
-            'platform': constants.PLATFORM_NAME,
-            'contact_email': constants.CONTACT_EMAIL,
+            'status': ProctoredExamStudentAttemptStatus.get_status_alias(
+                exam_attempt_obj.status
+            ),
+            'platform': get_proctor_settings_param(
+                proctor_settings, 'PLATFORM_NAME'
+            ),
+            'contact_email': get_proctor_settings_param(
+                proctor_settings, 'CONTACT_EMAIL'
+            )
         })
     )
 
@@ -954,7 +1012,7 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
 
     email = EmailMessage(
         body=body,
-        from_email=constants.FROM_EMAIL,
+        from_email=get_proctor_settings_param(proctor_settings, 'FROM_EMAIL'),
         to=[exam_attempt_obj.user.email],
         subject=subject
     )
@@ -962,9 +1020,10 @@ def send_proctoring_attempt_status_email(exam_attempt_obj, course_name):
     email.send()
 
 
-def remove_exam_attempt(attempt_id):
+def remove_exam_attempt(attempt_id, requesting_user):
     """
     Removes an exam attempt given the attempt id.
+    requesting_user is passed through to the instructor_service.
     """
 
     log_msg = (
@@ -991,7 +1050,9 @@ def remove_exam_attempt(attempt_id):
     instructor_service = get_runtime_service('instructor')
 
     if instructor_service:
-        instructor_service.delete_student_attempt(username, course_id, content_id)
+        instructor_service.delete_student_attempt(
+            username, course_id, content_id, requesting_user
+        )
 
     # see if the status transition this changes credit requirement status
     if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):
@@ -1006,7 +1067,9 @@ def remove_exam_attempt(attempt_id):
 
     # emit an event for 'deleted'
     exam = get_exam_by_content_id(course_id, content_id)
-    serialized_attempt_obj = ProctoredExamStudentAttemptSerializer(existing_attempt)
+    serialized_attempt_obj = ProctoredExamStudentAttemptSerializer(
+        existing_attempt
+    )
     attempt = serialized_attempt_obj.data
     emit_event(exam, 'deleted', attempt=attempt)
 
@@ -1309,6 +1372,11 @@ STATUS_SUMMARY_MAP = {
         'short_description': _('Failed Proctoring'),
         'suggested_icon': 'fa-exclamation-triangle',
         'in_completed_state': True
+    },
+    ProctoredExamStudentAttemptStatus.expired: {
+        'short_description': _('Proctored Option No Longer Available'),
+        'suggested_icon': 'fa-times-circle',
+        'in_completed_state': False
     }
 }
 
@@ -1375,12 +1443,21 @@ def get_attempt_status_summary(user_id, course_id, content_id):
     # practice exams always has an attempt status regardless of
     # eligibility
     if credit_service and not exam['is_practice_exam']:
-        credit_state = credit_service.get_credit_state(user_id, unicode(course_id))
+        credit_state = credit_service.get_credit_state(
+            user_id,
+            unicode(course_id),
+            return_course_info=True
+        )
         if not _check_eligibility_of_enrollment_mode(credit_state):
             return None
 
     attempt = get_exam_attempt(exam['id'], user_id)
-    status = attempt['status'] if attempt else ProctoredExamStudentAttemptStatus.eligible
+    if attempt:
+        status = attempt['status']
+    elif not exam['is_practice_exam'] and has_due_date_passed(credit_state.get('course_end_date', None)):
+        status = ProctoredExamStudentAttemptStatus.expired
+    else:
+        status = ProctoredExamStudentAttemptStatus.eligible
 
     status_map = STATUS_SUMMARY_MAP if not exam['is_practice_exam'] else PRACTICE_STATUS_SUMMARY_MAP
 
@@ -1434,9 +1511,10 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     elif attempt_status == ProctoredExamStudentAttemptStatus.ready_to_submit:
         student_view_template = 'timed_exam/ready_to_submit.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.submitted:
-        # check if the exam's due_date has passed then we return None
+        # If we are not hiding the exam after the due_date has passed,
+        # check if the exam's due_date has passed. If so, return None
         # so that the user can see his exam answers in read only mode.
-        if has_due_date_passed(exam['due_date']):
+        if not exam['hide_after_due'] and has_due_date_passed(exam['due_date']):
             return None
 
         student_view_template = 'timed_exam/submitted.html'
@@ -1476,6 +1554,10 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
             )
 
         total_time = humanized_time(allowed_time_limit_mins)
+
+        # According to WCAG, there is no need to allow for extra time if > 20 hours allowed
+        hide_extra_time_footer = exam['time_limit_mins'] > 20 * 60
+
         progress_page_url = ''
         try:
             progress_page_url = reverse(
@@ -1490,7 +1572,8 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
 
         django_context.update({
             'total_time': total_time,
-            'has_due_date': has_due_date,
+            'hide_extra_time_footer': hide_extra_time_footer,
+            'will_be_revealed': has_due_date and not exam['hide_after_due'],
             'exam_id': exam_id,
             'exam_name': exam['exam_name'],
             'progress_page_url': progress_page_url,
@@ -1522,7 +1605,7 @@ def _calculate_allowed_mins(due_datetime, allowed_mins):
             # e.g current_datetime=09:00, due_datetime=10:00 and allowed_mins=120(2hours)
             # then allowed_mins should be 60(1hour)
 
-            actual_allowed_mins = int((due_datetime - current_datetime).seconds / 60)
+            actual_allowed_mins = int((due_datetime - current_datetime).total_seconds() / 60)
     return actual_allowed_mins, is_exam_past_due_date
 
 
@@ -1545,6 +1628,8 @@ def _get_proctored_exam_context(exam, attempt, course_id, is_practice_exam=False
         # (for example unit tests)
         pass
 
+    provider_name = get_provider_name_by_course_id(exam['course_id'])
+    proctoring_settings = get_proctoring_settings(provider_name)
     return {
         'platform_name': settings.PLATFORM_NAME,
         'total_time': total_time,
@@ -1554,7 +1639,9 @@ def _get_proctored_exam_context(exam, attempt, course_id, is_practice_exam=False
         'has_due_date': has_due_date,
         'has_due_date_passed': has_due_date_passed(exam['due_date']),
         'does_time_remain': _does_time_remain(attempt),
-        'enter_exam_endpoint': reverse('edx_proctoring.proctored_exam.attempt.collection'),
+        'enter_exam_endpoint': reverse(
+            'edx_proctoring.proctored_exam.attempt.collection'
+        ),
         'exam_started_poll_url': reverse(
             'edx_proctoring.proctored_exam.attempt',
             args=[attempt['id']]
@@ -1567,7 +1654,7 @@ def _get_proctored_exam_context(exam, attempt, course_id, is_practice_exam=False
             'edx_proctoring.proctored_exam.attempt.review_status',
             args=[attempt['id']]
         ) if attempt else '',
-        'link_urls': settings.PROCTORING_SETTINGS.get('LINK_URLS', {}),
+        'link_urls': proctoring_settings.get('LINK_URLS', {})
     }
 
 
@@ -1588,7 +1675,8 @@ def _get_practice_exam_view(exam, context, exam_id, user_id, course_id):
         return None
     elif attempt_status in [ProctoredExamStudentAttemptStatus.created,
                             ProctoredExamStudentAttemptStatus.download_software_clicked]:
-        provider = get_backend_provider()
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
+        provider = get_backend_provider(provider_name)
         student_view_template = 'proctored_exam/instructions.html'
         context.update({
             'exam_code': attempt['attempt_code'],
@@ -1609,7 +1697,11 @@ def _get_practice_exam_view(exam, context, exam_id, user_id, course_id):
     if student_view_template:
         template = loader.get_template(student_view_template)
         django_context = Context(context)
-        django_context.update(_get_proctored_exam_context(exam, attempt, course_id, is_practice_exam=True))
+        django_context.update(
+            _get_proctored_exam_context(
+                exam, attempt, course_id, is_practice_exam=True
+            )
+        )
         return template.render(django_context)
 
 
@@ -1621,7 +1713,8 @@ def _get_proctored_exam_view(exam, context, exam_id, user_id, course_id):
 
     credit_state = context.get('credit_state')
 
-    # see if only 'verified' track students should see this *except* if it is a practice exam
+    # see if only 'verified' track students should see this *except*
+    # if it is a practice exam
     check_mode = (
         settings.PROCTORING_SETTINGS.get('MUST_BE_VERIFIED_TRACK', True) and
         credit_state
@@ -1709,7 +1802,8 @@ def _get_proctored_exam_view(exam, context, exam_id, user_id, course_id):
         return None
     elif attempt_status in [ProctoredExamStudentAttemptStatus.created,
                             ProctoredExamStudentAttemptStatus.download_software_clicked]:
-        provider = get_backend_provider()
+        provider_name = get_provider_name_by_course_id(exam['course_id'])
+        provider = get_backend_provider(provider_name)
         student_view_template = 'proctored_exam/instructions.html'
         context.update({
             'exam_code': attempt['attempt_code'],
@@ -1770,6 +1864,12 @@ def get_student_view(user_id, course_id, content_id,
     if user_role != 'student':
         return None
 
+    credit_service = get_runtime_service('credit')
+
+    # call service to get course end date.
+    credit_state = credit_service.get_credit_state(user_id, course_id, return_course_info=True)
+    course_end_date = credit_state.get('course_end_date', None)
+
     exam_id = None
     try:
         exam = get_exam_by_content_id(course_id, content_id)
@@ -1778,6 +1878,16 @@ def get_student_view(user_id, course_id, content_id,
             # Note, we don't hard delete exams since we need to retain
             # data
             return None
+
+        # Just in case the due date has been changed because of the
+        # self-paced courses, use the due date from the context and
+        # update the local exam object if necessary.
+        if exam['due_date'] != context.get('due_date', None):
+            update_exam(
+                exam_id=exam['id'],
+                due_date=context.get('due_date', None)
+            )
+            exam['due_date'] = context.get('due_date', None)
 
         exam_id = exam['id']
     except ProctoredExamNotFoundException:
@@ -1790,7 +1900,8 @@ def get_student_view(user_id, course_id, content_id,
             time_limit_mins=context['default_time_limit_mins'],
             is_proctored=context.get('is_proctored', False),
             is_practice_exam=context.get('is_practice_exam', False),
-            due_date=context.get('due_date', None)
+            due_date=context.get('due_date', None),
+            hide_after_due=context.get('hide_after_due', None),
         )
         exam = get_exam_by_content_id(course_id, content_id)
 
@@ -1798,11 +1909,15 @@ def get_student_view(user_id, course_id, content_id,
     is_proctored_exam = exam['is_proctored'] and not exam['is_practice_exam']
     is_timed_exam = not exam['is_proctored'] and not exam['is_practice_exam']
 
+    sub_view_func = None
     if is_timed_exam:
-        return _get_timed_exam_view(exam, context, exam_id, user_id, course_id)
-    elif is_practice_exam:
-        return _get_practice_exam_view(exam, context, exam_id, user_id, course_id)
-    elif is_proctored_exam:
-        return _get_proctored_exam_view(exam, context, exam_id, user_id, course_id)
+        sub_view_func = _get_timed_exam_view
+    elif is_practice_exam and not has_due_date_passed(course_end_date):
+        sub_view_func = _get_practice_exam_view
+    elif is_proctored_exam and not has_due_date_passed(course_end_date):
+        sub_view_func = _get_proctored_exam_view
 
-    return None
+    if sub_view_func:
+        return sub_view_func(exam, context, exam_id, user_id, course_id)
+    else:
+        return None
