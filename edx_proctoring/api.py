@@ -95,10 +95,15 @@ def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None
         u'is_proctored={is_proctored}, is_practice_exam={is_practice_exam}, '
         u'external_id={external_id}, is_active={is_active}, hide_after_due={hide_after_due}'.format(
             exam_id=proctored_exam.id,
-            course_id=course_id, content_id=content_id,
-            exam_name=exam_name, time_limit_mins=time_limit_mins,
-            is_proctored=is_proctored, is_practice_exam=is_practice_exam,
-            external_id=external_id, is_active=is_active, hide_after_due=hide_after_due
+            course_id=course_id,
+            content_id=content_id,
+            exam_name=exam_name,
+            time_limit_mins=time_limit_mins,
+            is_proctored=is_proctored,
+            is_practice_exam=is_practice_exam,
+            external_id=external_id,
+            is_active=is_active,
+            hide_after_due=hide_after_due
         )
     )
     log.info(log_msg)
@@ -118,9 +123,7 @@ def create_exam_review_policy(exam_id, set_by_user_id, review_policy):
     Returns: id (PK)
     """
 
-    exam_review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(
-        exam_id
-    )
+    exam_review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(exam_id)
     if exam_review_policy is not None:
         raise ProctoredExamReviewPolicyAlreadyExists
 
@@ -160,9 +163,7 @@ def update_review_policy(exam_id, set_by_user_id, review_policy):
         )
     )
     log.info(log_msg)
-    exam_review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(
-        exam_id
-    )
+    exam_review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(exam_id)
     if exam_review_policy is None:
         raise ProctoredExamReviewPolicyNotFoundException
 
@@ -170,15 +171,11 @@ def update_review_policy(exam_id, set_by_user_id, review_policy):
         exam_review_policy.set_by_user_id = set_by_user_id
         exam_review_policy.review_policy = review_policy
         exam_review_policy.save()
-        msg = 'Updated exam review policy with {exam_id}'.format(
-            exam_id=exam_id
-        )
+        msg = 'Updated exam review policy with {exam_id}'.format(exam_id=exam_id)
         log.info(msg)
     else:
         exam_review_policy.delete()
-        msg = 'removed exam review policy with {exam_id}'.format(
-            exam_id=exam_id
-        )
+        msg = 'removed exam review policy with {exam_id}'.format(exam_id=exam_id)
         log.info(msg)
 
 
@@ -193,9 +190,7 @@ def remove_review_policy(exam_id):
         .format(exam_id=exam_id)
     )
     log.info(log_msg)
-    exam_review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(
-        exam_id
-    )
+    exam_review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(exam_id)
     if exam_review_policy is None:
         raise ProctoredExamReviewPolicyNotFoundException
 
@@ -566,11 +561,11 @@ def create_exam_attempt(exam_id, user_id, taking_as_proctored=False):
     attempt_code = unicode(uuid.uuid4()).upper()
 
     external_id = None
-    review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(
-        exam_id
-    )
+    review_policy = ProctoredExamReviewPolicy.get_review_policy_for_exam(exam_id)
     review_policy_exception = ProctoredExamStudentAllowance.get_review_policy_exception(exam_id, user_id)
 
+    log.info(is_exam_past_due_date)
+    log.info(taking_as_proctored)
     if not is_exam_past_due_date and taking_as_proctored:
         scheme = 'https' if getattr(settings, 'HTTPS', 'on') == 'on' else 'http'
         callback_url = '{scheme}://{hostname}{path}'.format(
@@ -584,9 +579,7 @@ def create_exam_attempt(exam_id, user_id, taking_as_proctored=False):
 
         credit_service = get_runtime_service('credit')
         if credit_service:
-            credit_state = credit_service.get_credit_state(
-                user_id, exam['course_id']
-            )
+            credit_state = credit_service.get_credit_state(user_id, exam['course_id'])
             full_name = credit_state['profile_fullname']
 
         user = get_object_or_404(User, pk=user_id)
@@ -771,18 +764,7 @@ def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, 
     exam = get_exam_by_id(exam_id)
     provider_name = get_provider_name_by_course_id(exam['course_id'])
     proctoring_settings = get_proctoring_settings(provider_name)
-    # In some configurations we may treat timeouts the same
-    # as the user saying he/she wishes to submit the exam
-    alias_timeout = (
-        to_status == ProctoredExamStudentAttemptStatus.timed_out and
-        not proctoring_settings.get('ALLOW_TIMED_OUT_STATE', False)
-    )
-    if alias_timeout:
-        to_status = ProctoredExamStudentAttemptStatus.submitted
-
-    exam_attempt_obj = ProctoredExamStudentAttempt.objects.get_exam_attempt(
-        exam_id, user_id
-    )
+    exam_attempt_obj = ProctoredExamStudentAttempt.objects.get_exam_attempt(exam_id, user_id)
     if exam_attempt_obj is None:
         if raise_if_not_found:
             raise StudentExamAttemptDoesNotExistsException(
@@ -802,35 +784,6 @@ def update_attempt_status(exam_id, user_id, to_status, raise_if_not_found=True, 
     )
     if alias_timeout:
         to_status = ProctoredExamStudentAttemptStatus.submitted
-
-    if exam_attempt_obj is None:
-        if raise_if_not_found:
-            raise StudentExamAttemptDoesNotExistsException(
-                'Error. Trying to look up an exam that does not exist.'
-            )
-        else:
-            return
-
-    timed_out_state = False
-    if exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.created:
-        timed_out_state = True
-
-    # In some configuration we may treat timeouts the same
-    # as the user saying he/she wises to submit the exam
-    alias_timeout = (
-        to_status == ProctoredExamStudentAttemptStatus.timed_out and
-        not proctoring_settings.get('ALLOW_TIMED_OUT_STATE', timed_out_state)
-    )
-    if alias_timeout:
-        to_status = ProctoredExamStudentAttemptStatus.submitted
-
-    if exam_attempt_obj is None:
-        if raise_if_not_found:
-            raise StudentExamAttemptDoesNotExistsException(
-                'Error. Trying to look up an exam that does not exist.'
-            )
-        else:
-            return
 
     exam = get_exam_by_id(exam_id)
 

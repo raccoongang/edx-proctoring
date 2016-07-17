@@ -367,7 +367,7 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
 
     def _create_zendesk_ticket(self, review, serialized_exam_object, serialized_attempt_obj):
         """
-        Creates a Zendesk ticket for reviews with status listed in self.notify_support_for_status
+        Creates a Zendesk ticket for reviews with status listed in self.notify_support_for_status.
         """
         if review.review_status in self.notify_support_for_status:
             instructor_service = get_runtime_service('instructor')
@@ -416,9 +416,7 @@ class SoftwareSecureBackendProvider(ProctoringBackendProvider):
         ).strftime("%a, %d %b %Y %H:%M:%S GMT")
         # remove all illegal characters from the exam name
         exam_name = exam['exam_name']
-        exam_name = unicodedata.normalize('NFKD', exam_name).encode(
-            'ascii', 'ignore'
-        )
+        exam_name = unicodedata.normalize('NFKD', exam_name).encode('ascii', 'ignore')
 
         for character in SOFTWARE_SECURE_INVALID_CHARS:
             exam_name = exam_name.replace(character, '_')

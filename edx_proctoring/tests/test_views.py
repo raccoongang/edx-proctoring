@@ -787,9 +787,23 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         attempt_id = create_exam_attempt(proctored_exam.id, self.user.id)
         attempt = get_exam_attempt_by_id(attempt_id)
         self.assertEqual(attempt['status'], "created")
+        # Create second an exam.
+        proctored_exam_2 = ProctoredExam.objects.create(
+            course_id='a/b/c',
+            content_id='test_content_2',
+            exam_name='Test Exam 2',
+            external_id='123aXqe34',
+            time_limit_mins=90,
+            is_proctored=True
+        )
+        attempt_id_2 = create_exam_attempt(
+            proctored_exam_2.id,
+            User.objects.exclude(id=self.user.id)[0].id
+        )
+        attempt2 = get_exam_attempt_by_id(attempt_id_2)
 
         # hit callback and verify that exam status is 'ready to start'
-        code = attempt['attempt_code']
+        code = ','.join((attempt['attempt_code'], attempt2['attempt_code'], ))
         self.client.get(
             reverse(
                 'edx_proctoring.anonymous.proctoring_launch_callback.bulk_start_exams_callback',

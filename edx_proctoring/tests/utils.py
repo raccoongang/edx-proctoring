@@ -83,6 +83,9 @@ def get_provider_name_software_secure(*args, **kwargs):  # pylint: disable=unuse
 
 
 class MockedCourseKey(object):
+    """
+    Class simulates openEdx CourseKey object.
+    """
 
     @classmethod
     def __new__(cls, course_key, *args, **kwargs):
@@ -90,14 +93,23 @@ class MockedCourseKey(object):
 
 
 class MockedCourse(object):
+    """
+    Class simulates openEdx Course object.
+    """
 
     def __init__(self, course_key):
+        """
+        In this class, when icreate nstans our course add list proctors and default proctor
+        """
         self.course_key = course_key
         self.available_proctoring_services = "a,b"
         self.proctoring_service = "a"
 
 
 class MockedModulestore(object):
+    """
+    Class simulates openEdx Modulestore object.
+    """
 
     def get_course(self, course_key):
         return MockedCourse(course_key)

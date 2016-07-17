@@ -72,7 +72,8 @@ from .utils import (
 )
 
 from edx_proctoring.tests.test_services import (
-    MockCreditService, MockCreditServiceWithCourseEndDate,
+    MockCreditService,
+    MockCreditServiceWithCourseEndDate,
     MockInstructorService,
 )
 from edx_proctoring.runtime import set_runtime_service, get_runtime_service
@@ -417,15 +418,12 @@ class ProctoredExamApiTests(LoggedInTestCase):
 
     def test_update_timed_exam(self):
         """
-        test update the existing timed exam
+        Test update the existing timed exam.
         """
         updated_timed_exam_id = update_exam(self.timed_exam_id, hide_after_due=True)
 
         self.assertEqual(self.timed_exam_id, updated_timed_exam_id)
-
-        update_timed_exam = ProctoredExam.objects.get(id=updated_timed_exam_id)
-
-        self.assertEqual(update_timed_exam.hide_after_due, True)
+        self.assertTrue(ProctoredExam.objects.filter(id=updated_timed_exam_id, hide_after_due=True).exists())
 
     def test_update_non_existing_exam(self):
         """
@@ -877,7 +875,6 @@ class ProctoredExamApiTests(LoggedInTestCase):
         """
         Stop an exam attempt.
         """
-        exam.update()
         proctored_exam_student_attempt = self._create_unstarted_exam_attempt()
         self.assertIsNone(proctored_exam_student_attempt.completed_at)
         proctored_exam_attempt_id = stop_exam_attempt(
@@ -1399,7 +1396,7 @@ class ProctoredExamApiTests(LoggedInTestCase):
             'suggested_icon': 'fa-times-circle',
             'in_completed_state': False
         }
-        self.assertIn(summary, [expected])
+        self.assertEqual(summary, expected)
 
     def test_practice_exam_passed_end_date(self):
         """
@@ -1623,20 +1620,14 @@ class ProctoredExamApiTests(LoggedInTestCase):
         )
         self.assertIsNone(rendered_response)
 
-    @ddt.data(True, False)
-    def test_get_studentview_long_limit(self, under_exception):
+    @ddt.data((True, (20 * 60)), (False, ((20 * 60) + 1)))  # second case for 1 minute greater than 20 hours
+    @ddt.unpack
+    def test_get_studentview_long_limit(self, under_exception, expression):
         """
-        Test for hide_extra_time_footer on exams with > 20 hours time limit
+        Test for hide_extra_time_footer on exams with > 20 hours time limit.
         """
         exam_id = self._create_exam_with_due_time(is_proctored=False, )
-        if under_exception:
-            update_exam(
-                exam_id, time_limit_mins=((20 * 60))
-            )  # exactly 20 hours
-        else:
-            update_exam(
-                exam_id, time_limit_mins=((20 * 60) + 1)
-            )  # 1 minute greater than 20 hours
+        update_exam(exam_id, time_limit_mins=expression)
         rendered_response = get_student_view(
             user_id=self.user_id,
             course_id=self.course_id,

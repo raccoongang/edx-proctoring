@@ -116,8 +116,8 @@ class ProctoredExam(TimeStampedModel):
 
     def generate_hash(self):
         """
-        Generate hash for proctored exam
-        Refreshed every time when student retakes attempt for the same exam
+        Generate hash for proctored exam.
+        Refreshed every time when student retakes attempt for the same exam.
         :return: string
         """
         str_to_hash = str(self.content_id) + str(self.course_id)
@@ -228,7 +228,9 @@ class ProctoredExamStudentAttemptStatus(object):
         Returns a boolean if the passed in to_status has a failure
         that needs to be cascaded to other unattempted exams.
         """
-        return to_status in [cls.declined]
+        return to_status in (
+            cls.declined,
+        )
 
     @classmethod
     def needs_status_change_email(cls, to_status):
@@ -659,7 +661,7 @@ def on_attempt_updated(sender, instance, **kwargs):  # pylint: disable=unused-ar
             archive_object.save()
 
 
-class QuerySetWithUpdateOverride(models.query.QuerySet):
+class QuerySetWithUpdateOverride(models.QuerySet):
     """
     Custom QuerySet class to make an archive copy
     every time the object is updated.

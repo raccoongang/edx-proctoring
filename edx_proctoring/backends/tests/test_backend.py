@@ -50,9 +50,9 @@ class TestBackendProvider(ProctoringBackendProvider):
         external_id = payload['examMetaData']['ssiRecordLocator']
         attempt_code = payload['examMetaData']['examCode']
 
-        attempt_obj = locate_attempt_by_attempt_code(attempt_code)
+        attempt_obj = locate_attempt_by_attempt_code(attempt_code)[0]
         match = (
-            attempt_obj[0].external_id.lower() == external_id.lower() or
+            attempt_obj.external_id.lower() == external_id.lower() or
             settings.PROCTORING_SETTINGS.get(
                 'ALLOW_CALLBACK_SIMULATION', False
             )
@@ -64,7 +64,7 @@ class TestBackendProvider(ProctoringBackendProvider):
                 'match the ssiRecordLocator that had been recorded previously.'
                 ' Has {existing} but received {received}!'.format(
                     attempt_code=attempt_code,
-                    existing=attempt_obj[0].external_id,
+                    existing=attempt_obj.external_id,
                     received=external_id
                 )
             )

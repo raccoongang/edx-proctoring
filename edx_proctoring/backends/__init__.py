@@ -14,7 +14,9 @@ _BACKEND_PROVIDER = None
 
 def get_provider_name_by_course_id(course_id):
     """
-    Returns string name of proctoring_service
+    Returns dictionary of the configured backend provider.
+
+    This dictionary is configured via the settings file.
     """
     # for normal work tests
     from courseware.courses import get_course  # pylint: disable=import-error

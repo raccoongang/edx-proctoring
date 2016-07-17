@@ -204,16 +204,14 @@ class BulkExamReviewCallback(APIView):
         """
         Post callback handler
         """
-        data = request.data
-        course_id = ""
-        for review in data:
+        for review in request.data:
             try:
                 attempt_code = review['examMetaData']['examCode']
             except KeyError, ex:
                 continue
-            attempt_obj = locate_attempt_by_attempt_code(attempt_code)
-            if course_id != attempt_obj[0].proctored_exam.course_id:
-                course_id = attempt_obj[0].proctored_exam.course_id
+            attempt_obj = locate_attempt_by_attempt_code(attempt_code)[0]
+            if attempt_obj.proctored_exam.course_id:
+                course_id = attempt_obj.proctored_exam.course_id
                 provider_name = get_provider_name_by_course_id(course_id)
                 provider = get_backend_provider(provider_name)
 
