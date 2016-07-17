@@ -99,9 +99,7 @@ class MockCreditServiceWithCourseEndDate(MockCreditService):
         """
         Mock implementation
         """
-        self.status['course_end_date'] = datetime.now(pytz.UTC) + timedelta(
-            days=-1
-        )
+        self.status['course_end_date'] = datetime.now(pytz.UTC) + timedelta(days=-1)
         return self.status
 
 

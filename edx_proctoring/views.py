@@ -880,7 +880,7 @@ class ProctoringServices(AuthenticatedAPIView):
             }
         )
 
-    def put(self, request, course_id):
+    def put(self, request, course_id):  # pylint: disable=unused-argument
         """
         HTTP PUT handler. To update an course.
         """
@@ -907,26 +907,28 @@ class ProctoringServices(AuthenticatedAPIView):
 class StudentProctoredExamAttemptByCode(APIView):
     """
     Endpoint for the StudentProctoredExamAttempt
-    /edx_proctoring/v1/proctored_exam/attempt
+    /edx_proctoring/v1/proctored_exam/attempt/(<attempt_code>)$
     Supports:
         HTTP PUT: Stops an exam attempt.
     HTTP PUT
     Stops the existing exam attempt in progress
     PUT data : {
+        'action': ###,
+        'user_id': ###,
         ....
     }
     **PUT data Parameters**
         * exam_code: The unique identifier for the proctored exam attempt.
     **Response Values**
-        * {'exam_attempt_id': ##}, The exam_attempt_id of the Proctored Exam Attempt..
+        * {'exam_attempt_id': ##}, The exam_attempt_id of the Proctored Exam Attempt.
     HTTP GET
         ** Scenarios **
         return the status of the exam attempt
     """
 
-    def put(self, request, attempt_code):
+    def put(self, request, attempt_code):  # pylint: disable=unused-argument
         """
-        HTTP POST handler. To stop an exam.
+        HTTP PUT handler. To stop an exam.
         """
         try:
             attempt = get_exam_attempt_by_code(attempt_code)

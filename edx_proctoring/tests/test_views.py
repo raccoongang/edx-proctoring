@@ -764,6 +764,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     def test_bulk_start_exams_callback(self):
         """
         Test that call star exam callback.
+
         Test that call star exam callback which changes the state
         from 'created' to 'ready to start'
         """
@@ -797,8 +798,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             is_proctored=True
         )
         attempt_id_2 = create_exam_attempt(
-            proctored_exam_2.id,
-            User.objects.exclude(id=self.user.id)[0].id
+            proctored_exam_2.id, User.objects.exclude(id=self.user.id)[0].id
         )
         attempt2 = get_exam_attempt_by_id(attempt_id_2)
 
@@ -934,8 +934,9 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
 
     def test_time_due_date_between_two_days(self):
         """
-        Test that we get correct total time left to attempt
-        if due date is 24+ hours from now and we have set 24+ hours
+        Test that we get correct total time left to attempt.
+
+        If due date is 24+ hours from now and we have set 24+ hours
         time_limit_mins ( 27 hours ) i.e it is like 1 day and 3 hours
         total time left to attempt the exam.
         """
@@ -2372,8 +2373,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
     )
     def test_bulk_review_callback(self):
         """
-        Simulates a callback from the proctoring service with
-        the review data for a few exams.
+        Simulates a callback from the proctoring service with the review data for a few exams.
         """
 
         exam_id = create_exam(
@@ -2726,11 +2726,12 @@ class TestProctoringServicesView(LoggedInTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_data, {"current": "a", "list": ["a", "b"]})
 
-    def test_change_current_proctoring_service(self):
+    def test_change_current_proctoring_service_non_exists(self):
         """
         Test changing current proctoring service for the Course.
+
+        Send non exists proctoring service.
         """
-        # send non exists proctoring service
         response = self.client.put(
             reverse(
                 'edx_proctoring.proctoring_services',
@@ -2741,7 +2742,12 @@ class TestProctoringServicesView(LoggedInTestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-        # send proctoring service which exists
+    def test_change_current_proctoring_service_exists(self):
+        """
+        Test changing current proctoring service for the Course.
+
+        Send proctoring service which exists.
+        """
         response = self.client.put(
             reverse(
                 'edx_proctoring.proctoring_services',
@@ -2753,7 +2759,6 @@ class TestProctoringServicesView(LoggedInTestCase):
         response_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_data, {"status": "OK"})
-
 
 
 class TestExamAllowanceView(LoggedInTestCase):
