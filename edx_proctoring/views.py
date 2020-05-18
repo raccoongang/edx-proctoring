@@ -876,7 +876,9 @@ class BaseReviewCallback(object):
                     exam_name=attempt['proctored_exam']['exam_name'],
                     student_username=attempt['user']['username'],
                     review_status=review.review_status,
-                    review_url=review_url,
+                    # NOTE(idegtiarov) We based Examus backend on the pluggable feature added in proctoring from 1.5.0
+                    #  but hawthorn lms service doesn't exept review_url so following param is ommited.
+                    # review_url=review_url,
                 )
 
 
