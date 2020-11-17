@@ -509,8 +509,8 @@ class ProctoredExamSoftwareSecureCommentAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        """ Allow deletes """
-        return True
+        """Don't allow deletes """
+        return False
 
 
 def prettify_course_id(course_id):
