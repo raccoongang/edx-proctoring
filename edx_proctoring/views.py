@@ -24,7 +24,7 @@ from django.urls import NoReverseMatch, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 
-from edx_proctoring import constants
+from edx_proctoring import constants, tasks
 from edx_proctoring.api import (
     add_allowance_for_user,
     create_exam,
@@ -876,6 +876,9 @@ class BaseReviewCallback:
             )
 
         review.save()
+
+        # Calculate grade and save it to the student attempt after saving review.
+        tasks.calculate_grade_after_exam_review_task.delay(attempt_code, review.student_id, course_id)
 
         # go through and populate all of the specific comments
         for comment in backend_review.get('comments', []):

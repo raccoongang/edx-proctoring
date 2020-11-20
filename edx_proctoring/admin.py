@@ -403,6 +403,8 @@ class ProctoredExamStudentAttemptAdmin(admin.ModelAdmin):
     readonly_fields = [
         'user',
         'proctored_exam',
+        'exam_grade',
+        'passed',
         'started_at',
         'completed_at',
         'last_poll_timestamp',
@@ -422,6 +424,7 @@ class ProctoredExamStudentAttemptAdmin(admin.ModelAdmin):
         'exam_name',
         'course_id',
         'taking_as_proctored',
+        'exam_grade',
         'is_sample_attempt',
         'attempt_code',
         'status',

@@ -351,6 +351,11 @@ class ProctoredExamStudentAttempt(TimeStampedModel):
     # else always false
     is_status_acknowledged = models.BooleanField(default=False)
 
+    # if student passed the exam - record it's grade
+    exam_grade = models.FloatField(null=True)
+
+    passed = models.BooleanField(default=False)
+
     class Meta:
         """ Meta class for this Django model """
         db_table = 'proctoring_proctoredexamstudentattempt'
