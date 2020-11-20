@@ -64,6 +64,7 @@ edx = edx || {};
         },
         events: {
             'click .remove-attempt': 'onRemoveAttempt',
+            'click .generate-certificate': 'onGenerateCertificate',
             'click li > a.target-link': 'getPaginatedAttempts',
             'click .search-attempts > span.search': 'searchAttempts',
             'click .search-attempts > span.clear-search': 'clearSearch'
@@ -199,6 +200,32 @@ edx = edx || {};
                     'X-CSRFToken': this.getCSRFToken()
                 },
                 type: 'DELETE',
+                success: function() {
+                    // fetch the attempts again.
+                    self.hydrate();
+                    $('body').css('cursor', 'auto');
+                }
+            });
+        },
+        onGenerateCertificate: function(event) {
+            var $target, username;
+            var self = this;
+            // confirm the user's intent
+            // eslint-disable-next-line no-alert
+            $target = $(event.currentTarget);
+            username = $target.data('username');
+            self.course_id = this.$el.data('course-id');
+
+            self.model.url = '/certificates/generate';
+            self.model.fetch({
+                headers: {
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                type: 'POST',
+                data: {
+                    username: username,
+                    course_key: self.course_id
+                },
                 success: function() {
                     // fetch the attempts again.
                     self.hydrate();
