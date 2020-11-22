@@ -1159,3 +1159,18 @@ msgstr "практика"
 msgid "proctored"
 msgstr "іспит під наглядом"
 
+#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:181
+msgid "Clean"
+msgstr "Доброчесний"
+
+#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:182
+msgid "Rules Violation"
+msgstr "Порушення Правил"
+
+#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:183
+msgid "Suspicious"
+msgstr "Підозрілий"
+
+#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:184
+msgid "Not Reviewed"
+msgstr "Не перевірено"

@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from edx_proctoring.models import (
     ProctoredExam,
     ProctoredExamReviewPolicy,
+    ProctoredExamSoftwareSecureReview,
     ProctoredExamStudentAllowance,
     ProctoredExamStudentAttempt
 )
@@ -83,6 +84,7 @@ class ProctoredExamStudentAttemptSerializer(serializers.ModelSerializer):
     started_at = DateTimeField(format=None)
     completed_at = DateTimeField(format=None)
     last_poll_timestamp = DateTimeField(format=None)
+    review_status = serializers.SerializerMethodField()
 
     class Meta:
         """
@@ -94,8 +96,13 @@ class ProctoredExamStudentAttemptSerializer(serializers.ModelSerializer):
             "id", "created", "modified", "user", "started_at", "completed_at",
             "external_id", "status", "proctored_exam", "allowed_time_limit_mins",
             "attempt_code", "is_sample_attempt", "taking_as_proctored", "last_poll_timestamp",
-            "last_poll_ipaddr", "review_policy_id", "student_name", "is_status_acknowledged"
+            "last_poll_ipaddr", "review_policy_id", "student_name", "is_status_acknowledged",
+            "exam_grade", "passed", "review_status",
         )
+
+    def get_review_status(self, obj):
+        review = ProctoredExamSoftwareSecureReview.objects.get(attempt_code=obj.attempt_code)
+        return review.review_status
 
 
 class ProctoredExamStudentAllowanceSerializer(serializers.ModelSerializer):
