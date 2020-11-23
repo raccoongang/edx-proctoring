@@ -3,7 +3,7 @@
 # Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # EdX Team <info@edx.org>, 2018.
-#
+# 
 # Translators:
 # Zapadenska <oruda@ymail.com>, 2016
 # annburdyliak <annburdyliak@ya.ru>, 2016
@@ -17,7 +17,7 @@
 # Валентина Пицик <lushalusha007@gmail.com>, 2019
 # Danylo Shcherbak <danylo.shcherbak@raccoongang.com>, 2020
 # Andrey Mishchenko <andrey.mishchenko@raccoongang.com>, 2020
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: edx-proctoring\n"
@@ -1158,19 +1158,3 @@ msgstr "практика"
 #: views.py:537
 msgid "proctored"
 msgstr "іспит під наглядом"
-
-#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:181
-msgid "Clean"
-msgstr "Доброчесний"
-
-#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:182
-msgid "Rules Violation"
-msgstr "Порушення Правил"
-
-#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:183
-msgid "Suspicious"
-msgstr "Підозрілий"
-
-#: lms/djangoapps/edx-proctoring/edx_proctoring/statuses.py:184
-msgid "Not Reviewed"
-msgstr "Не перевірено"
