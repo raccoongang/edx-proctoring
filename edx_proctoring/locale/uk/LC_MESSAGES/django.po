@@ -3,7 +3,7 @@
 # Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # EdX Team <info@edx.org>, 2018.
-# 
+#
 # Translators:
 # Zapadenska <oruda@ymail.com>, 2016
 # Denis <prohibiti@gmail.com>, 2016
@@ -17,7 +17,7 @@
 # Валентина Пицик <lushalusha007@gmail.com>, 2019
 # Danylo Shcherbak <danylo.shcherbak@raccoongang.com>, 2020
 # Andrey Mishchenko <andrey.mishchenko@raccoongang.com>, 2020
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: edx-proctoring\n"
@@ -309,7 +309,7 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"        Ви впевнені, що хочете скласти цей іспит без нагляду?\n"
+"        Ви впевнені, що хочете скласти цей іспит без нагляду проктора?\n"
 "      "
 
 #: templates/proctored_exam/confirm-decline.html:10
@@ -319,7 +319,7 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"        Якщо ви будете здавати цей іспит без нагляду, то не будете <strong> мати права на отримання академічного кредиту.  </strong>\n"
+"        Якщо ви складаєте цей іспит без нагляду, <strong> ви не матимете можливості на отримання сертифікату, який затверджує успішне закінчення курсу.  </strong>\n"
 "      "
 
 #: templates/proctored_exam/confirm-decline.html:16
@@ -339,7 +339,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Цей іспит проходить під наглядом\n"
+"      Цей іспит проводиться під наглядом проктора\n"
 "    "
 
 #: templates/proctored_exam/entrance.html:9
@@ -416,7 +416,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Якщо у вас є сумніви щодо проведення іспиту під наглядом, зв’яжіться з командою свого курсу.\n"
+"      Якщо у вас є сумніви щодо результатів вашого іспиту, зв’яжіться зі своєю курсовою командою.\n"
 "    "
 
 #: templates/proctored_exam/expired.html:4 templates/timed_exam/expired.html:4
@@ -488,7 +488,7 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"        Про іспит під наглядом\n"
+"        Детальніше про іспит під наглядом проктора\n"
 "        "
 
 #: templates/proctored_exam/id_verification.html:6
@@ -612,7 +612,7 @@ msgstr ""
 
 #: templates/proctored_exam/instructions.html:29
 msgid "Start System Check"
-msgstr "Розпочати перевірку системи"
+msgstr "Запустити перевірку системи"
 
 #: templates/proctored_exam/instructions.html:32
 msgid ""
@@ -663,7 +663,7 @@ msgstr "Не вдається розпочати іспит під нагляд�
 #: templates/proctored_exam/instructions.html:85
 #: templates/proctored_exam/proctoring_opt_out_button.html:5
 msgid "Take this exam without proctoring."
-msgstr "Розпочати цей іспит без нагляду."
+msgstr "Скласти іспит без нагляду проктора."
 
 #: templates/proctored_exam/instructions.html:87
 msgid "Doing so means that you are no longer eligible for academic credit."
@@ -874,7 +874,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Ви подали цей іспит під наглядом на перевірку\n"
+"      Ви подали цей іспит на перевірку\n"
 "    "
 
 #: templates/proctored_exam/submitted.html:9
@@ -896,18 +896,18 @@ msgid ""
 msgstr ""
 "\n"
 "      &#8226; Після того, як ви вийдете з сесії іспиту під наглядом, записані дані завантажуються для перевірки. </br>\n"
-"      &#8226; Результати іспиту під наглядом зазвичай доступні протягом 5 робочих днів після здачі іспиту.\n"
+"      &#8226; Результати перевірки зазвичай доступні протягом 5 робочих днів після здачі іспиту.\n"
 "    "
 
 #: templates/proctored_exam/submitted.html:23
 #, python-format
 msgid ""
 "\n"
-"      If you have questions about the status of your proctored exam results, contact %(platform_name)s Support.\n"
+"      If you have questions about the status of your proctored exam results, contact %(platform_name) Support.\n"
 "    "
 msgstr ""
 "\n"
-"      IЯкщо у вас є запитання щодо статусу результатів вашого іспиту, що надійшов на службу, зв’яжіться з нами %(platform_name)s служба підтримки.\n"
+"      Якщо у вас є запитання щодо статусу результатів вашого іспиту, що надійшов на перевірку, зверніться до служби підтримки %(platform_name).\n"
 "    "
 
 #: templates/proctored_exam/verified.html:4
@@ -1158,3 +1158,131 @@ msgstr "практика"
 #: views.py:537
 msgid "proctored"
 msgstr "іспит під наглядом"
+
+msgid "To be eligible for credit or the program credential associated with this course, you must pass the proctoring review for this exam."
+msgstr "Щоб мати право на отримання сертифікату про успішне закінчення курсу, ви повинні скласти іспит під наглядом проктора."
+
+msgid "Continue to my proctored exam."
+msgstr "Перейти до складання іспиту під наглядом проктора."
+
+msgid "You will be guided through steps to set up online proctoring software and verify your identity."
+msgstr "Далі буде проведено кроки з налаштування прокторінгу та підтвердження вашої особи."
+
+msgid "Set up and start your proctored exam"
+msgstr "Налаштуйте середовище та розпочніть екзамен під наглядом"
+
+msgid "Please follow this link to configure your proctoring environment."
+msgstr "Будь ласка, перейдіть за цим посиланням, щоб налаштувати середовище для здачі іспиту."
+
+msgid "Start Exam"
+msgstr "Розпочати іспит"
+
+msgid ""
+"\n"
+"          Note: As part of the proctored exam setup, you will be asked\n"
+"          to verify your identity. Before you begin, make sure you are\n"
+"          on a computer with a webcam, and that you have a valid form\n"
+"          of photo identification such as a driver’s license or\n"
+"          passport.\n"
+"        "
+msgstr ""
+"\n"
+"        Примітка: У рамках екзамену під наглядом, вас попросять \n"
+"        підтвердити вашу особу. Перш ніж почати, переконайтесь, \n"
+"        що ви використовуєте комп’ютер з веб-камерою та маєте при собі дійсну форму \n"
+"        посвідчення особи з фотографією, наприклад, посвідчення водія чи паспорт.\n"
+"      "
+
+msgid "Important"
+msgstr "Важливо"
+
+msgid ""
+"\n"
+"        &#8226; You have %(total_time)s to complete this exam. </br>\n"
+"        &#8226; Once you start the exam, you cannot stop the timer. </br>\n"
+"        &#8226; For all question types, you must click \"submit\" to "
+"complete your answer. </br>\n"
+"        &#8226; If time expires before you click \"End My Exam\", only your "
+"submitted answers will be graded.\n"
+"      "
+msgstr ""
+"\n"
+"        &#8226; Коли ви почнете іспит, у вас буде %(total_time)s щоб його "
+"завершити. </br>\n"
+"        &#8226; Після початку іспиту ви не можете зупинити таймер. </br>\n"
+"        &#8226; Для всіх типів запитань ви повинні натиснути \"Відправити\", "
+"щоб заповнити свою відповідь. </br>\n"
+"        &#8226; Якщо закінчиться час до того, як ви натиснете \"Завершити мій іспит\", "
+"оцінюватимуться лише подані вами відповіді. </br>\n"
+"      "
+
+msgid ""
+"\n"
+"      Proctored Exam Rules\n"
+"    "
+msgstr ""
+"\n"
+"        Правила іспиту під наглядом проктора\n"
+"        "
+
+msgid ""
+"\n"
+"         You must adhere to the following rules while you complete this "
+"exam.\n"
+"         <strong>If you violate these rules, you will receive a score of 0 "
+"on the exam, and you will not be eligible for academic course credit.\n"
+"         </strong></br>\n"
+"      "
+msgstr ""
+"\n"
+"         Під час складання цього іспиту ви повинні дотримуватися наступних правил. \n"
+"         <strong>Якщо ви порушите ці правила, ви отримаєте бал 0 на іспиті, і не матимете права на отримання сертифікату.\n"
+"         </strong></br>\n"
+"      "
+
+msgid ""
+"\n"
+"          %(platform_name)s Rules for Online Proctored Exams\n"
+"      "
+msgstr ""
+"\n"
+"        Правила RC %(platform_name) для онлайн-іспитів\n"
+"        "
+
+msgid "Your recorded data should now be uploaded for review."
+msgstr "Тепер відео запис вашої активності на іспиті буде завантажено для перевірки."
+
+msgid "If the proctoring software window is still open, close it now and confirm that you want to quit the application."
+msgstr "Якщо вікно програмного забезпечення для роботи все ще відкрите, закрийте його і підтвердьте, що хочете вийти з програми."
+
+msgid ""
+"\n"
+"        Your proctoring session was reviewed, but did not pass all "
+"requirements\n"
+"      "
+msgstr ""
+"\n"
+"      Ваша сесія з прокторінгу була переглянута, але не пройшла всіх вимог\n"
+"    "
+
+msgid ""
+"\n"
+"      If you have questions about the status of your proctoring session "
+"results, contact %(platform_name) Support.\n"
+"      "
+msgstr ""
+"\n"
+"      Якщо у вас є запитання щодо стану результатів вашої сесії з прокторінгу, "
+"зверніться до служби підтримки RG %(platform_name).\n"
+"    "
+
+msgid ""
+"\n"
+"                Your proctoring session was reviewed successfully. Go to "
+"your progress page to view your exam grade.\n"
+"            "
+msgstr ""
+"\n"
+"      Вашу сесію з прокторінгу було успішно перевірено. Перейдіть на "
+"сторінку прогресу, щоб переглянути оцінку іспиту.\n"
+"    "
