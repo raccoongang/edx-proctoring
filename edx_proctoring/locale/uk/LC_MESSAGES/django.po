@@ -121,7 +121,7 @@ msgstr "Здача іспиту під наглядом"
 
 #: api.py:1289
 msgid "Proctored Option Available"
-msgstr "Варіант іспиту під наглядом більше не доступний"
+msgstr "Перейти до іспиту під наглядом"
 
 #: api.py:1294
 msgid "Taking As Open Exam"

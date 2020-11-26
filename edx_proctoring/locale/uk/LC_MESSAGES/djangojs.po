@@ -141,7 +141,7 @@ msgstr "Іспит під наглядом провалено"
 
 #: api.py:1324
 msgid "Proctored Option No Longer Available"
-msgstr "Варіант іспиту під наглядом більше не доступен"
+msgstr "Варіант іспиту під наглядом більше не доступний"
 
 #: api.py:1333
 msgid "Ungraded Practice Exam"
