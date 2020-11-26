@@ -1158,3 +1158,12 @@ msgstr "практика"
 #: views.py:537
 msgid "proctored"
 msgstr "іспит під наглядом"
+
+msgid "Continue to my proctored exam."
+msgstr "Перейти до складання іспиту під наглядом проктора."
+
+msgid "To be eligible for credit or the program credential associated with this course, you must pass the proctoring review for this exam."
+msgstr "Щоб мати право на отримання сертифікату про успішне закінчення курсу, ви повинні скласти іспит під наглядом проктора."
+
+msgid "You will be guided through steps to set up online proctoring software and verify your identity."
+msgstr "Далі буде проведено кроки з налаштування прокторінгу та підтвердження вашої особи."
