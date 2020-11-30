@@ -6,6 +6,7 @@ from rest_framework import serializers
 from rest_framework.fields import DateTimeField
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 from edx_proctoring.models import (
     ProctoredExam,
@@ -103,8 +104,11 @@ class ProctoredExamStudentAttemptSerializer(serializers.ModelSerializer):
         )
 
     def get_review_status(self, obj):
-        review = ProctoredExamSoftwareSecureReview.objects.get(attempt_code=obj.attempt_code)
-        return review.review_status
+        try:
+            review = ProctoredExamSoftwareSecureReview.objects.get(attempt_code=obj.attempt_code)
+            return review.review_status
+        except ObjectDoesNotExist:
+            return
 
 
 class ProctoredExamStudentAllowanceSerializer(serializers.ModelSerializer):
