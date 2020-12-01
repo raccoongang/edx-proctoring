@@ -3,9 +3,7 @@
 
   <div>
     <h3>
-    {% blocktrans %}
-      Set up and start your proctored exam
-    {% endblocktrans %}
+    {% blocktrans %}Set up and start your proctored exam{% endblocktrans %}
     </h3>
     {% if backend_instructions %}
       <p>
@@ -227,6 +225,6 @@
     $(this).focus();
   })
   .blur(function () {
-    $(this).text(gettext("Copy Exam Code")); 
+    $(this).text(gettext("Copy Exam Code"));
   });
 </script>
