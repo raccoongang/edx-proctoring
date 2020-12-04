@@ -88,7 +88,6 @@
                         <th class="exam-grade"><%- gettext("Grade") %> </th>
                         <th class="attempt-status"><%- gettext("Status") %> </th>
                         <th class="review-status"><%- gettext("Review Status") %> </th>
-                        <th class="c_action"><%- gettext("Actions") %> </th>
                         <th class="exam-certificate"><%- gettext("Certificate") %> </th>
                     </tr>
                 </thead>
@@ -96,6 +95,24 @@
                 <tbody>
                     <% _.each(proctored_exam_attempts, function(proctored_exam_attempt){ %>
                         <tr class="allowance-items">
+                            <td>
+                               <form action="." class="generate-certificate" data-username="<%= proctored_exam_attempt.user.username %>">
+                                    <input type="hidden" name="student_grade" value="<%= proctored_exam_attempt.exam_grade %>">
+                                    <input type="text" name="course_completion_date_from">
+                                    <input type="text" name="course_completion_date_to">
+                                    <input type="text" name="course_hours">
+                                    <input type="text" name="qualification" id="qualification">
+                                    <input type="text" name="field_of_transport">
+
+                                    <select name="dangerous_goods_class" id="dangerous_goods_class" multiple>
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                    <input type="text" name="types_of_work" id="types_of_work">
+
+                                    <button type="submit" class="generate-certificate">Generate Certificate</button>
+                               </form>
+                            </td>
                             <td>
                                 <%- interpolate(gettext(' %(username)s '), { username: proctored_exam_attempt.user.username }, true) %>
                             </td>
@@ -118,18 +135,11 @@
                                 <%= proctored_exam_attempt.review_status %>
                             </td>
                             <td>
-                             <% if (proctored_exam_attempt.status){ %>
-                                <a href="#" class="remove-attempt" data-attempt-id="<%= proctored_exam_attempt.id %>" >[x]</a>
-                            </td>
-                            <% } else { %>
-                                N/A
-                            <% } %>
-                            <td>
                                 <% if (proctored_exam_attempt.passed){ %>
-                                    <button class="generate-certificate"
-                                        data-username="<%= proctored_exam_attempt.user.username %>"
-                                        onclick="href='#'" type="button"><%- gettext("Generate Certificate") %>
-                                    </button>
+
+                                    # This button should open modal with the form for each user in the table.
+                                    <button type="button"><%- gettext("Generate Certificate") %></button>
+
                                 <% } %>
                             </td>
                         </tr>
