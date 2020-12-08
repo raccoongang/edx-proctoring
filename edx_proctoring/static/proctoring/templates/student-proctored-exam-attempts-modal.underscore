@@ -7,7 +7,7 @@
         </span>
     </div>
     <div class="popup-exam-attempts-row">
-        <span class="label"><%- gettext("Review Status") %>:</span>
+        <span class="label"><%- gettext("Review status") %>:</span>
         <span class="popup-exam-attempts-value">
             <% if (reviewStatus){ %>
                 <%= reviewStatus %>
@@ -20,13 +20,13 @@
     <div class="popup-exam-attempts-row">
         <label>
             <span class="label"><%- gettext("Completion date from") %>:</span>
-            <input type="text" name="course_completion_date_from" placeholder="<%- gettext('yyyy-mm-dd') %>">
+            <input type="text" name="course_completion_date_from" placeholder="<%- gettext('dd-mm-yyyy') %>">
         </label>
     </div>
     <div class="popup-exam-attempts-row">
         <label>
             <span class="label"><%- gettext("Completion date to") %>:</span>
-            <input type="text" name="course_completion_date_to" placeholder="<%- gettext('yyyy-mm-dd') %>">
+            <input type="text" name="course_completion_date_to" placeholder="<%- gettext('dd-mm-yyyy') %>">
         </label>
     </div>
     <div class="popup-exam-attempts-row">
