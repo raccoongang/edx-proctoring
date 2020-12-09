@@ -10,7 +10,7 @@
         <span class="label"><%- gettext("Review status") %>:</span>
         <span class="popup-exam-attempts-value">
             <% if (reviewStatus){ %>
-                <%= reviewStatus %>
+                <%= gettext(reviewStatus) %>
             <% } else { %>
                 <%- gettext("N/A") %>
             <% } %>

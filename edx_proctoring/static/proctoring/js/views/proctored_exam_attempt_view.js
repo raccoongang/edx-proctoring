@@ -295,8 +295,6 @@ edx = edx || {};
                 type: 'POST',
                 data: data,
                 success: function() {
-                    // fetch the attempts again.
-                    self.hydrate();
                     self.clearError();
                     $target
                       .find('.generate-certificate').attr('disabled', 'disabled')
