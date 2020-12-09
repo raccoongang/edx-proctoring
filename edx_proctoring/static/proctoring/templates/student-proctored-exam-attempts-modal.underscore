@@ -1,0 +1,74 @@
+<div class="popup-exam-attempts-title"><%- gettext("Generate Certificate") %></div>
+<form action="." class="popup-exam-attempts generate-certificate" data-username="<%= username %>">
+    <div class="popup-exam-attempts-row">
+        <span class="label"><%- gettext("Grade") %>:</span>
+        <span class="popup-exam-attempts-value">
+            <%= examGrade %>
+        </span>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <span class="label"><%- gettext("Review status") %>:</span>
+        <span class="popup-exam-attempts-value">
+            <% if (reviewStatus){ %>
+                <%= gettext(reviewStatus) %>
+            <% } else { %>
+                <%- gettext("N/A") %>
+            <% } %>
+        </span>
+    </div>
+    <input type="hidden" name="student_grade" value="<%= examGrade %>">
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Completion date from") %>:</span>
+            <input type="text" name="course_completion_date_from" placeholder="<%- gettext('dd-mm-yyyy') %>">
+        </label>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Completion date to") %>:</span>
+            <input type="text" name="course_completion_date_to" placeholder="<%- gettext('dd-mm-yyyy') %>">
+        </label>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Hours") %>:</span>
+            <input type="text" name="course_hours">
+        </label>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Qualification") %>:</span>
+            <input type="text" name="qualification" id="qualification">
+        </label>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Field of transport") %>:</span>
+            <input type="text" name="field_of_transport">
+        </label>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Types of work") %>:</span>
+            <input type="text" name="types_of_work" id="types_of_work">
+        </label>
+    </div>
+    <div class="popup-exam-attempts-row">
+        <label>
+            <span class="label"><%- gettext("Dangerous goods class") %>:</span>
+            <select name="dangerous_goods_class" id="dangerous_goods_class" multiple>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
+        </label>
+    </div>
+    <div class="popup-exam-attempts-action">
+        <button type="submit" class="generate-certificate"><%- gettext("Generate Certificate") %></button>
+    </div>
+</form>

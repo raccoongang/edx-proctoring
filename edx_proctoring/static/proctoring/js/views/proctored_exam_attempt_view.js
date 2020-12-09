@@ -64,10 +64,10 @@ edx = edx || {};
         },
         events: {
             'click .remove-attempt': 'onRemoveAttempt',
-            'click .generate-certificate': 'onGenerateCertificate',
             'click li > a.target-link': 'getPaginatedAttempts',
             'click .search-attempts > span.search': 'searchAttempts',
-            'click .search-attempts > span.clear-search': 'clearSearch'
+            'click .search-attempts > span.clear-search': 'clearSearch',
+            'click .show-generate-certificate-modal': 'showModal'
         },
         searchAttempts: function(event) {
             var searchText = $('#search_attempt_id').val();
@@ -207,33 +207,127 @@ edx = edx || {};
                 }
             });
         },
-        onGenerateCertificate: function(event) {
-            var $target, username;
-            var self = this;
-            // confirm the user's intent
-            // eslint-disable-next-line no-alert
-            $target = $(event.currentTarget);
-            username = $target.data('username');
-            self.course_id = this.$el.data('course-id');
+        showModal: function(event) {
+            new edx.instructor_dashboard.proctoring.ProctoredExamAttemptModal({
+                examGrade: $(event.target).data('exam-grade'),
+                username: $(event.target).data('username'),
+                reviewStatus: $(event.target).data('review-status'),
+                courseId: this.$el.data('course-id')
+            });
+        },
+    });
 
-            self.model.url = '/certificates/generate';
-            self.model.fetch({
-                headers: {
-                    'X-CSRFToken': this.getCSRFToken()
-                },
-                type: 'POST',
-                data: {
-                    username: username,
-                    course_key: self.course_id
-                },
+    edx.instructor_dashboard.proctoring.ProctoredExamAttemptModal = Backbone.ModalView.extend({
+        name: 'ProctoredExamAttemptModal',
+        template: null,
+        template_url: '/static/proctoring/templates/student-proctored-exam-attempts-modal.underscore',
+        initialize: function(options) {
+            this.model = new edx.instructor_dashboard.proctoring.ProctoredExamAllowanceModel();
+            this.examGrade = options.examGrade;
+            this.reviewStatus = options.reviewStatus;
+            this.username = options.username;
+            this.courseId = options.courseId;
+            _.bindAll(this, 'render');
+            this.loadTemplateData();
+        },
+        events: {
+            'submit .generate-certificate': 'onGenerateCertificate'
+        },
+        getCSRFToken: function() {
+            var cookieValue = null;
+            var name = 'csrftoken';
+            var cookie, cookies, i;
+            if (document.cookie && document.cookie !== '') {
+                cookies = document.cookie.split(';');
+                for (i = 0; i < cookies.length; i += 1) {
+                    cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        },
+        hydrate: function() {
+            /* This function will load the bound collection */
+
+            /* add and remove a class when we do the initial loading */
+            /* we might - at some point - add a visual element to the */
+            /* loading, like a spinner */
+            var self = this;
+            self.collection.fetch({
                 success: function() {
-                    // fetch the attempts again.
-                    self.hydrate();
-                    $('body').css('cursor', 'auto');
+                    self.render();
                 }
             });
-        }
+        },
+        loadTemplateData: function() {
+            var self = this;
+            $.ajax({url: self.template_url, dataType: 'html'})
+              .done(function(templateData) {
+                  self.template = _.template(templateData);
+                  self.render();
+                  self.showModal();
+                  $(self.$el).parent().addClass('proctored-exam-modal-container');
+              });
+        },
+        onGenerateCertificate: function(event) {
+            event.preventDefault();
+
+            var self = this,
+              data = {},
+              $target = $(event.currentTarget);
+
+            $($target[0]).serializeArray().map(function (x) {
+                data[x.name] = x.value;
+            });
+
+            data.username = $target.data('username');
+            data.course_key = self.courseId;
+
+            self.model.url = '/certificates/generate_with_params';
+            self.model.fetch({
+                headers: {
+                    'X-CSRFToken': self.getCSRFToken()
+                },
+                type: 'POST',
+                data: data,
+                success: function() {
+                    self.clearError();
+                    $target
+                      .find('.generate-certificate').attr('disabled', 'disabled')
+                      .parent().after(`<p class="success-message">${gettext('The certificate was generated.')}</p>`);
+                },
+                error: function(unused, response) {
+                    var data = $.parseJSON(response.responseText);
+                    self.clearError();
+                    self.showError(data.errors);
+                }
+            });
+        },
+        showError: function(errors) {
+            for (var key in errors) {
+                this.$el.find(`[name*="${key}"]`).addClass('error')
+                  .parent().after(`<p class="error-message"> ${errors[key]}</p>`);
+            }
+        },
+        clearError: function() {
+            this.$el.find('.error-message').remove();
+            this.$el.find('.error').removeClass('error');
+        },
+        render: function() {
+            $(this.el)
+              .addClass('proctored-exam-modal')
+              .html(this.template({
+                  username: this.username,
+                  examGrade: this.examGrade,
+                  reviewStatus: this.reviewStatus
+              }));
+        },
     });
+
     this.edx.instructor_dashboard.proctoring.ProctoredExamAttemptView =
       edx.instructor_dashboard.proctoring.ProctoredExamAttemptView;
 }).call(this, Backbone, $, _, gettext);
