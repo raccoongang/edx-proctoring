@@ -29,8 +29,10 @@
           {% endblocktrans %}
         </p>
       {% endif %}
-      <button id="software_download_link" class="exam-action-button btn-pl-primary" data-action="click_download_software">{% trans "Start System Check" %}</button>
-    {% else %}
+      {% if software_download_url %}
+        <button id="software_download_link" class="exam-action-button btn-pl-primary" data-action="click_download_software">{% trans "Start System Check" %}</button>
+      {% endif %}
+      {% else %}
     <p>
       {% blocktrans %}
         1. Copy this unique exam code. You will be prompted to paste this code later before you start the exam.
@@ -49,7 +51,9 @@
         2. Click the button below to set up proctoring.
       {% endblocktrans %}
     </p>
-    <button id="software_download_link" class="exam-action-button btn-pl-primary" data-action="click_download_software">{% trans "Start System Check" %}</button>
+    {% if software_download_url %}
+        <button id="software_download_link" class="exam-action-button btn-pl-primary" data-action="click_download_software">{% trans "Start System Check" %}</button>
+    {% endif %}
     <p>
       {% blocktrans %}
         A new window will open. You will run a system check before downloading the proctoring application.
@@ -69,7 +73,7 @@
     </p>
     {% endif %}
     <div class="footer-sequence border-b-0 padding-b-0">
-      <a href="#" class="start-proctored-exam">{% trans "Start Proctored Exam" %}</a>
+      <button href="#" class="start-proctored-exam">{% trans "Start Proctored Exam" %}</button>
     </div>
   </div>
 </div>
