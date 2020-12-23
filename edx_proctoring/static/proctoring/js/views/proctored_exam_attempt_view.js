@@ -298,7 +298,9 @@ edx = edx || {};
                     self.clearError();
                     $target
                       .find('.generate-certificate').attr('disabled', 'disabled')
-                      .parent().after(`<p class="success-message">${gettext('The certificate was generated.')}</p>`);
+                      .parent().after(
+                        '<p class="success-message">' + gettext('The certificate was generated.') + '</p>'
+                      );
                 },
                 error: function(unused, response) {
                     var data = $.parseJSON(response.responseText);
@@ -309,8 +311,8 @@ edx = edx || {};
         },
         showError: function(errors) {
             for (var key in errors) {
-                this.$el.find(`[name*="${key}"]`).addClass('error')
-                  .parent().after(`<p class="error-message"> ${errors[key]}</p>`);
+                this.$el.find('[name*="' + key + '"]').addClass('error')
+                  .parent().after('<p class="error-message">' + errors[key] + '</p>');
             }
         },
         clearError: function() {
