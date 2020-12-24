@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from edx_proctoring.models import (
     ProctoredExam,
+    ProctoredExamSoftwareSecureComment,
     ProctoredExamReviewPolicy,
     ProctoredExamSoftwareSecureReview,
     ProctoredExamSoftwareSecureReviewHistory,
@@ -462,6 +463,45 @@ class ProctoredExamStudentAttemptAdmin(admin.ModelAdmin):
         """Don't allow deletes"""
         return False
 
+class ProctoredExamSoftwareSecureCommentAdmin(admin.ModelAdmin):
+    """
+    Admin panel for Proctored Exam Software Secure Comments
+    """
+
+    readonly_fields = (
+        'review',
+        'student',
+        'comment',
+        'status'
+    )
+
+    list_display = (
+        'review',
+        'student',
+        'comment',
+        'status'
+    )
+
+    exclude = ('start_time', 'stop_time', 'duration')
+
+    def student(self, obj):
+        """Return username of student whose exam was reviewed"""
+        return obj.review.student.username
+
+    def save_model(self, request, review, form, change):
+        """
+        Comments can't be updated
+        """
+        return
+
+    def has_add_permission(self, request):
+        """Don't allow adds"""
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """Don't allow deletes"""
+        return False
+
 
 def prettify_course_id(course_id):
     """
@@ -474,3 +514,4 @@ admin.site.register(ProctoredExamStudentAttempt, ProctoredExamStudentAttemptAdmi
 admin.site.register(ProctoredExamReviewPolicy, ProctoredExamReviewPolicyAdmin)
 admin.site.register(ProctoredExamSoftwareSecureReview, ProctoredExamSoftwareSecureReviewAdmin)
 admin.site.register(ProctoredExamSoftwareSecureReviewHistory, ProctoredExamSoftwareSecureReviewHistoryAdmin)
+admin.site.register(ProctoredExamSoftwareSecureComment, ProctoredExamSoftwareSecureCommentAdmin)
