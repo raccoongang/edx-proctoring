@@ -162,8 +162,9 @@
     <div class="steps-container">
       <div class="body-container">
         <h3>{% blocktrans %} Your Proctoring Session Has Started {% endblocktrans %}</h3>
-        <p>{% blocktrans %} From this point in time, you must follow the <a href="{{link_urls.online_proctoring_rules}}" target="_blank">online proctoring rules</a> to pass the proctoring review for your exam. {% endblocktrans %}</p>
-
+        {% if link_urls.online_proctoring_rules %}
+            <p>{% blocktrans %} From this point in time, you must follow the <a href="{{link_urls.online_proctoring_rules}}" target="_blank">online proctoring rules</a> to pass the proctoring review for your exam. {% endblocktrans %}</p>
+        {% endif %}
         <div class="alert">
           {% blocktrans %}
             Do not close this window before you finish your exam. if you close this window, your proctoring session ends, and you will not successfully complete the proctored exam.
