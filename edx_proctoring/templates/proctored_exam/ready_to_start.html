@@ -25,9 +25,11 @@
          <strong>If you violate these rules, you will receive a score of 0 on the exam, and you will not be eligible for academic course credit.
          </strong></br>
       {% endblocktrans %}
-        <a href="{{link_urls.online_proctoring_rules}}" target="_blank">
-      {% blocktrans %}{{ platform_name }} Rules for Online Proctored Exams{% endblocktrans %}
-        </a> </br>
+        {% if link_urls.online_proctoring_rules %}
+            <a href="{{link_urls.online_proctoring_rules}}" target="_blank">
+                {% blocktrans %}{{ platform_name }} Rules for Online Proctored Exams{% endblocktrans %}
+            </a> </br>
+        {% endif %}
     </p>
     {% if exam_review_policy %}
     <h3>
