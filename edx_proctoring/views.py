@@ -38,10 +38,12 @@ from edx_proctoring.api import (
     get_enrollments_can_take_proctored_exams,
     get_exam_attempt_by_external_id,
     get_exam_attempt_by_id,
+    get_exam_attempt_data,
     get_exam_by_content_id,
     get_exam_by_id,
     get_last_verified_onboarding_attempts_per_user,
     get_user_attempts_by_exam_id,
+    get_current_exam_attempt,
     is_exam_passed_due,
     mark_exam_attempt_as_ready,
     remove_allowance_for_user,
@@ -166,6 +168,38 @@ class ProctoredAPIView(AuthenticatedAPIView):
         if not resp:
             resp = super().handle_exception(exc)
         return resp
+
+
+class ProctoredExamWithUserAttemptView(ProctoredAPIView):
+
+    def get(self, request, course_id, content_id):
+        """
+        HTTP GET handler. Returns exam with attempt and active attempt
+        """
+
+        active_attempt_data = {}
+        attempt_data = {}
+
+        active_exams = get_active_exams_for_user(request.user.id)
+        if active_exams:
+            active_exam_info = active_exams[0]
+            active_exam = active_exam_info['exam']
+            active_attempt = active_exam_info['attempt']
+            active_attempt_data = get_exam_attempt_data(active_exam, active_attempt)
+
+        exam = get_exam_by_content_id(course_id, content_id)
+        if exam:
+            attempt = get_current_exam_attempt(exam.get('id'), request.user.id)
+            if attempt:
+                attempt_data = get_exam_attempt_data(exam.get('id'), attempt.get('id'))
+
+        exam.update({'attempt': attempt_data})
+        response_dict = {
+            'exam': exam,
+            'active_attempt': active_attempt_data,
+        }
+
+        return Response(data=response_dict, status=status.HTTP_200_OK)
 
 
 class ProctoredExamView(ProctoredAPIView):
