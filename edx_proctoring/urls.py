@@ -55,9 +55,9 @@ urlpatterns = [
         name='proctored_exam.attempt.collection'
     ),
     url(
-        r'edx_proctoring/v1/proctored_exam/user_exam_and_attempt/course_id/{}/content_id/(?P<content_id>{})$'.format(
+        r'edx_proctoring/v1/proctored_exam/exam_attempts/course_id/{}/content_id/(?P<content_id>{})$'.format(
             settings.COURSE_ID_PATTERN, CONTENT_ID_PATERN),
-        views.ProctoredExamWithUserAttemptView.as_view(),
+        views.ProctoredExamAttemptsView.as_view(),
         name='proctored_exam.exam_and_attempt.collection'
     ),
     url(

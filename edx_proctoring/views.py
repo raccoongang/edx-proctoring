@@ -170,10 +170,10 @@ class ProctoredAPIView(AuthenticatedAPIView):
         return resp
 
 
-class ProctoredExamWithUserAttemptView(ProctoredAPIView):
+class ProctoredExamAttemptsView(ProctoredAPIView):
     """
     Endpoint for the Proctored Exams
-    /edx_proctoring/v1/proctored_exam/user_exam_and_attempt/course_id/{}/content_id/(?P<content_id>{})
+    /edx_proctoring/v1/proctored_exam/exam_attempts/course_id/{}/content_id/(?P<content_id>{})
 
     Supports:
         HTTP GET: Returns an existing exam (by course_id and content id) with latest related attempt
@@ -200,7 +200,7 @@ class ProctoredExamWithUserAttemptView(ProctoredAPIView):
             active_exam_info = active_exams[0]
             active_exam = active_exam_info['exam']
             active_attempt = active_exam_info['attempt']
-            active_attempt_data = get_exam_attempt_data(active_exam, active_attempt)
+            active_attempt_data = get_exam_attempt_data(active_exam.get('id'), active_attempt.get('id'))
 
         exam = get_exam_by_content_id(course_id, content_id)
         if exam:
