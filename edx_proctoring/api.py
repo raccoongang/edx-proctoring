@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 
 import pytz
 from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import UsageKey
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -20,6 +21,9 @@ from django.template import loader
 from django.urls import NoReverseMatch, reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
+from openedx.features.course_experience.url_helpers import get_learning_mfe_courseware_url
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.search import path_to_location
 
 from edx_proctoring import constants
 from edx_proctoring.backends import get_backend_provider
@@ -550,7 +554,7 @@ def get_exam_attempt_by_code(attempt_code):
     return _get_exam_attempt(exam_attempt_obj)
 
 
-def get_exam_attempt_data(exam_id, attempt_id):
+def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False, request=None):
     """
     Args:
         int: exam id
@@ -576,7 +580,15 @@ def get_exam_attempt_data(exam_id, attempt_id):
 
     # resolve the LMS url, note we can't assume we're running in
     # a same process as the LMS
-    exam_url_path = reverse('jump_to', args=[exam['course_id'], exam['content_id']])
+    if is_learning_mfe:
+        usage_key = UsageKey.from_string(exam['content_id'])
+        (
+            course_key, chapter, section, vertical_unused,
+            position, final_target_id
+        ) = path_to_location(modulestore(), usage_key, request)
+        exam_url_path = get_learning_mfe_courseware_url(course_key, section, final_target_id)
+    else:
+        exam_url_path = reverse('jump_to', args=[exam['course_id'], exam['content_id']])
 
     attempt_data = {
         'in_timed_exam': True,
