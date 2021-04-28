@@ -201,12 +201,12 @@ class ProctoredExamAttemptsView(ProctoredAPIView):
             active_exam_info = active_exams[0]
             active_exam = active_exam_info['exam']
             active_attempt = active_exam_info['attempt']
-            active_attempt_data = get_exam_attempt_data(active_exam.get('id'), active_attempt.get('id'), is_learning_mfe=True, request=request)
+            active_attempt_data = get_exam_attempt_data(active_exam.get('id'), active_attempt.get('id'), is_learning_mfe=True)
         try:
             exam = get_exam_by_content_id(course_id, content_id)
             attempt = get_current_exam_attempt(exam.get('id'), request.user.id)
             if attempt:
-                attempt_data = get_exam_attempt_data(exam.get('id'), attempt.get('id'), is_learning_mfe=True, request=request)
+                attempt_data = get_exam_attempt_data(exam.get('id'), attempt.get('id'), is_learning_mfe=True)
         except ProctoredExamNotFoundException:
             exam = {}
 

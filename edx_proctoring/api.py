@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 import pytz
 from opaque_keys import InvalidKeyError
-from opaque_keys.edx.keys import UsageKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -554,7 +554,7 @@ def get_exam_attempt_by_code(attempt_code):
     return _get_exam_attempt(exam_attempt_obj)
 
 
-def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False, request=None):
+def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False):
     """
     Args:
         int: exam id
@@ -581,12 +581,12 @@ def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False, request=No
     # resolve the LMS url, note we can't assume we're running in
     # a same process as the LMS
     if is_learning_mfe:
+        course_key = CourseKey.from_string(exam['course_id'])
         usage_key = UsageKey.from_string(exam['content_id'])
-        (
-            course_key, chapter, section, vertical_unused,
-            position, final_target_id
-        ) = path_to_location(modulestore(), usage_key, request)
-        exam_url_path = get_learning_mfe_courseware_url(course_key, section, final_target_id)
+        exam_url_path = get_learning_mfe_courseware_url(
+            course_key=course_key,
+            sequence_key=usage_key,
+        )
     else:
         exam_url_path = reverse('jump_to', args=[exam['course_id'], exam['content_id']])
 
