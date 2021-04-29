@@ -17,7 +17,6 @@ from rest_framework.negotiation import BaseContentNegotiation
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -35,6 +34,7 @@ from edx_proctoring.api import (
     get_all_exams_for_course,
     get_allowances_for_course,
     get_backend_provider,
+    get_current_exam_attempt,
     get_enrollments_can_take_proctored_exams,
     get_exam_attempt_by_external_id,
     get_exam_attempt_by_id,
@@ -43,7 +43,6 @@ from edx_proctoring.api import (
     get_exam_by_id,
     get_last_verified_onboarding_attempts_per_user,
     get_user_attempts_by_exam_id,
-    get_current_exam_attempt,
     is_exam_passed_due,
     mark_exam_attempt_as_ready,
     remove_allowance_for_user,
@@ -58,9 +57,9 @@ from edx_proctoring.api import (
 from edx_proctoring.constants import PING_FAILURE_PASSTHROUGH_TEMPLATE
 from edx_proctoring.exceptions import (
     ProctoredBaseException,
+    ProctoredExamNotFoundException,
     ProctoredExamPermissionDenied,
     ProctoredExamReviewAlreadyExists,
-    ProctoredExamNotFoundException,
     StudentExamAttemptDoesNotExistsException
 )
 from edx_proctoring.models import (
@@ -201,12 +200,20 @@ class ProctoredExamAttemptsView(ProctoredAPIView):
             active_exam_info = active_exams[0]
             active_exam = active_exam_info['exam']
             active_attempt = active_exam_info['attempt']
-            active_attempt_data = get_exam_attempt_data(active_exam.get('id'), active_attempt.get('id'), is_learning_mfe=True)
+            active_attempt_data = get_exam_attempt_data(
+                active_exam.get('id'),
+                active_attempt.get('id'),
+                is_learning_mfe=True
+            )
         try:
             exam = get_exam_by_content_id(course_id, content_id)
             attempt = get_current_exam_attempt(exam.get('id'), request.user.id)
             if attempt:
-                attempt_data = get_exam_attempt_data(exam.get('id'), attempt.get('id'), is_learning_mfe=True)
+                attempt_data = get_exam_attempt_data(
+                    exam.get('id'),
+                    attempt.get('id'),
+                    is_learning_mfe=True
+                )
         except ProctoredExamNotFoundException:
             exam = {}
 

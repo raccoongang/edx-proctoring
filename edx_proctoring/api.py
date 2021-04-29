@@ -21,9 +21,6 @@ from django.template import loader
 from django.urls import NoReverseMatch, reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
-from openedx.features.course_experience.url_helpers import get_learning_mfe_courseware_url
-from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.search import path_to_location
 
 from edx_proctoring import constants
 from edx_proctoring.backends import get_backend_provider
@@ -583,10 +580,8 @@ def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False):
     if is_learning_mfe:
         course_key = CourseKey.from_string(exam['course_id'])
         usage_key = UsageKey.from_string(exam['content_id'])
-        exam_url_path = get_learning_mfe_courseware_url(
-            course_key=course_key,
-            sequence_key=usage_key,
-        )
+        exam_url_path = '{}/course/{}/{}'.format(settings.LEARNING_MICROFRONTEND_URL, course_key, usage_key)
+
     else:
         exam_url_path = reverse('jump_to', args=[exam['course_id'], exam['content_id']])
 
@@ -596,8 +591,8 @@ def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False):
         'exam_type': (
             _('a timed exam') if not attempt['taking_as_proctored'] else
             (_('a proctored exam') if not attempt['is_sample_attempt'] else
-            (_('an onboarding exam') if (provider and provider.supports_onboarding) else
-            _('a practice exam')))
+             (_('an onboarding exam') if (provider and provider.supports_onboarding) else
+              _('a practice exam')))
         ),
         'exam_display_name': exam['exam_name'],
         'exam_url_path': exam_url_path,
