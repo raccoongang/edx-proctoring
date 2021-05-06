@@ -1079,13 +1079,13 @@ msgstr ""
 #, fuzzy
 #| msgid "Start Proctored Exam"
 msgid "Start my exam"
-msgstr "Розпочати контрольовані іспити"
+msgstr "Розпочати іспит"
 
 #: edx_proctoring/templates/proctored_exam/ready_to_start.html:50
 #, fuzzy
 #| msgid "Start Proctored Exam"
 msgid "Starting Exam"
-msgstr "Розпочати контрольовані іспити"
+msgstr "Початковий іспит"
 
 #: edx_proctoring/templates/proctored_exam/ready_to_submit.html:4
 msgid ""
@@ -1316,7 +1316,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Ви впевнені, що хочете здати свій іспит з обмеженим часом?\n"
+"      Ви впевнені, що хочете скласти свій іспит з обмеженим часом?\n"
 "    "
 
 #: edx_proctoring/templates/timed_exam/ready_to_submit.html:10
@@ -1338,7 +1338,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Після того, як ви здасте іспит, ваш іспит буде оцінено.\n"
+"      Після того, як ви складете іспит, ваш іспит буде оцінено.\n"
 "    "
 
 #: edx_proctoring/templates/timed_exam/ready_to_submit.html:20
@@ -1348,7 +1348,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Так, здати мій іспіт з обмеженим часом.\n"
+"      Так, скласти мій іспіт з обмеженим часом.\n"
 "    "
 
 #: edx_proctoring/templates/timed_exam/submitted.html:6
@@ -1433,7 +1433,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Start Proctored Exam"
 msgid "a proctored exam"
-msgstr "Розпочати контрольовані іспити"
+msgstr "іспит під наглядом"
 
 #: edx_proctoring/views.py:550
 msgid "an onboarding exam"

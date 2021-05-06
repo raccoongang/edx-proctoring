@@ -428,7 +428,7 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
             exam_attempt_id = update_attempt_status(
                 attempt['proctored_exam']['id'],
                 request.user.id,
-                ProctoredExamStudentAttemptStatus.ready_to_decline
+                ProctoredExamStudentAttemptStatus.ready_to_decline,
             )
         elif action == 'decline':
             exam_attempt_id = update_attempt_status(
