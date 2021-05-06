@@ -1674,6 +1674,10 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
         return None
     elif attempt_status == ProctoredExamStudentAttemptStatus.ready_to_submit:
         student_view_template = 'timed_exam/ready_to_submit.html'
+    elif attempt_status == ProctoredExamStudentAttemptStatus.ready_to_decline:
+        student_view_template = 'timed_exam/ready_to_decline.html'
+    elif attempt_status == ProctoredExamStudentAttemptStatus.declined:
+        student_view_template = 'timed_exam/declined.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.submitted:
         # If we are not hiding the exam after the due_date has passed,
         # check if the exam's due_date has passed. If so, return None

@@ -37,6 +37,9 @@ class ProctoredExamStudentAttemptStatus:
     # the student has completed the exam
     ready_to_submit = 'ready_to_submit'
 
+    # the student want to decline the exam
+    ready_to_decline = 'ready_to_decline'
+
     #
     # The follow statuses below are considered in a 'completed' state
     # and we will not allow transitions to status above this mark
@@ -97,7 +100,7 @@ class ProctoredExamStudentAttemptStatus:
         """
         return status in [
             cls.eligible, cls.created, cls.download_software_clicked, cls.ready_to_start, cls.started,
-            cls.ready_to_submit
+            cls.ready_to_submit, cls.ready_to_decline
         ]
 
     @classmethod

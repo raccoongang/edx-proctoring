@@ -139,6 +139,23 @@ edx = edx || {};
                             }
                         });
                     });
+
+                    $('.exam-button-cancel-in-exam').click(function() {
+                        $(window).unbind('beforeunload', self.unloadMessage);
+
+                        $.ajax({
+                            url: '/api/edx_proctoring/v1/proctored_exam/attempt/' + self.model.get('attempt_id'),
+                            type: 'PUT',
+                            data: {
+                                action: 'ready_to_decline'
+                            },
+                            success: function() {
+                                // change the location of the page to the active exam page
+                                // which will reflect the new state of the attempt
+                                location.href = self.model.get('exam_url_path');
+                            }
+                        });
+                    });
                 } else {
                     // remove callback on scroll event
                     $(window).unbind('scroll', this.detectScroll);

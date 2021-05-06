@@ -3,7 +3,7 @@
 # Copyright (C) 2018 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # EdX Team <info@edx.org>, 2018.
-# 
+#
 # Translators:
 # Zapadenska <oruda@ymail.com>, 2016
 # annburdyliak <annburdyliak@ya.ru>, 2016
@@ -15,7 +15,7 @@
 # Irene Korotkova <irca.gav@gmail.com>, 2017
 # Andrey Kryachko, 2018
 # Валентина Пицик <lushalusha007@gmail.com>, 2019
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: edx-proctoring\n"
@@ -740,9 +740,12 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    %(exam_name)s is a Timed Exam (%(total_time)s)\n"
+"      %(exam_name)s is a Timed Exam (%(total_time)s)\n"
 "    "
 msgstr ""
+"\n"
+"      %(exam_name)s це э Іспіт за відведений час (%(total_time)s)\n"
+"    "
 
 #: templates/timed_exam/entrance.html:9
 msgid "This exam has a time limit associated with it."
