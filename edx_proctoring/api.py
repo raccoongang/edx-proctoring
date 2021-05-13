@@ -64,7 +64,7 @@ from edx_proctoring.utils import (
     humanized_time,
     is_reattempting_exam,
     obscured_user_id,
-    verify_and_add_wait_deadline
+    verify_and_add_wait_deadline,
 )
 
 log = logging.getLogger(__name__)
@@ -76,6 +76,26 @@ APPROVED_STATUS = 'approved'
 REJECTED_GRADE_OVERRIDE_EARNED = 0.0
 
 USER_MODEL = get_user_model()
+
+
+def get_proctoring_settings_by_exam_id(exam_id):
+    """
+    Returns proctorind settings and exam proctoring backend for proctored exam by exam_id.
+    Raises an exception if exam_id not found.
+    """
+    exam = get_exam_by_id(exam_id)
+    proctoring_settings = getattr(settings, 'PROCTORING_SETTINGS', {})
+    proctoring_settings_data = {
+        'platform_name': settings.PLATFORM_NAME,
+        'contact_us': settings.CONTACT_EMAIL,
+        'link_urls': proctoring_settings.get('LINK_URLS'),
+        'exam_proctoring_backend': {}
+    }
+    if exam.get('is_proctored'):
+        # TODO: add error handling for get_backend_provider
+        provider = get_backend_provider(exam)
+        proctoring_settings_data['exam_proctoring_backend'] = provider.get_proctoring_config()
+    return proctoring_settings_data
 
 
 def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None,
@@ -572,7 +592,7 @@ def get_exam_attempt_data(exam_id, attempt_id, is_learning_mfe=False):
     low_threshold_pct = proctoring_settings.get('low_threshold_pct', .2)
     critically_low_threshold_pct = proctoring_settings.get('critically_low_threshold_pct', .05)
 
-    allowed_time_limit_mins = attempt.get('allowed_time_limit_mins', 0)
+    allowed_time_limit_mins = attempt.get('allowed_time_limit_mins') or 0
 
     low_threshold = int(low_threshold_pct * float(allowed_time_limit_mins) * 60)
     critically_low_threshold = int(

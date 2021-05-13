@@ -133,3 +133,48 @@ class ProctoredExamAttemptsMFEViewTests(ProctoredExamTestCase):
         assert 'active_attempt' in response_data
         assert not response_data['active_attempt']
         assert not exam_data
+
+class ProctoredSettingsViewTests(ProctoredExamTestCase):
+    """
+    Tests for the ProctoredSettingsView.
+    """
+
+    def setUp(self):
+        """
+        Initialize.
+        """
+        super().setUp()
+        self.proctored_exam_id = self._create_proctored_exam()
+        self.timed_exam_id = self._create_timed_exam()
+        self.proctored_exam_url = reverse(
+            'edx_proctoring:proctored_exam.proctoring_settings',
+            kwargs={
+                'exam_id': self.proctored_exam_id,
+            }
+        )
+        self.timed_exam_url = reverse(
+            'edx_proctoring:proctored_exam.proctoring_settings',
+            kwargs={
+                'exam_id': self.timed_exam_id,
+            }
+        )
+
+    def test_get_proctoring_settings_for_proctored_exam(self):
+        """
+        Tests the get proctoring settings for proctored exam.
+        """
+        response = self.client.get(self.proctored_exam_url)
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content.decode('utf-8'))
+        assert 'proctoring_settings' in response_data
+        assert 'exam_proctoring_backend' in response_data
+
+    def test_get_proctoring_settings_for_timed_exam(self):
+        """
+        Tests the return response with status 400 for not proctored exam.
+        """
+        response = self.client.get(self.timed_exam_url)
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content.decode('utf-8'))
+        assert 'proctoring_settings' in response_data
+        assert 'exam_proctoring_backend' in response_data and not response_data['exam_proctoring_backend']
