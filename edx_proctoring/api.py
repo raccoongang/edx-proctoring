@@ -26,6 +26,7 @@ from edx_proctoring import constants
 from edx_proctoring.backends import get_backend_provider
 from edx_proctoring.exceptions import (
     BackendProviderCannotRegisterAttempt,
+    BackendProviderNotConfigured,
     BackendProviderOnboardingException,
     BackendProviderSentNoAttemptID,
     ProctoredExamAlreadyExists,
@@ -64,7 +65,7 @@ from edx_proctoring.utils import (
     humanized_time,
     is_reattempting_exam,
     obscured_user_id,
-    verify_and_add_wait_deadline,
+    verify_and_add_wait_deadline
 )
 
 log = logging.getLogger(__name__)
@@ -80,8 +81,10 @@ USER_MODEL = get_user_model()
 
 def get_proctoring_settings_by_exam_id(exam_id):
     """
-    Returns proctorind settings and exam proctoring backend for proctored exam by exam_id.
+    Return proctoring settings and exam proctoring backend for proctored exam by exam_id.
+
     Raises an exception if exam_id not found.
+    Raises BackendProviderNotConfigured exception if proctoring backend is not configured.
     """
     exam = get_exam_by_id(exam_id)
     proctoring_settings = getattr(settings, 'PROCTORING_SETTINGS', {})
@@ -89,11 +92,14 @@ def get_proctoring_settings_by_exam_id(exam_id):
         'platform_name': settings.PLATFORM_NAME,
         'contact_us': settings.CONTACT_EMAIL,
         'link_urls': proctoring_settings.get('LINK_URLS'),
-        'exam_proctoring_backend': {}
+        'exam_proctoring_backend': {},
     }
     if exam.get('is_proctored'):
-        # TODO: add error handling for get_backend_provider
-        provider = get_backend_provider(exam)
+        try:
+            provider = get_backend_provider(exam)
+        except NotImplementedError as error:
+            log.exception(str(error))
+            raise BackendProviderNotConfigured(str(error)) from error
         proctoring_settings_data['exam_proctoring_backend'] = provider.get_proctoring_config()
     return proctoring_settings_data
 
