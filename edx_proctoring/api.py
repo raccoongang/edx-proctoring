@@ -79,6 +79,14 @@ REJECTED_GRADE_OVERRIDE_EARNED = 0.0
 USER_MODEL = get_user_model()
 
 
+def get_total_allowed_time_for_exam(exam, user_id):
+    """
+    Returns total allowed time in humanized form for exam including allowance time.
+    """
+    total_allowed_time = _calculate_allowed_mins(exam, user_id)
+    return humanized_time(total_allowed_time)
+
+
 def get_proctoring_settings_by_exam_id(exam_id):
     """
     Return proctoring settings and exam proctoring backend for proctored exam by exam_id.
