@@ -1424,7 +1424,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Так, подати мій іспит за часом.\n"
+"      Так, завершити іспит.\n"
 "    "
 
 #: templates/timed_exam/ready_to_submit.html:25
