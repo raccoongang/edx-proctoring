@@ -1193,7 +1193,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Ви впевнені, що хочете відмовитися від іспитування та завершити іспит достроково?\n"
+"      Ви впевнені, що хочете завершити обмежений за часом іспит?\n"
 "    "
 
 #: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:10
@@ -1436,7 +1436,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"        Ні, я хочу продовжувати працювати.\n"
+"        Ні, я хочу продовжити виконання завдань.\n"
 "      "
 
 #: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:4
@@ -1446,7 +1446,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"      Ви впевнені, що хочете відмовитися від іспитування та завершити іспит достроково?\n"
+"      Ви впевнені, що хочете завершити обмежений за часом іспит?\n"
 "    "
 
 #: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:9
@@ -1624,6 +1624,3 @@ msgstr ""
 #~ "\n"
 #~ "        У вас буде %(total_time)s, щоб скласти іспит.\n"
 #~ "    "
-
-msgid "Make sure that you have selected \"Submit\" for each problem before you submit your exam."
-msgstr "дфлоировлфтилвофитвлоіфйилврмрофсофли"
