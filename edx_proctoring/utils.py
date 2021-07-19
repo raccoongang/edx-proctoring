@@ -21,7 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext, ugettext as _
 
 from edx_proctoring.models import ProctoredExamStudentAttempt, ProctoredExamStudentAttemptHistory
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
@@ -74,29 +74,25 @@ def humanized_time(time_in_minutes):
     if hours == 0:
         hours_present = False
         template = ""
-    elif hours == 1:
-        template = _(u"{num_of_hours} hour")
-        hours_present = True
-    elif hours >= 2:
-        template = _(u"{num_of_hours} hours")
+    elif hours >= 1:
+        hours_translate = ungettext(
+            '%d hour',
+            '%d hours',
+            hours) % hours
+        template = hours_translate
         hours_present = True
     else:
         template = "error"
 
     if template != "error":
-        if minutes == 0:
-            if not hours_present:
-                template = _(u"{num_of_minutes} minutes")
-        elif minutes == 1:
-            if hours_present:
-                template += _(u" and {num_of_minutes} minute")
-            else:
-                template += _(u"{num_of_minutes} minute")
+        minutes_translate = ungettext(
+            '%d minute',
+            '%d minutes',
+            minutes) % minutes
+        if hours_present:
+            template += ' {} {}'.format(_("and"), minutes_translate)
         else:
-            if hours_present:
-                template += _(u" and {num_of_minutes} minutes")
-            else:
-                template += _(u"{num_of_minutes} minutes")
+            template += minutes_translate
 
     human_time = template.format(num_of_hours=hours, num_of_minutes=minutes)
     return human_time
