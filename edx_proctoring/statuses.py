@@ -151,9 +151,7 @@ class SoftwareSecureReviewStatus(object):
     suspicious = u'Suspicious'
     not_reviewed = u'Not Reviewed'
 
-    passing_statuses = [
-        clean,
-        violation]
+    passing_statuses = (clean, )
     failing_statuses = [
         not_reviewed,
         suspicious]

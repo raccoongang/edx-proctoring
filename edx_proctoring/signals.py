@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from edx_proctoring import api
 from edx_proctoring import constants
 from edx_proctoring import models
-from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
+from edx_proctoring.statuses import (ProctoredExamStudentAttemptStatus, SoftwareSecureReviewStatus)
 from edx_proctoring.utils import emit_event, locate_attempt_by_attempt_code
 from edx_proctoring.backends import get_backend_provider
 
@@ -117,13 +117,10 @@ def on_review_changed(sender, instance, signal, **kwargs):  # pylint: disable=un
     Archiving all changes made to the Review.
     Will only archive on update/delete, and not on new entries created.
     """
-    if signal is pre_save:
-        if instance.id:
-            # only for update cases
-            instance = sender.objects.get(id=instance.id)
-        else:
-            # don't archive on create
-            return
+    if signal is pre_save and not instance.id:
+        # don't archive on create
+        return
+
     models.archive_model(models.ProctoredExamSoftwareSecureReviewHistory, instance, id='review_id')
 
 
@@ -141,6 +138,8 @@ def finish_review_workflow(sender, instance, signal, **kwargs):  # pylint: disab
     # eligibility table
     if review.is_passing:
         attempt_status = ProctoredExamStudentAttemptStatus.verified
+    elif review.review_status == SoftwareSecureReviewStatus.violation:
+        attempt_status = ProctoredExamStudentAttemptStatus.rejected
     elif review.reviewed_by or not constants.REQUIRE_FAILURE_SECOND_REVIEWS:
         # reviews from the django admin have a reviewer set. They should be allowed to
         # reject an attempt
