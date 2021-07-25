@@ -117,13 +117,10 @@ def on_review_changed(sender, instance, signal, **kwargs):  # pylint: disable=un
     Archiving all changes made to the Review.
     Will only archive on update/delete, and not on new entries created.
     """
-    if signal is pre_save:
-        if instance.id:
-            # only for update cases
-            instance = sender.objects.get(id=instance.id)
-        else:
-            # don't archive on create
-            return
+    if signal is pre_save and not instance.id:
+        # don't archive on create
+        return
+
     models.archive_model(models.ProctoredExamSoftwareSecureReviewHistory, instance, id='review_id')
 
 
