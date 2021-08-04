@@ -218,7 +218,7 @@ edx = edx || {};
     };
     edx.courseware.proctored_exam.endExam = function(attemptStatusPollURL) {
         // Generate event for button click to keep student answer
-        let event = new Event('keep-student-answer', {bubbles: true});
+        var event = new Event('keep-student-answer', {bubbles: true});
         time_remaining_id.dispatchEvent(event);
 
         var shouldUseWorker = window.Worker &&
