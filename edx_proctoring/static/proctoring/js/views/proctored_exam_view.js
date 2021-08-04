@@ -138,6 +138,10 @@ edx = edx || {};
                                 location.href = self.model.get('exam_url_path');
                             }
                         });
+
+                        // Generate event for button click to keep student answer
+                        let event = new Event('keep-student-answer', {bubbles: true});
+                        time_remaining_id.dispatchEvent(event);
                     });
 
                     $('.exam-button-cancel-in-exam').click(function() {
@@ -155,6 +159,10 @@ edx = edx || {};
                                 location.href = self.model.get('exam_url_path');
                             }
                         });
+
+                        // Generate event for button click to keep student answer
+                        let event = new Event('keep-student-answer', {bubbles: true});
+                        time_remaining_id.dispatchEvent(event);
                     });
                 } else {
                     // remove callback on scroll event
