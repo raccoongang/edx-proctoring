@@ -126,43 +126,63 @@ edx = edx || {};
                     $('.exam-button-turn-in-exam').click(function() {
                         $(window).unbind('beforeunload', self.unloadMessage);
 
-                        $.ajax({
-                            url: '/api/edx_proctoring/v1/proctored_exam/attempt/' + self.model.get('attempt_id'),
-                            type: 'PUT',
-                            data: {
-                                action: 'stop'
-                            },
-                            success: function() {
-                                // change the location of the page to the active exam page
-                                // which will reflect the new state of the attempt
-                                location.href = self.model.get('exam_url_path');
-                            }
-                        });
+                        var $nextBtn = $('.next-btn'),
+                            $stopRecord = $('.stop-record'),
+                            needToContinueAnswerMessage = gettext('Warning! To receive credit for speaking problems, you must select "Next Question" for each problem and then "Stop Recording" before you select "End My Exam".'),
+                            needToSubmitAnswerMessage = gettext('Warning! To receive credit for speaking problems, you must select "Stop Recording" before you select "End My Exam".');
 
-                        // Generate event for button click to keep student answer
-                        var event = new Event('keep-student-answer', {bubbles: true});
-                        time_remaining_id.dispatchEvent(event);
+                        if ( $nextBtn.closest('.tab').css('display') === 'block' ) {
+                            window.alert(needToContinueAnswerMessage);
+                        } else if ( $stopRecord.closest('.tab').css('display') === 'block' && !$stopRecord.prop('disabled') ) {
+                            window.alert(needToSubmitAnswerMessage);
+                        } else {
+                            $.ajax({
+                                url: '/api/edx_proctoring/v1/proctored_exam/attempt/' + self.model.get('attempt_id'),
+                                type: 'PUT',
+                                data: {
+                                    action: 'stop'
+                                },
+                                success: function() {
+                                    // change the location of the page to the active exam page
+                                    // which will reflect the new state of the attempt
+                                    location.href = self.model.get('exam_url_path');
+                                }
+                            });
+                            // Generate event for button click to keep student answer
+                            var event = new Event('keep-student-answer', {bubbles: true});
+                            time_remaining_id.dispatchEvent(event);
+                        }
                     });
 
                     $('.exam-button-cancel-in-exam').click(function() {
                         $(window).unbind('beforeunload', self.unloadMessage);
 
-                        $.ajax({
-                            url: '/api/edx_proctoring/v1/proctored_exam/attempt/' + self.model.get('attempt_id'),
-                            type: 'PUT',
-                            data: {
-                                action: 'ready_to_decline'
-                            },
-                            success: function() {
-                                // change the location of the page to the active exam page
-                                // which will reflect the new state of the attempt
-                                location.href = self.model.get('exam_url_path');
-                            }
-                        });
+                        var $nextBtn = $('.next-btn'),
+                            $stopRecord = $('.stop-record'),
+                            needToContinueAnswerMessage = gettext('Warning! To decline your timed exam with speaking problems, you must select "Next Question" for each problem and then "Stop Recording" before you select "Decline my Exam".'),
+                            needToSubmitAnswerMessage = gettext('Warning! To decline your timed exam with speaking problems, you must select "Stop Recording" before you select "Decline my Exam".');
 
-                        // Generate event for button click to keep student answer
-                        var event = new Event('keep-student-answer', {bubbles: true});
-                        time_remaining_id.dispatchEvent(event);
+                        if ( $nextBtn.closest('.tab').css('display') === 'block' ) {
+                            window.alert(needToContinueAnswerMessage);
+                        } else if ( $stopRecord.closest('.tab').css('display') === 'block' && !$stopRecord.prop('disabled') ) {
+                            window.alert(needToSubmitAnswerMessage);
+                        } else {
+                            $.ajax({
+                                url: '/api/edx_proctoring/v1/proctored_exam/attempt/' + self.model.get('attempt_id'),
+                                type: 'PUT',
+                                data: {
+                                    action: 'ready_to_decline'
+                                },
+                                success: function() {
+                                    // change the location of the page to the active exam page
+                                    // which will reflect the new state of the attempt
+                                    location.href = self.model.get('exam_url_path');
+                                }
+                            });
+                            // Generate event for button click to keep student answer
+                            var event = new Event('keep-student-answer', {bubbles: true});
+                            time_remaining_id.dispatchEvent(event);
+                        }
                     });
                 } else {
                     // remove callback on scroll event
