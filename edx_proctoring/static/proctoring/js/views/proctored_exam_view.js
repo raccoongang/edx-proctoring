@@ -126,14 +126,14 @@ edx = edx || {};
                     $('.exam-button-turn-in-exam').click(function() {
                         $(window).unbind('beforeunload', self.unloadMessage);
 
-                        var $nextBtn = $('.next-btn'),
-                            $stopRecord = $('.stop-record'),
+                        var $nextQuestionBtn = $('.next-btn'),
+                            $stopRecordingBtn = $('.stop-record'),
                             needToContinueAnswerMessage = gettext('Warning! To receive credit for speaking problems, you must select "Next Question" for each problem and then "Stop Recording" before you select "End My Exam".'),
                             needToSubmitAnswerMessage = gettext('Warning! To receive credit for speaking problems, you must select "Stop Recording" before you select "End My Exam".');
 
-                        if ( $nextBtn.closest('.tab').css('display') === 'block' ) {
+                        if ( $nextQuestionBtn.closest('.tab').css('display') === 'block' ) {
                             window.alert(needToContinueAnswerMessage);
-                        } else if ( $stopRecord.closest('.tab').css('display') === 'block' && !$stopRecord.prop('disabled') ) {
+                        } else if ( $stopRecordingBtn.closest('.tab').css('display') === 'block' && !$stopRecordingBtn.prop('disabled') ) {
                             window.alert(needToSubmitAnswerMessage);
                         } else {
                             $.ajax({
@@ -157,14 +157,14 @@ edx = edx || {};
                     $('.exam-button-cancel-in-exam').click(function() {
                         $(window).unbind('beforeunload', self.unloadMessage);
 
-                        var $nextBtn = $('.next-btn'),
-                            $stopRecord = $('.stop-record'),
+                        var $nextQuestionBtn = $('.next-btn'),
+                            $stopRecordingBtn = $('.stop-record'),
                             needToContinueAnswerMessage = gettext('Warning! To decline your timed exam with speaking problems, you must select "Next Question" for each problem and then "Stop Recording" before you select "Decline my Exam".'),
                             needToSubmitAnswerMessage = gettext('Warning! To decline your timed exam with speaking problems, you must select "Stop Recording" before you select "Decline my Exam".');
 
-                        if ( $nextBtn.closest('.tab').css('display') === 'block' ) {
+                        if ( $nextQuestionBtn.closest('.tab').css('display') === 'block' ) {
                             window.alert(needToContinueAnswerMessage);
-                        } else if ( $stopRecord.closest('.tab').css('display') === 'block' && !$stopRecord.prop('disabled') ) {
+                        } else if ( $stopRecordingBtn.closest('.tab').css('display') === 'block' && !$stopRecordingBtn.prop('disabled') ) {
                             window.alert(needToSubmitAnswerMessage);
                         } else {
                             $.ajax({
