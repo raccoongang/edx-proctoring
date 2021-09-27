@@ -19,6 +19,8 @@ edx = edx || {};
             this.timerId = null;
             this.timerTick = 0;
             this.secondsLeft = 0;
+            this.minRemainingTimeToSubmitAnswerInSec = 0;
+            this.maxRemainingTimeToSubmitAnswerInSec = 1;
             /* give an extra 5 seconds where the timer holds at 00:00 before page refreshes */
             this.grace_period_secs = 5;
             this.poll_interval = 60;
@@ -128,8 +130,11 @@ edx = edx || {};
 
                         var $nextQuestionBtn = $('.next-btn'),
                             $stopRecordingBtn = $('.stop-record'),
-                            needToContinueAnswerMessage = gettext('Warning! To receive credit for speaking problems, you must select "Next Question" for each problem and then "Stop Recording" before you select "End My Exam".'),
-                            needToSubmitAnswerMessage = gettext('Warning! To receive credit for speaking problems, you must select "Stop Recording" before you select "End My Exam".');
+                            // FIXME: We have now used Cyrillic text in messages.
+                            //  In the future, after connecting and setting up JS translations,
+                            //  messages will be replaced with Latin text with corresponding translation additions.
+                            needToContinueAnswerMessage = 'Увага! Щоб отримати бали за виконані завдання говоріння, необхідно натиснути кнопку "Наступне питання" під кожним завданням, а потім "Завершити запис" і тільки тоді натиснути "Завершити іспит".',
+                            needToSubmitAnswerMessage = 'Увага! Щоб отримати бали за виконані завдання говоріння, необхідно натиснути кнопку "Завершити запис" і тільки тоді натиснути "Завершити іспит".';
 
                         if ( $nextQuestionBtn.closest('.tab').css('display') === 'block' ) {
                             window.alert(needToContinueAnswerMessage);
@@ -159,8 +164,11 @@ edx = edx || {};
 
                         var $nextQuestionBtn = $('.next-btn'),
                             $stopRecordingBtn = $('.stop-record'),
-                            needToContinueAnswerMessage = gettext('Warning! To decline your timed exam with speaking problems, you must select "Next Question" for each problem and then "Stop Recording" before you select "Decline my Exam".'),
-                            needToSubmitAnswerMessage = gettext('Warning! To decline your timed exam with speaking problems, you must select "Stop Recording" before you select "Decline my Exam".');
+                            // FIXME: We have now used Cyrillic text in messages.
+                            //  In the future, after connecting and setting up JS translations,
+                            //  messages will be replaced with Latin text with corresponding translation additions.
+                            needToContinueAnswerMessage = 'Увага! Щоб відмовитися від вашого іспиту із завданням говоріння, необхідно натиснути кнопку "Наступне питання" під кожним завданням, а потім "Завершити запис" і тільки тоді натиснути "Відмовитися від іспиту".',
+                            needToSubmitAnswerMessage = 'Увага! Щоб відмовитися від вашого іспиту із завданням говоріння, необхідно натиснути кнопку "Завершити запис" і тільки тоді натиснути "Відмовитися від іспиту".';
 
                         if ( $nextQuestionBtn.closest('.tab').css('display') === 'block' ) {
                             window.alert(needToContinueAnswerMessage);
@@ -250,6 +258,14 @@ edx = edx || {};
                 $(window).unbind('beforeunload', this.unloadMessage);
                 // refresh the page when the timer expired
                 edx.courseware.proctored_exam.endExam(self.model.get('exam_started_poll_url')).then(self.reloadPage);
+            }
+            // Generate event for button click to keep student answer when time was over.
+            if (
+                self.secondsLeft >= self.minRemainingTimeToSubmitAnswerInSec &&
+                self.secondsLeft < self.maxRemainingTimeToSubmitAnswerInSec
+            ) {
+                var event = new Event('keep-student-answer', {bubbles: true});
+                time_remaining_id.dispatchEvent(event);
             }
         },
         endExamForFailureState: function() {
