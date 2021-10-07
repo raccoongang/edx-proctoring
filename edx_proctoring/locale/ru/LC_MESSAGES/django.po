@@ -103,13 +103,13 @@ msgstr "Ваш курс"
 #: api.py:1063
 #, python-brace-format
 msgid "Proctoring Results For {course_name} {exam_name}"
-msgstr "Результаты прокторинга за экзаменом «{exam_name}» курса «{course_name}»"
+msgstr "Результаты прокторинга экзамена «{exam_name}» курса «{course_name}»"
 
 #: api.py:1072
 #, python-brace-format
 msgid "Proctoring Review In Progress For {course_name} {exam_name}"
 msgstr ""
-"Выполняется рассмотрение прокторинга за экзаменом «{exam_name}» курса "
+"Выполняется рассмотрение прокторинга экзамена «{exam_name}» курса "
 "«{course_name}»"
 
 #: api.py:1097
@@ -133,7 +133,7 @@ msgstr "Сдаётся без прокторинга"
 
 #: api.py:1449 api.py:1454
 msgid "Pending Session Review"
-msgstr "Ожидание рассмотрения сеанса"
+msgstr "Ожидание проверки"
 
 #: api.py:1459
 msgid "Passed Proctoring"
@@ -204,7 +204,7 @@ msgstr ""
 "\n"
 "Ваш экзамен с прокторингом \"%(exam_name)s\" \n"
 "<a href=\"%(course_url)s\">%(course_name)s</a> был рассмотрен и вы\n"
-"выполнили все требования прокторинга за экзаменом.\n"
+"выполнили все требования прокторинга экзамена.\n"
 " "
 
 #: templates/emails/proctoring_attempt_satisfactory_email.html:16
@@ -245,7 +245,7 @@ msgstr ""
 "Ваш экзамен с прокторингом \"%(exam_name)s\"\n"
 "<a href=\"%(course_url)s\">%(course_name)s</a> был успешно отправлен\n"
 "и теперь будет рассмотрен на предмет соблюдения всех правил прокторинга\n"
-"за экзаменом. Вы получите электронное письмо с обновленным статусом экзамена "
+"экзамена. Вы получите электронное письмо с обновленным статусом экзамена "
 "в течение 5 рабочих дней.\n"
 " "
 
@@ -278,8 +278,8 @@ msgid ""
 "        <a href=\"%(course_url)s\">%(course_name)s</a> was reviewed and the\n"
 "        team found one or more violations of the proctored exam rules. "
 "Examples\n"
-"        of behaviors that may result in a rules violation include browsing\n"
-"        the internet, using a phone, or getting help from another person. As "
+"        of behaviors that may result in a rules violation include using\n"
+"        third party websites, using a phone, or getting help from another person. As "
 "a\n"
 "        result of the violation(s), you did not successfully meet the "
 "proctored\n"
@@ -289,13 +289,13 @@ msgstr ""
 "\n"
 "Ваш экзамен с прокторингом \"%(exam_name)s\" на курсе\n"
 "<a href=\"%(course_url)s\">%(course_name)s</a> был рассмотрен, и команда\n"
-"обнаружила одно или несколько нарушений правил прокторинга за экзаменом. "
+"обнаружила одно или несколько нарушений правил прокторинга экзамена. "
 "Примеры\n"
-"поведения, которое может привести к нарушению правил, включают просмотр\n"
-"Интернета, использование телефона или получение помощи от другого человека. "
+"поведения, которое может привести к нарушению правил, включают использование\n"
+"сторонних веб-сайтов, использование телефона или получение помощи от другого человека. "
 "В \n"
 "результате нарушения (ий) вы не выполнили требования прокторинга "
-"за экзаменом.\n"
+"экзамена.\n"
 " "
 
 #: templates/practice_exam/entrance.html:4
@@ -964,7 +964,7 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"%(platform_name)s Правила проведения прокторинга за экзаменом\n"
+"%(platform_name)s Правила проведения прокторинга экзамена\n"
 " "
 
 #: templates/proctored_exam/ready_to_start.html:36
@@ -1121,8 +1121,8 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Если у вас есть вопросы касательно статуса результатов прокторинга за "
-"экзаменом, свяжитесь с технической поддержкой %(platform_name)s.\n"
+"Если у вас есть вопросы касательно статуса результатов прокторинга "
+"экзамена, свяжитесь с технической поддержкой %(platform_name)s.\n"
 " "
 
 #: templates/proctored_exam/verified.html:4
