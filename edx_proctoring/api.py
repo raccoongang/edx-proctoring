@@ -418,15 +418,15 @@ def remove_allowance_for_user(exam_id, user_id, key):
 
 def _check_for_attempt_timeout(attempt):
     """
-    Helper method to see if the status of an
-    exam needs to be updated, e.g. timeout
+    Helper method to see if the status of an exam needs to be updated,
+    e.g. timeout or declined.
     """
 
     if not attempt:
         return attempt
 
     # right now the only adjustment to
-    # status is transitioning to timeout
+    # status is transitioning to timeout or declined
     has_started_exam = (
         attempt and
         attempt.get('started_at') and
@@ -438,10 +438,16 @@ def _check_for_attempt_timeout(attempt):
         has_time_expired = now_utc > expires_at
 
         if has_time_expired:
+
+            if attempt.get('status') == 'ready_to_decline':
+                transitional_status = ProctoredExamStudentAttemptStatus.declined
+            else:
+                transitional_status = ProctoredExamStudentAttemptStatus.timed_out
+
             update_attempt_status(
                 attempt['proctored_exam']['id'],
                 attempt['user']['id'],
-                ProctoredExamStudentAttemptStatus.timed_out,
+                to_status=transitional_status,
                 timeout_timestamp=expires_at
             )
             attempt = get_exam_attempt_by_id(attempt['id'])
