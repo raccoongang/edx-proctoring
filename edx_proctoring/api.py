@@ -893,8 +893,8 @@ def update_attempt_status(exam_id, user_id, to_status,
 
     elif treat_timeout_as_submitted:
         exam_attempt_obj.completed_at = timeout_timestamp
-    elif to_status == ProctoredExamStudentAttemptStatus.submitted:
-        # likewise, when we transition to submitted mark
+    elif to_status in (ProctoredExamStudentAttemptStatus.submitted, ProctoredExamStudentAttemptStatus.declined):
+        # likewise, when we transit to submitted or declined mark
         # when the exam has been completed
         exam_attempt_obj.completed_at = datetime.now(pytz.UTC)
 
