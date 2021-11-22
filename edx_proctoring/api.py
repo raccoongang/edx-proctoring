@@ -54,6 +54,7 @@ from edx_proctoring.serializers import (
     ProctoredExamStudentAttemptSerializer
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
+from edx_proctoring.tasks import fix_exam_attempt_status_in_completed_state
 from edx_proctoring.utils import (
     emit_event,
     get_exam_due_date,
@@ -898,6 +899,17 @@ def update_attempt_status(exam_id, user_id, to_status,
         exam_attempt_obj.completed_at = datetime.now(pytz.UTC)
 
     exam_attempt_obj.save()
+
+    # make sure that exam attempt is in completed state after timed exam end,
+    # else update status of exam attempt
+    if (
+            exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
+            exam_attempt_obj.allowed_time_limit_mins
+    ):
+        fix_exam_attempt_status_in_completed_state.apply_async(
+            countdown=timedelta(minutes=exam_attempt_obj.allowed_time_limit_mins + 30).total_seconds(),
+            kwargs=dict(attempt_id=exam_attempt_obj.id),
+        )
 
     # see if the status transition this changes credit requirement status
     if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):
