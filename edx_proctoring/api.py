@@ -54,7 +54,7 @@ from edx_proctoring.serializers import (
     ProctoredExamStudentAttemptSerializer
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
-from edx_proctoring.tasks import fix_exam_attempt_status_in_completed_state
+from edx_proctoring.tasks import complete_exam_if_attempt_fails
 from edx_proctoring.utils import (
     emit_event,
     get_exam_due_date,
@@ -74,6 +74,8 @@ APPROVED_STATUS = 'approved'
 REJECTED_GRADE_OVERRIDE_EARNED = 0.0
 
 USER_MODEL = get_user_model()
+
+FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS = 30  # it is necessary to end timed exam properly
 
 
 def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None,
@@ -440,7 +442,7 @@ def _check_for_attempt_timeout(attempt):
 
         if has_time_expired:
 
-            if attempt.get('status') == 'ready_to_decline':
+            if attempt.get('status') == ProctoredExamStudentAttemptStatus.ready_to_decline:
                 transitional_status = ProctoredExamStudentAttemptStatus.declined
             else:
                 transitional_status = ProctoredExamStudentAttemptStatus.timed_out
@@ -900,14 +902,16 @@ def update_attempt_status(exam_id, user_id, to_status,
 
     exam_attempt_obj.save()
 
-    # make sure that exam attempt is in completed state after timed exam end,
+    # make sure that attempt to pass timed exam hasn't ended in failure (incomplete state),
     # else update status of exam attempt
     if (
             exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
             exam_attempt_obj.allowed_time_limit_mins
     ):
-        fix_exam_attempt_status_in_completed_state.apply_async(
-            countdown=timedelta(minutes=exam_attempt_obj.allowed_time_limit_mins + 30).total_seconds(),
+        complete_exam_if_attempt_fails.apply_async(
+            countdown=timedelta(
+                minutes=exam_attempt_obj.allowed_time_limit_mins + FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS
+            ).total_seconds(),
             kwargs=dict(attempt_id=exam_attempt_obj.id),
         )
 

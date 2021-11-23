@@ -81,6 +81,8 @@ class ProctoredExamStudentAttemptStatus:
 
     onboarding_errors = (onboarding_missing, onboarding_pending, onboarding_failed, onboarding_expired)
 
+    failed_exam_end_states = (started, ready_to_submit, ready_to_decline)
+
     @classmethod
     def is_completed_status(cls, status):
         """
@@ -155,6 +157,18 @@ class ProctoredExamStudentAttemptStatus:
         return status in [
             cls.started, cls.ready_to_submit
         ]
+
+    @classmethod
+    def convert_to_completed_state(cls, incomplete_status):
+        """
+        Returns completed attempt status by given failed status.
+        """
+        status_transition_map = {
+            cls.started: cls.submitted,
+            cls.ready_to_submit: cls.submitted,
+            cls.ready_to_decline: cls.declined,
+        }
+        return status_transition_map.get(incomplete_status)
 
 
 class ReviewStatus:

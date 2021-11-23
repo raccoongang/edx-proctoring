@@ -12,44 +12,41 @@ from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 
 log = logging.getLogger('edx.celery.task')
 
-STATUS_TRANSITION_MAP = {
-    ProctoredExamStudentAttemptStatus.started: ProctoredExamStudentAttemptStatus.submitted,
-    ProctoredExamStudentAttemptStatus.ready_to_submit: ProctoredExamStudentAttemptStatus.submitted,
-    ProctoredExamStudentAttemptStatus.ready_to_decline: ProctoredExamStudentAttemptStatus.declined,
-}
-
 
 @task(bind=True)
-def fix_exam_attempt_status_in_completed_state(self, attempt_id):
+def complete_exam_if_attempt_fails(self, attempt_id):
     """
-    Fix status of exam attempt in completed state.
+    Fix status of attempt in completed state if timed exam has ended in failure.
 
-    Check exam attempt after timed exam end. If its status is in incomplete state
+    Check attempt after timed exam is finished. If its status is in incomplete state
     (e.g. started. ready_to_submit, ready_to_decline) that update it to completed state
     (e.g. submitted, declined).
     """
     log.info(
-        "The task 'fix_exam_attempt_status_in_completed_state' for exam attempt [%d] started successfully.",
+        'Checking status of attempt %d after timed exam is finished.',
         attempt_id,
     )
     exam_attempt = ProctoredExamStudentAttempt.objects.get_exam_attempt_by_id(attempt_id)
 
     if not exam_attempt:
-        err_msg = ("Attempted to access to exam attempt [{0}] but it does not exist.".format(attempt_id))
+        err_msg = ('Attempted to access to exam attempt {0} but it does not exist.'.format(attempt_id))
         raise StudentExamAttemptDoesNotExistsException(err_msg)
 
-    if exam_attempt.status in STATUS_TRANSITION_MAP.keys():
+    if exam_attempt.status in ProctoredExamStudentAttemptStatus.failed_exam_end_states:
         try:
             api.update_attempt_status(
                 exam_attempt.proctored_exam_id,
                 exam_attempt.user_id,
-                to_status=STATUS_TRANSITION_MAP.get(exam_attempt.status),
+                to_status=ProctoredExamStudentAttemptStatus.convert_to_completed_state(exam_attempt.status),
             )
         except Exception as exc:
-            log.exception("Retrying updating of exam attempt [%d]: [%s].", attempt_id, exc)
+            log.exception('Retrying updating of exam attempt %d to completed state: %s.', attempt_id, exc)
             raise self.retry(exc=exc)
 
-    log.info(
-        "The task 'fix_exam_attempt_status_in_completed_state' for exam attempt [%d] finished successfully.",
-        attempt_id,
-    )
+        else:
+            log.info(
+                'Updating of exam attempt %d from status "%s" to "%s" is completed.',
+                attempt_id,
+                exam_attempt.status,
+                ProctoredExamStudentAttemptStatus.convert_to_completed_state(exam_attempt.status),
+            )
