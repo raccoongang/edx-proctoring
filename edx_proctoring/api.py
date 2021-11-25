@@ -54,6 +54,7 @@ from edx_proctoring.serializers import (
     ProctoredExamStudentAttemptSerializer
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
+from edx_proctoring.tasks import complete_exam_if_attempt_fails
 from edx_proctoring.utils import (
     emit_event,
     get_exam_due_date,
@@ -73,6 +74,8 @@ APPROVED_STATUS = 'approved'
 REJECTED_GRADE_OVERRIDE_EARNED = 0.0
 
 USER_MODEL = get_user_model()
+
+FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS = 30  # it is necessary to end timed exam properly
 
 
 def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None,
@@ -418,15 +421,15 @@ def remove_allowance_for_user(exam_id, user_id, key):
 
 def _check_for_attempt_timeout(attempt):
     """
-    Helper method to see if the status of an
-    exam needs to be updated, e.g. timeout
+    Helper method to see if the status of an exam needs to be updated,
+    e.g. timeout or declined.
     """
 
     if not attempt:
         return attempt
 
     # right now the only adjustment to
-    # status is transitioning to timeout
+    # status is transitioning to timeout or declined
     has_started_exam = (
         attempt and
         attempt.get('started_at') and
@@ -438,10 +441,16 @@ def _check_for_attempt_timeout(attempt):
         has_time_expired = now_utc > expires_at
 
         if has_time_expired:
+
+            if attempt.get('status') == ProctoredExamStudentAttemptStatus.ready_to_decline:
+                transitional_status = ProctoredExamStudentAttemptStatus.declined
+            else:
+                transitional_status = ProctoredExamStudentAttemptStatus.timed_out
+
             update_attempt_status(
                 attempt['proctored_exam']['id'],
                 attempt['user']['id'],
-                ProctoredExamStudentAttemptStatus.timed_out,
+                to_status=transitional_status,
                 timeout_timestamp=expires_at
             )
             attempt = get_exam_attempt_by_id(attempt['id'])
@@ -886,12 +895,25 @@ def update_attempt_status(exam_id, user_id, to_status,
 
     elif treat_timeout_as_submitted:
         exam_attempt_obj.completed_at = timeout_timestamp
-    elif to_status == ProctoredExamStudentAttemptStatus.submitted:
-        # likewise, when we transition to submitted mark
+    elif to_status in (ProctoredExamStudentAttemptStatus.submitted, ProctoredExamStudentAttemptStatus.declined):
+        # likewise, when we transit to submitted or declined mark
         # when the exam has been completed
         exam_attempt_obj.completed_at = datetime.now(pytz.UTC)
 
     exam_attempt_obj.save()
+
+    # make sure that attempt to pass timed exam hasn't ended in failure (incomplete state),
+    # else update status of exam attempt
+    if (
+            exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
+            exam_attempt_obj.allowed_time_limit_mins
+    ):
+        complete_exam_if_attempt_fails.apply_async(
+            countdown=timedelta(
+                minutes=exam_attempt_obj.allowed_time_limit_mins + FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS
+            ).total_seconds(),
+            kwargs=dict(attempt_id=exam_attempt_obj.id),
+        )
 
     # see if the status transition this changes credit requirement status
     if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):

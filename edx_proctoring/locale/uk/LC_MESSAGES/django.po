@@ -1319,17 +1319,13 @@ msgid "View my exam"
 msgstr "Переглянути мій іспит"
 
 #: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/declined.html:4
-#| msgid ""
-#| "\n"
-#| "                You have submitted your timed exam.\n"
-#| "            "
 msgid ""
 "\n"
 "      You have declined your timed exam.\n"
 "    "
 msgstr ""
 "\n"
-"      Ви вже завершили обмежений за часом іспит.\n"
+"      Ви відмовилися від іспитування та завершили іспит достроково.\n"
 "            "
 
 #: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:4
