@@ -1,0 +1,108 @@
+{% load i18n %}
+<div class="sequence timed-exam checking-hardware-steps" data-exam-id="{{exam_id}}">
+  <h3>
+    {% blocktrans %}
+      Follow these steps to check your computer or a device hardware and start a timed exam {{exam_name}}:
+    {% endblocktrans %}
+  </h3>
+  <ol>
+    {% if is_checking_audio_enabled %}
+      <li>
+        <p>
+          {% blocktrans %}
+            Before you begin a timed exam, you must make sure you have working speakers or headphones.
+            Listen carefully to the next test sound record.
+          {% endblocktrans %}
+        </p>
+        <audio class="checking-audio-player" controls playsinline src="{{checking_audio_url}}">
+            Your browser does not support the <code>audio</code> element.
+        </audio>
+      </li>
+    {% endif %}
+    <li>
+      <p>
+        {% blocktrans %}
+          Have you heard sound record?
+        {% endblocktrans %}
+      </p>
+      <button type="button" class="exam-action-button btn btn-pl-primary btn-success-checking-hardware" data-action="submit">
+        {% blocktrans %}
+          Yes
+        {% endblocktrans %}
+      </button>
+      <button type="button" class="exam-action-button btn btn-secondary btn-fail-checking-hardware" data-action="start" style="box-shadow: none">
+        {% blocktrans %}
+          No
+        {% endblocktrans %}
+      </button>
+    </li>
+    <li class="audio-problem-solving-tips" style="margin-top: 20px">
+      <p>
+        {% blocktrans %}
+          If you’re having audio problems, the following suggestions might help.
+          The tips are listed in order, so start with the first one,
+          and re-listen to the previous sound record, see if that helps,
+          and then continue to the next one if it doesn’t.
+        {% endblocktrans %}
+      </p>
+      <ul>
+        <li>
+          {% blocktrans %}
+            Check your speaker output
+          {% endblocktrans %}
+        </li>
+        <li>
+          {% blocktrans %}
+            Run the audio troubleshooter
+          {% endblocktrans %}
+        </li>
+        <li>
+          {% blocktrans %}
+            Check your cables, plugs, jacks, volume, speaker, and headphone connections
+          {% endblocktrans %}
+        </li>
+        <li>
+          {% blocktrans %}
+            Check sound settings
+          {% endblocktrans %}
+        </li>
+        <li>
+          {% blocktrans %}
+            If you have microphone issues, make sure your privacy settings are configured properly
+          {% endblocktrans %}
+        </li>
+      </ul>
+      <p>
+        {% blocktrans %}
+          If you still have hardware problems, you can contact technical support by emailing or by calling.
+        {% endblocktrans %}
+      </p>
+    </li>
+  </ol>
+</div>
+
+{% include 'timed_exam/entrance.html' %}
+
+<script type="text/javascript">
+
+  $('.audio-problem-solving-tips').hide();
+  $('.entrance').hide();
+  $('.footer-sequence').hide();
+
+  $('.btn-success-checking-hardware').click(function () {
+    var msg = "Ви впевнені, що чули звукозапис?";
+
+    if (!confirm(msg)) {
+      return;
+    }
+
+    $('.checking-hardware-steps').hide();
+    $('.entrance').show();
+    $('.footer-sequence').show();
+  });
+
+  $('.btn-fail-checking-hardware').click(function () {
+    $('.audio-problem-solving-tips').show();
+  });
+
+</script>

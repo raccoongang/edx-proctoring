@@ -904,16 +904,16 @@ def update_attempt_status(exam_id, user_id, to_status,
 
     # make sure that attempt to pass timed exam hasn't ended in failure (incomplete state),
     # else update status of exam attempt
-    # if (
-    #         exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
-    #         exam_attempt_obj.allowed_time_limit_mins
-    # ):
-    #     complete_exam_if_attempt_fails.apply_async(
-    #         countdown=timedelta(
-    #             minutes=exam_attempt_obj.allowed_time_limit_mins + FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS
-    #         ).total_seconds(),
-    #         kwargs=dict(attempt_id=exam_attempt_obj.id),
-    #     )
+    if (
+            exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
+            exam_attempt_obj.allowed_time_limit_mins
+    ):
+        complete_exam_if_attempt_fails.apply_async(
+            countdown=timedelta(
+                minutes=exam_attempt_obj.allowed_time_limit_mins + FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS
+            ).total_seconds(),
+            kwargs=dict(attempt_id=exam_attempt_obj.id),
+        )
 
     # see if the status transition this changes credit requirement status
     if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):
