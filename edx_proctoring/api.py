@@ -904,16 +904,16 @@ def update_attempt_status(exam_id, user_id, to_status,
 
     # make sure that attempt to pass timed exam hasn't ended in failure (incomplete state),
     # else update status of exam attempt
-    if (
-            exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
-            exam_attempt_obj.allowed_time_limit_mins
-    ):
-        complete_exam_if_attempt_fails.apply_async(
-            countdown=timedelta(
-                minutes=exam_attempt_obj.allowed_time_limit_mins + FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS
-            ).total_seconds(),
-            kwargs=dict(attempt_id=exam_attempt_obj.id),
-        )
+    # if (
+    #         exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
+    #         exam_attempt_obj.allowed_time_limit_mins
+    # ):
+    #     complete_exam_if_attempt_fails.apply_async(
+    #         countdown=timedelta(
+    #             minutes=exam_attempt_obj.allowed_time_limit_mins + FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS
+    #         ).total_seconds(),
+    #         kwargs=dict(attempt_id=exam_attempt_obj.id),
+    #     )
 
     # see if the status transition this changes credit requirement status
     if ProctoredExamStudentAttemptStatus.needs_credit_status_update(to_status):
@@ -1689,6 +1689,11 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     if not attempt_status:
         if is_exam_passed_due(exam, user=user_id):
             student_view_template = 'timed_exam/expired.html'
+        elif (
+                context.get('is_checking_audio_enabled') or
+                context.get('is_checking_microphone_enabled')
+        ):
+            student_view_template = 'timed_exam/check_hardware.html'
         else:
             student_view_template = 'timed_exam/entrance.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.started:
