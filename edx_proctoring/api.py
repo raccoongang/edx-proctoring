@@ -1689,6 +1689,11 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     if not attempt_status:
         if is_exam_passed_due(exam, user=user_id):
             student_view_template = 'timed_exam/expired.html'
+        elif (
+                context.get('is_checking_audio_enabled') or
+                context.get('is_checking_microphone_enabled')
+        ):
+            student_view_template = 'timed_exam/check_hardware.html'
         else:
             student_view_template = 'timed_exam/entrance.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.started:

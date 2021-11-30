@@ -26,6 +26,10 @@ class ProctoredExamStudentAttemptStatus:
     # software download link
     download_software_clicked = 'download_software_clicked'
 
+    # the student is in the process of checking speakers / headphones or
+    # microphone before exam start
+    checking_hardware = 'checking_hardware'
+
     # the attempt is ready to start but requires
     # user to acknowledge that he/she wants to start the exam
     ready_to_start = 'ready_to_start'
