@@ -114,6 +114,7 @@ def on_attempt_changed(sender, instance, signal, **kwargs):  # pylint: disable=u
         # remove the attempt on the backend
         # timed exams have no backend
         backend = get_backend_provider(name=instance.proctored_exam.backend)
+        log.info('Got signal to remove attempt %d from %s', instance.id, backend.verbose_name)
         if backend:
             result = backend.remove_exam_attempt(instance.proctored_exam.external_id, instance.external_id)
             if not result:
