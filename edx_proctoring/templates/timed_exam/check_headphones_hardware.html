@@ -29,7 +29,7 @@
            href="{% if is_checking_microphone_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_microphone_enabled' hardware_checked='headphones' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='headphones' %} {% endif %}"
         >
             {% blocktrans %}
-            Yes qqqqqqqq
+            Yes
             {% endblocktrans %}
         </a>
       {% else %}
