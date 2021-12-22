@@ -14,6 +14,7 @@ import pytz
 import six
 from waffle import switch_is_active
 
+from crum import get_current_request
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail.message import EmailMessage
@@ -40,6 +41,7 @@ from edx_proctoring.exceptions import (
     StudentExamAttemptedAlreadyStarted
 )
 from edx_proctoring.models import (
+    CourseBlockHardwareChecker,
     ProctoredExam,
     ProctoredExamReviewPolicy,
     ProctoredExamSoftwareSecureReview,
@@ -76,6 +78,13 @@ REJECTED_GRADE_OVERRIDE_EARNED = 0.0
 USER_MODEL = get_user_model()
 
 FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS = 30  # it is necessary to end timed exam properly
+
+
+CHECK_HARDWARE_TEMPLATE = {
+    "is_checking_audio_enabled": "timed_exam/check_headphones_hardware.html",
+    "is_checking_camera_enabled": "timed_exam/check_camera_hardware.html",
+    "is_checking_microphone_enabled": "timed_exam/check_microphone_hardware.html",
+}
 
 
 def create_exam(course_id, content_id, exam_name, time_limit_mins, due_date=None,
@@ -1687,13 +1696,29 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     attempt_status = attempt['status'] if attempt else None
     has_due_date = exam['due_date'] is not None
     if not attempt_status:
+        enabled_hardwares = tuple(
+            hardware_name
+            for hardware_name, value in (
+                ('is_checking_audio_enabled', context.get('is_checking_audio_enabled')),
+                ('is_checking_microphone_enabled', context.get('is_checking_microphone_enabled')),
+                ('is_checking_camera_enabled', context.get('is_checking_camera_enabled')),
+            )
+        )
         if is_exam_passed_due(exam, user=user_id):
             student_view_template = 'timed_exam/expired.html'
         elif (
-                context.get('is_checking_audio_enabled') or
-                context.get('is_checking_microphone_enabled')
+                'hardware_checker' in get_current_request().GET.keys() and
+                any(enabled_hardwares) and
+                CourseBlockHardwareChecker.are_hardwares_enabled(
+                    user_id, exam['content_id'],
+                    enabled_hardwares,
+                    get_current_request().GET.get('hardware_checked')
+                )
         ):
-            student_view_template = 'timed_exam/check_hardware.html'
+            student_view_template = CHECK_HARDWARE_TEMPLATE.get(
+                get_current_request().GET['hardware_checker'], 'timed_exam/check_headphones_hardware.html'
+            )
+            context['request_full_path'] = get_current_request().get_full_path()
         else:
             student_view_template = 'timed_exam/entrance.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.started:

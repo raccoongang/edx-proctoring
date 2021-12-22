@@ -820,3 +820,46 @@ class ProctoredExamSoftwareSecureComment(TimeStampedModel):
         """ Meta class for this Django model """
         db_table = 'proctoring_proctoredexamstudentattemptcomment'
         verbose_name = 'proctored exam software secure comment'
+
+
+HARDWARE_WAS_CHECKED = {
+    'microphone': 'is_checking_microphone_enabled',
+    'headphones': 'is_checking_audio_enabled',
+    'camera': 'is_checking_camera_enabled',
+}
+
+
+class CourseBlockHardwareChecker(models.Model):
+    """
+    Store hardware checking progress.
+    """
+    user_id = models.PositiveIntegerField()
+    content_id = models.CharField(max_length=100)
+    is_checking_audio_enabled = models.BooleanField(default=False)
+    is_checking_microphone_enabled = models.BooleanField(default=False)
+    is_checking_camera_enabled = models.BooleanField(default=False)
+
+    @classmethod
+    def are_hardwares_enabled(
+        cls,
+        user_id,
+        content_id,
+        enabled_hardwares,
+        hardware_checked=''
+    ):
+        hardware, __ = cls.objects.get_or_create(
+            defaults={
+                'user_id': user_id,
+                'content_id': content_id,
+            }
+        )
+
+        if hardware_checked in HARDWARE_WAS_CHECKED.keys():
+            setattr(hardware, HARDWARE_WAS_CHECKED[hardware_checked], True)
+            hardware.save()
+
+        for hardware_name in enabled_hardwares:
+            if not getattr(hardware, hardware_name):
+                return True
+
+        return False
