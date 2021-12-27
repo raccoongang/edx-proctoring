@@ -847,7 +847,10 @@ class CourseBlockHardwareChecker(models.Model):
         enabled_hardwares,
         hardware_checked=''
     ):
-        hardware, __ = cls.objects.get_or_create(
+        if not enabled_hardwares:
+            return False
+
+        exam_hardware_to_check, __ = cls.objects.get_or_create(
             defaults={
                 'user_id': user_id,
                 'content_id': content_id,
@@ -855,11 +858,11 @@ class CourseBlockHardwareChecker(models.Model):
         )
 
         if hardware_checked in HARDWARE_WAS_CHECKED.keys():
-            setattr(hardware, HARDWARE_WAS_CHECKED[hardware_checked], True)
-            hardware.save()
+            setattr(exam_hardware_to_check, HARDWARE_WAS_CHECKED[hardware_checked], True)
+            exam_hardware_to_check.save()
 
         for hardware_name in enabled_hardwares:
-            if not getattr(hardware, hardware_name):
+            if not getattr(exam_hardware_to_check, hardware_name):
                 return True
 
         return False

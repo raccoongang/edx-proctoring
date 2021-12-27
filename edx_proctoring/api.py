@@ -58,6 +58,7 @@ from edx_proctoring.serializers import (
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 from edx_proctoring.tasks import complete_exam_if_attempt_fails
 from edx_proctoring.utils import (
+    ExamHardwareChecker,
     emit_event,
     get_exam_due_date,
     has_due_date_passed,
@@ -80,7 +81,7 @@ USER_MODEL = get_user_model()
 FIX_ATTEMPT_IN_COMPLETED_STATE_DELAY_MINS = 30  # it is necessary to end timed exam properly
 
 
-CHECK_HARDWARE_TEMPLATE = {
+CHECK_HARDWARE_TEMPLATES_MAP = {
     "is_checking_audio_enabled": "timed_exam/check_headphones_hardware.html",
     "is_checking_camera_enabled": "timed_exam/check_camera_hardware.html",
     "is_checking_microphone_enabled": "timed_exam/check_microphone_hardware.html",
@@ -1696,26 +1697,18 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     attempt_status = attempt['status'] if attempt else None
     has_due_date = exam['due_date'] is not None
     if not attempt_status:
-        enabled_hardwares = tuple(
-            hardware_name
-            for hardware_name, value in (
-                ('is_checking_audio_enabled', context.get('is_checking_audio_enabled')),
-                ('is_checking_microphone_enabled', context.get('is_checking_microphone_enabled')),
-                ('is_checking_camera_enabled', context.get('is_checking_camera_enabled')),
-            )
-        )
         if is_exam_passed_due(exam, user=user_id):
             student_view_template = 'timed_exam/expired.html'
         elif (
                 'hardware_checker' in get_current_request().GET.keys() and
-                any(enabled_hardwares) and
                 CourseBlockHardwareChecker.are_hardwares_enabled(
-                    user_id, exam['content_id'],
-                    enabled_hardwares,
+                    user_id,
+                    exam['content_id'],
+                    ExamHardwareChecker.get_enabled_hardware_names(context),
                     get_current_request().GET.get('hardware_checked')
                 )
         ):
-            student_view_template = CHECK_HARDWARE_TEMPLATE.get(
+            student_view_template = CHECK_HARDWARE_TEMPLATES_MAP.get(
                 get_current_request().GET['hardware_checker'], 'timed_exam/check_headphones_hardware.html'
             )
             context['request_full_path'] = get_current_request().get_full_path()

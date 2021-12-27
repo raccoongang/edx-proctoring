@@ -280,3 +280,20 @@ def is_reattempting_exam(from_status, to_status):
         ProctoredExamStudentAttemptStatus.is_in_progress_status(from_status) and
         ProctoredExamStudentAttemptStatus.is_pre_started_status(to_status)
     )
+
+
+class ExamHardwareChecker:
+
+    EXAM_HARDWARE_SEQUENCE = (
+        'is_checking_audio_enabled',
+        'is_checking_microphone_enabled',
+        'is_checking_camera_enabled',
+    )
+
+    @classmethod
+    def get_enabled_hardware_names(cls, context):
+        return tuple(
+            hardware_name
+            for hardware_name in cls.EXAM_HARDWARE_SEQUENCE
+            if context.get(hardware_name)
+        )
