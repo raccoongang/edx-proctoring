@@ -459,7 +459,10 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
                 )
             )
             raise StudentExamAttemptDoesNotExistsException(err_msg)
-
+        LOG.info(
+            'User [%s] sends an HTTP request to delete proctored exam attempt [%s]',
+            request.user.id, attempt_id
+        )
         remove_exam_attempt(attempt_id, request.user)
         return Response()
 
