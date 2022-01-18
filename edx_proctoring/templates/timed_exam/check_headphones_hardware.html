@@ -2,25 +2,25 @@
 <div class="sequence timed-exam checking-hardware-steps" data-exam-id="{{exam_id}}">
   <h3>
     {% blocktrans %}
-      Follow these steps to check your computer or a device hardware and start a timed exam {{exam_name}}:
+      Follow these steps to check your computer's audio equipment before starting a timed exam {{exam_name}}.
     {% endblocktrans %}
   </h3>
   <ol>
-      <li>
-        <p>
-          {% blocktrans %}
-            Before you begin a timed exam, you must make sure you have working speakers or headphones.
-            Listen carefully to the next test sound record.
-          {% endblocktrans %}
-        </p>
-        <audio class="checking-audio-player" controls playsinline src="{{checking_audio_url}}">
-            Your browser does not support the <code>audio</code> element.
-        </audio>
-      </li>
     <li>
       <p>
         {% blocktrans %}
-          Have you heard sound record?
+          Before you start a timed exam, make sure that headphones or speakers are working.
+          Please listen to the test sound recording.
+        {% endblocktrans %}
+      </p>
+      <audio class="checking-audio-player" controls playsinline src="{{checking_audio_url}}">
+        Your browser does not support the <code>audio</code> element.
+      </audio>
+    </li>
+    <li>
+      <p>
+        {% blocktrans %}
+          Have you heard the sound record?
         {% endblocktrans %}
       </p>
       {% if is_checking_microphone_enabled or is_checking_camera_enabled %}
@@ -28,16 +28,16 @@
            class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
            href="{% if is_checking_microphone_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_microphone_enabled' hardware_checked='headphones' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='headphones' %} {% endif %}"
         >
-            {% blocktrans %}
+          {% blocktrans %}
             Yes
-            {% endblocktrans %}
+          {% endblocktrans %}
         </a>
       {% else %}
-          <button type="button" class="exam-action-button btn btn-pl-primary btn-success-checking-hardware" data-action="submit">
-            {% blocktrans %}
-              Yes
-            {% endblocktrans %}
-          </button>
+        <button type="button" class="exam-action-button btn btn-pl-primary btn-success-checking-hardware" data-action="submit">
+          {% blocktrans %}
+            Yes
+          {% endblocktrans %}
+        </button>
       {% endif %}
       <button type="button" class="exam-action-button btn btn-secondary btn-fail-checking-hardware" data-action="start" style="box-shadow: none">
         {% blocktrans %}
@@ -48,44 +48,38 @@
     <li class="audio-problem-solving-tips" style="margin-top: 20px">
       <p>
         {% blocktrans %}
-          If you’re having audio problems, the following suggestions might help.
-          The tips are listed in order, so start with the first one,
-          and re-listen to the previous sound record, see if that helps,
-          and then continue to the next one if it doesn’t.
+          If you have not heard the sound recording, seek the help of
+          an instructor or follow the recommended steps, trying to listen
+          the test sound recording after each of them:
         {% endblocktrans %}
       </p>
       <ul>
         <li>
           {% blocktrans %}
-            Check your speaker output
+            check the volume level set on the computer;
           {% endblocktrans %}
         </li>
         <li>
           {% blocktrans %}
-            Run the audio troubleshooter
+            check the volume level on the cable, headphones or speakers;
           {% endblocktrans %}
         </li>
         <li>
           {% blocktrans %}
-            Check your cables, plugs, jacks, volume, speaker, and headphone connections
+            check cables, plugs, sockets and the reliability of the wired headphone connection;
           {% endblocktrans %}
         </li>
         <li>
           {% blocktrans %}
-            Check sound settings
+            check the connection settings for wireless headphones;
           {% endblocktrans %}
         </li>
         <li>
           {% blocktrans %}
-            If you have microphone issues, make sure your privacy settings are configured properly
+            check the system sound settings.
           {% endblocktrans %}
         </li>
       </ul>
-      <p>
-        {% blocktrans %}
-          If you still have hardware problems, you can contact technical support by emailing or by calling.
-        {% endblocktrans %}
-      </p>
     </li>
   </ol>
 </div>
@@ -105,6 +99,9 @@
       return;
     }
 
+    $('.checking-hardware-steps').hide();
+    $('.entrance').show();
+    $('.footer-sequence').show();
   });
 
   $('.btn-fail-checking-hardware').click(function () {
