@@ -93,7 +93,7 @@
   $('.footer-sequence').hide();
 
   $('.btn-success-checking-hardware').click(function () {
-    var msg = "Ви впевнені, що чули звукозапис?";
+    let msg = "Ви впевнені, що чули звукозапис?";
 
     if (!confirm(msg) || $(this).hasClass('hardware-checker')) {
       return;

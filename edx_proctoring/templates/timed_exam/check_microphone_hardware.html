@@ -84,8 +84,9 @@
   $('.footer-sequence').hide();
 
   $('.btn-success-checking-hardware').click(function () {
+    let msg = "Ви впевнені, що мікрофон працює?";
 
-    if ($(this).hasClass('hardware-checker')) {
+    if (!confirm(msg) || $(this).hasClass('hardware-checker')) {
       return;
     }
 

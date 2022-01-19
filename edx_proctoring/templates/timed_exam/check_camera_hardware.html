@@ -86,7 +86,7 @@
         if (confirm(`{% trans "Are you wondering what the camera does?" %}`)) return;
     });
   $('.btn-success-checking-hardware').click(function () {
-    var msg = "Ви впевнені, що чули камера працює?";
+    let msg = "Ви впевнені, що камера працює?";
 
     if (!confirm(msg) || $(this).hasClass('hardware-checker')) {
       return;
