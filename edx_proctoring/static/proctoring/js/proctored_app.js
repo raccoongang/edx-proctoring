@@ -9,6 +9,20 @@ $(function() {
     });
     proctoredExamView.render();
 
+    // initialize jQuery.microphoneChecker plugin
+    try {
+        $('#check-microphone-btn').on('click', function () {
+            $(this).microphoneChecker({
+                counterView : true,
+                dispatchStop : true
+            });
+            $(this).prop("disabled", true)
+            $(".check-microphone-alert").fadeIn("slow");
+        });
+    } catch (e) {
+        console.error("jQuery.microphoneChecker plugin not connected or not found");
+    }
+
     $('.check-camera-video-start').on('click', function () {
         $(this).attr('disabled', true);
         const $blockVideo = $('#check-camera-video-block', this.element)[0];

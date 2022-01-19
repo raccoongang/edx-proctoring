@@ -1313,6 +1313,7 @@ msgstr ""
 msgid "View my exam"
 msgstr "Переглянути мій іспит"
 
+#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/declined.html:4
 #: templates/timed_exam/check_camera_hardware.html:4
 msgid ""
 "\n"
