@@ -88,13 +88,13 @@
   $('.btn-success-checking-hardware').click(function () {
     var msg = "Ви впевнені, що чули камера працює?";
 
-    if (!confirm(msg)) {
+    if (!confirm(msg) || $(this).hasClass('hardware-checker')) {
       return;
     }
 
-      $('.checking-hardware-steps').hide();
-      $('.entrance').show();
-      $('.footer-sequence').show();
+    $('.checking-hardware-steps').hide();
+    $('.entrance').show();
+    $('.footer-sequence').show();
 
   });
 

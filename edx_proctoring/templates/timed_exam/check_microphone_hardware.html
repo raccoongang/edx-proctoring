@@ -23,7 +23,7 @@
       </p>
         {% if is_checking_audio_enabled or is_checking_camera_enabled %}
         <a type="button"
-           class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
+           class="exam-action-button btn btn-pl-primary btn-success-checking-hardware hardware-checker"
            href="{% if is_checking_camera_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='microphone' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_audio_enabled' hardware_checked='microphone' %} {% endif %}"
         >
             {% blocktrans %}
@@ -85,9 +85,13 @@
 
   $('.btn-success-checking-hardware').click(function () {
 
-      $('.checking-hardware-steps').hide();
-      $('.entrance').show();
-      $('.footer-sequence').show();
+    if ($(this).hasClass('hardware-checker')) {
+      return;
+    }
+
+    $('.checking-hardware-steps').hide();
+    $('.entrance').show();
+    $('.footer-sequence').show();
 
   });
 
