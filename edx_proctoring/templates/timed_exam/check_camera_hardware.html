@@ -85,6 +85,22 @@
     $('.btn-success-checking-hardware').click(() => {
         if (confirm(`{% trans "Are you wondering what the camera does?" %}`)) return;
     });
+  $('.btn-success-checking-hardware').click(function () {
+    var msg = "Ви впевнені, що чули камера працює?";
+
+    if (!confirm(msg)) {
+      return;
+    }
+
+      $('.checking-hardware-steps').hide();
+      $('.entrance').show();
+      $('.footer-sequence').show();
+
+  });
+
+  $('.btn-fail-checking-hardware').click(function () {
+    $('.camera-problem-solving-tips').show();
+  });
 
     $('.btn-fail-checking-hardware').click(() => $('.camera-problem-solving-tips').show());
 </script>

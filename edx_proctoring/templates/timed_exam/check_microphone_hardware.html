@@ -83,6 +83,14 @@
   $('.entrance').hide();
   $('.footer-sequence').hide();
 
+  $('.btn-success-checking-hardware').click(function () {
+
+      $('.checking-hardware-steps').hide();
+      $('.entrance').show();
+      $('.footer-sequence').show();
+
+  });
+
   $('.btn-fail-checking-hardware').click(function () {
     $('.microphone-problem-solving-tips').show();
   });
