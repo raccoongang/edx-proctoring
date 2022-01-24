@@ -1552,12 +1552,6 @@ msgid ""
 "          "
 msgstr ""
 
-#: templates/timed_exam/check_microphone_hardware.html:20
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "          Have you heard the sound record?\n"
-#| "        "
 msgid ""
 "\n"
 "          Have you seen sound volume delays?\n"
@@ -1586,12 +1580,6 @@ msgid ""
 "        "
 msgstr ""
 
-#: templates/timed_exam/check_microphone_hardware.html:54
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "            check the system sound settings.\n"
-#| "          "
 msgid ""
 "\n"
 "            Check your speaker output\n"
@@ -1601,13 +1589,6 @@ msgstr ""
 "            перевірте системні налаштування звуку.\n"
 "          "
 
-#: templates/timed_exam/check_microphone_hardware.html:59
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "            check cables, plugs, sockets and the reliability of the wired "
-#| "headphone connection;\n"
-#| "          "
 msgid ""
 "\n"
 "            Check your cables, plugs, jacks, volume, speaker, and headphone "
@@ -1618,22 +1599,6 @@ msgstr ""
 "            перевірте кабелі, штекери, гнізда та надійність з'єднання для "
 "дротових навушників;\n"
 "          "
-
-#: templates/timed_exam/check_microphone_hardware.html:64
-msgid ""
-"\n"
-"            If you have microphone issues, make sure your privacy settings "
-"are configured properly\n"
-"          "
-msgstr ""
-
-#: templates/timed_exam/check_microphone_hardware.html:70
-msgid ""
-"\n"
-"          If you still have hardware problems, you can contact technical "
-"support by emailing or by calling.\n"
-"        "
-msgstr ""
 
 #: templates/timed_exam/check_microphone_hardware.html
 msgid "Are you wondering what the camera does?"
@@ -1667,7 +1632,7 @@ msgstr "Цей іспит має часове обмеження."
 #: templates/timed_exam/entrance.html:11
 msgid "To pass this exam, you must complete the problems in the time allowed."
 msgstr ""
-"Щоб скласти його, потрібно виконати завдання впродовж установленого часу."
+"Щоб скласти цей іспит, потрібно виконати завдання впродовж установленого часу."
 
 #: templates/timed_exam/entrance.html:13
 msgid "After you select "
@@ -1903,21 +1868,3 @@ msgstr ""
 #, python-brace-format
 msgid "No instructor dashboard for {proctor_service}"
 msgstr ""
-
-#~ msgid "{num_of_hours} hour"
-#~ msgstr "{num_of_hours} година"
-
-#~ msgid "{num_of_hours} hours"
-#~ msgstr "{num_of_hours} годин"
-
-#~ msgid "{num_of_minutes} minutes"
-#~ msgstr "{num_of_minutes} хвилин"
-
-#~ msgid " and {num_of_minutes} minute"
-#~ msgstr " та {num_of_minutes} хвилина"
-
-#~ msgid "{num_of_minutes} minute"
-#~ msgstr "{num_of_minutes} хвилина"
-
-#~ msgid " and {num_of_minutes} minutes"
-#~ msgstr " та {num_of_minutes} хвилин"
