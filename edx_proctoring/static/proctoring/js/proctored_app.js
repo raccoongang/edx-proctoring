@@ -11,7 +11,7 @@ $(function() {
 
     $('.check-camera-video-start').on('click', function () {
         $(this).attr('disabled', true);
-        let $blockVideo = $('#check-camera-video-block', this.element)[0];
+        const $blockVideo = $('#check-camera-video-block', this.element)[0];
         try {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {

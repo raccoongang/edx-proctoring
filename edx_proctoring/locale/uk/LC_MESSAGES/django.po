@@ -1635,6 +1635,10 @@ msgid ""
 "        "
 msgstr ""
 
+#: templates/timed_exam/check_microphone_hardware.html
+msgid "Are you wondering what the camera does?"
+msgstr "Ви впевнені, що камера працює?"
+
 #: templates/timed_exam/declined.html:4
 msgid ""
 "\n"
