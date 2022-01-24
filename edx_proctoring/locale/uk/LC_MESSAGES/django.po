@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-proctoring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-21 10:27+0000\n"
+"POT-Creation-Date: 2022-01-21 10:27+0000\n"
 "PO-Revision-Date: 2016-12-20 19:52+0000\n"
 "Last-Translator: Danylo Shcherbak <danylo.shcherbak@raccoongang.com>, 2021\n"
 "Language-Team: Ukrainian (https://www.transifex.com/open-edx/teams/6205/"
@@ -35,180 +35,178 @@ msgstr ""
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:87
+#: admin.py:88
 msgid "internally reviewed"
 msgstr "внутрішньо розглянута"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:96
+#: admin.py:97
 msgid "All Unreviewed"
 msgstr "Усі неперевірені"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:97
+#: admin.py:98
 msgid "All Unreviewed Failures"
 msgstr "Усі неперевірені збої"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:117
+#: admin.py:118
 msgid "active proctored exams"
 msgstr "діючі контрольовані іспити"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:175
+#: admin.py:176
 msgid "courses with active proctored exams"
 msgstr "курси з активним іспитом під наглядом"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:336
+#: admin.py:337
 msgid "Course Id"
 msgstr "Ідентифікатор курсу"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:374
+#: admin.py:375
 msgid "Created"
 msgstr "Створено"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:375
+#: admin.py:376
 msgid "Download Software Clicked"
 msgstr "Натисніть для завантаження програмного забезпечення"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:376
+#: admin.py:377
 msgid "Ready To Start"
 msgstr "Готовий до старту"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:377
+#: admin.py:378
 msgid "Started"
 msgstr "Розпочався"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:378
+#: admin.py:379
 msgid "Ready To Submit"
 msgstr "Готовий до відправки"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:379
+#: admin.py:380
 msgid "Declined"
 msgstr "Відхилений"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:380
+#: admin.py:381
 msgid "Timed Out"
 msgstr "Час вийшов"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:381
+#: admin.py:382
 msgid "Submitted"
 msgstr "Надіслано"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:382
+#: admin.py:383
 msgid "Second Review Required"
 msgstr "Другий огляд обов'язковий"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:383
+#: admin.py:384
 msgid "Verified"
 msgstr "Перевірений"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:384
+#: admin.py:385
 msgid "Rejected"
 msgstr "Відмовлено"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:385
+#: admin.py:386
 msgid "Error"
 msgstr "Помилка"
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:389
+#: admin.py:390
 msgid "Onboarding Missing"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:390
+#: admin.py:391
 msgid "Onboarding Failed"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:391
+#: admin.py:392
 msgid "Onboarding Pending"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/admin.py:392
+#: admin.py:393
 msgid "Onboarding Expired"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1061
+#: api.py:1093
 msgid "your course"
 msgstr "Ваш курс"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1123
+#: api.py:1155
 #, python-brace-format
 msgid "Proctoring Results For {course_name} {exam_name}"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1132
+#: api.py:1164
 #, python-brace-format
 msgid "Proctoring Review In Progress For {course_name} {exam_name}"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1157
+#: api.py:1189
 #, python-brace-format
 msgid "Proctored exam {exam_name} in {course_name} for user {username}"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1488
+#: api.py:1520
 msgid "Taking As Proctored Exam"
 msgstr "Здача іспиту під наглядом"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1493
+#: api.py:1525
 msgid "Proctored Option Available"
 msgstr "Перейти до іспиту під наглядом"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1498
+#: api.py:1530
 msgid "Taking As Open Exam"
 msgstr "Здача відкритого іспиту"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1503
-#: openedx/edx-proctoring/edx_proctoring/api.py:1508
+#: api.py:1535 api.py:1540
 msgid "Pending Session Review"
 msgstr "Очікування сесії перевірки"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1513
+#: api.py:1545
 msgid "Passed Proctoring"
 msgstr "Іспит під наглядом здано"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1518
-#: openedx/edx-proctoring/edx_proctoring/api.py:1523
+#: api.py:1550 api.py:1555
 msgid "Failed Proctoring"
 msgstr "Іспит під наглядом провалено"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1528
+#: api.py:1560
 msgid "Proctored Option No Longer Available"
 msgstr "Варіант іспиту під наглядом більше не доступний"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1537
+#: api.py:1569
 msgid "Ungraded Practice Exam"
 msgstr "Практичний іспит без оцінки"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1542
+#: api.py:1574
 msgid "Practice Exam Completed"
 msgstr "Практичний іспит завершено"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1547
+#: api.py:1579
 msgid "Practice Exam Failed"
 msgstr "Практичний іспит провалено"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:1555
+#: api.py:1587
 msgid "Timed Exam"
 msgstr "Іспити з обмеженням по часу"
 
-#: openedx/edx-proctoring/edx_proctoring/api.py:2046
+#: api.py:2091
 msgid "Onboarding status question"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/models.py:336
+#: models.py:337
 msgid "Taking as Proctored"
 msgstr "Здача іспиту під наглядом"
 
-#: openedx/edx-proctoring/edx_proctoring/models.py:340
+#: models.py:341
 msgid "Is Sample Attempt"
 msgstr "Зразок спроби"
 
-#: openedx/edx-proctoring/edx_proctoring/models.py:518
+#: models.py:519
 msgid "Additional Time (minutes)"
 msgstr "Додатковий час (хв.)"
 
-#: openedx/edx-proctoring/edx_proctoring/models.py:519
+#: models.py:520
 msgid "Review Policy Exception"
 msgstr "Переглянути виняток із політики"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/common/waiting_banner.html:3
+#: templates/common/waiting_banner.html:3
 msgid ""
 "\n"
 "        The result will be visible after <strong id=\"wait_deadline\"> "
@@ -220,9 +218,9 @@ msgstr ""
 "Завантаження... </strong>\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_satisfactory_email.html:4
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_submitted_email.html:4
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_unsatisfactory_email.html:4
+#: templates/emails/proctoring_attempt_satisfactory_email.html:4
+#: templates/emails/proctoring_attempt_submitted_email.html:4
+#: templates/emails/proctoring_attempt_unsatisfactory_email.html:4
 #, python-format
 msgid ""
 "\n"
@@ -233,7 +231,7 @@ msgstr ""
 "     Вітаю %(username)s,\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_satisfactory_email.html:9
+#: templates/emails/proctoring_attempt_satisfactory_email.html:9
 #, python-format
 msgid ""
 "\n"
@@ -243,7 +241,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_satisfactory_email.html:16
+#: templates/emails/proctoring_attempt_satisfactory_email.html:16
 #, python-format
 msgid ""
 "\n"
@@ -255,7 +253,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_submitted_email.html:9
+#: templates/emails/proctoring_attempt_submitted_email.html:9
 #, python-format
 msgid ""
 "\n"
@@ -267,7 +265,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_unsatisfactory_email.html:9
+#: templates/emails/proctoring_attempt_unsatisfactory_email.html:9
 #, python-format
 msgid ""
 "\n"
@@ -284,7 +282,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/emails/proctoring_attempt_unsatisfactory_email.html:20
+#: templates/emails/proctoring_attempt_unsatisfactory_email.html:20
 #, python-format
 msgid ""
 "\n"
@@ -297,14 +295,14 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:5
+#: templates/onboarding_exam/entrance.html:5
 msgid ""
 "\n"
 "    Proctoring onboarding exam\n"
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:12
+#: templates/onboarding_exam/entrance.html:12
 msgid ""
 "\n"
 "      Why this is important to you:\n"
@@ -314,7 +312,7 @@ msgstr ""
 "      Чому це важливо для вас:\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:18
+#: templates/onboarding_exam/entrance.html:18
 msgid ""
 "\n"
 "        Establish your identity with the proctoring system to take a "
@@ -322,21 +320,21 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:23
+#: templates/onboarding_exam/entrance.html:23
 msgid ""
 "\n"
 "        Create your onboarding profile for faster access in the future\n"
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:28
+#: templates/onboarding_exam/entrance.html:28
 msgid ""
 "\n"
 "        Practice taking a proctored test\n"
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:34
+#: templates/onboarding_exam/entrance.html:34
 #, python-format
 msgid ""
 "\n"
@@ -346,7 +344,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:40
+#: templates/onboarding_exam/entrance.html:40
 #, python-format
 msgid ""
 "\n"
@@ -358,7 +356,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:49
+#: templates/onboarding_exam/entrance.html:49
 #, python-format
 msgid ""
 "\n"
@@ -369,11 +367,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:58
+#: templates/onboarding_exam/entrance.html:58
 msgid "Continue to onboarding"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/entrance.html:62
+#: templates/onboarding_exam/entrance.html:62
 msgid ""
 "\n"
 "    You will be guided through online proctoring software set up and "
@@ -381,14 +379,14 @@ msgid ""
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/error.html:4
+#: templates/onboarding_exam/error.html:4
 msgid ""
 "\n"
 "    Error: There was a problem with your onboarding session\n"
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/error.html:13
+#: templates/onboarding_exam/error.html:13
 msgid ""
 "\n"
 "    Your proctoring session ended before you completed this onboarding "
@@ -397,11 +395,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/error.html:20
+#: templates/onboarding_exam/error.html:20
 msgid "Try again"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/ready_to_submit.html:6
+#: templates/onboarding_exam/ready_to_submit.html:6
 #, python-format
 msgid ""
 "\n"
@@ -411,14 +409,14 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/rejected.html:5
+#: templates/onboarding_exam/rejected.html:5
 msgid ""
 "\n"
 "    Your onboarding session was reviewed, but did not pass all requirements\n"
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/rejected.html:12
+#: templates/onboarding_exam/rejected.html:12
 #, python-format
 msgid ""
 "\n"
@@ -429,14 +427,14 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/submitted.html:4
+#: templates/onboarding_exam/submitted.html:4
 msgid ""
 "\n"
 "    You have submitted this onboarding exam\n"
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/submitted.html:11
+#: templates/onboarding_exam/submitted.html:11
 msgid ""
 "\n"
 "      If you do not have an onboarding profile with the system,\n"
@@ -447,7 +445,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/submitted.html:20
+#: templates/onboarding_exam/submitted.html:20
 #, python-format
 msgid ""
 "\n"
@@ -460,8 +458,8 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/submitted.html:31
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/verified.html:16
+#: templates/onboarding_exam/submitted.html:31
+#: templates/onboarding_exam/verified.html:16
 #, python-format
 msgid ""
 "\n"
@@ -472,14 +470,14 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/verified.html:4
+#: templates/onboarding_exam/verified.html:4
 msgid ""
 "\n"
 "    Your onboarding profile was reviewed successfully\n"
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/onboarding_exam/verified.html:11
+#: templates/onboarding_exam/verified.html:11
 msgid ""
 "\n"
 "      Your profile has been established, and you're ready to take proctored "
@@ -487,14 +485,14 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/entrance.html:5
+#: templates/practice_exam/entrance.html:5
 msgid ""
 "\n"
 "        Try a proctored exam\n"
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/entrance.html:12
+#: templates/practice_exam/entrance.html:12
 msgid ""
 "\n"
 "        Get familiar with proctoring for real exams later in the course. "
@@ -503,11 +501,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/entrance.html:20
+#: templates/practice_exam/entrance.html:20
 msgid "Continue to my practice exam"
 msgstr "Продовжити мій практичний іспит"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/entrance.html:25
+#: templates/practice_exam/entrance.html:25
 msgid ""
 "\n"
 "          You will be guided through steps to set up online proctoring "
@@ -515,14 +513,14 @@ msgid ""
 "        "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/error.html:5
+#: templates/practice_exam/error.html:5
 msgid ""
 "\n"
 "        There was a problem with your practice proctoring session\n"
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/error.html:13
+#: templates/practice_exam/error.html:13
 msgid ""
 "\n"
 "      Your practice proctoring results: <b class=\"failure\"> Unsatisfactory "
@@ -534,7 +532,7 @@ msgstr ""
 "Незадовільно </b>\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/error.html:21
+#: templates/practice_exam/error.html:21
 msgid ""
 "\n"
 "        Your proctoring session ended before you completed this practice "
@@ -544,18 +542,18 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/error.html:32
+#: templates/practice_exam/error.html:32
 msgid "Try this practice exam again"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/submitted.html:5
+#: templates/practice_exam/submitted.html:5
 msgid ""
 "\n"
 "        You have submitted this practice proctored exam\n"
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/submitted.html:13
+#: templates/practice_exam/submitted.html:13
 msgid ""
 "\n"
 "        Practice exams do not affect your grade.\n"
@@ -564,12 +562,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/practice_exam/submitted.html:19
-#| msgid "Continue to my practice exam"
+#: templates/practice_exam/submitted.html:19
 msgid "You can also retry this practice exam"
 msgstr "Продовжити мій практичний іспит"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/confirm-decline.html:5
+#: templates/proctored_exam/confirm-decline.html:5
 msgid ""
 "\n"
 "        Are you sure you want to take this exam without proctoring?\n"
@@ -579,7 +576,7 @@ msgstr ""
 "        Ви впевнені, що хочете скласти цей іспит без нагляду?\n"
 "      "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/confirm-decline.html:10
+#: templates/proctored_exam/confirm-decline.html:10
 msgid ""
 "\n"
 "        If you take this exam without proctoring, you will not be eligible "
@@ -588,17 +585,17 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/confirm-decline.html:16
+#: templates/proctored_exam/confirm-decline.html:16
 msgid "Continue Exam Without Proctoring"
 msgstr "Продовжити іспит без нагляду"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/confirm-decline.html:19
+#: templates/proctored_exam/confirm-decline.html:19
 msgid "Go Back"
 msgstr "Повернутися"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/entrance.html:4
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/failed-prerequisites.html:4
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/pending-prerequisites.html:4
+#: templates/proctored_exam/entrance.html:4
+#: templates/proctored_exam/failed-prerequisites.html:4
+#: templates/proctored_exam/pending-prerequisites.html:4
 msgid ""
 "\n"
 "      This exam is proctored\n"
@@ -608,7 +605,7 @@ msgstr ""
 "      Цей іспит проходить під наглядом\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/entrance.html:9
+#: templates/proctored_exam/entrance.html:9
 msgid ""
 "\n"
 "      To be eligible for credit or the program credential associated with "
@@ -617,11 +614,11 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/entrance.html:15
+#: templates/proctored_exam/entrance.html:15
 msgid "Continue to my proctored exam."
 msgstr "Розпочати контрольовані іспити"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/entrance.html:18
+#: templates/proctored_exam/entrance.html:18
 msgid ""
 "\n"
 "        You will be guided through steps to set up online proctoring "
@@ -629,8 +626,8 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error.html:4
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error_wrong_browser.html:4
+#: templates/proctored_exam/error.html:4
+#: templates/proctored_exam/error_wrong_browser.html:4
 msgid ""
 "\n"
 "      Error with proctored exam\n"
@@ -640,7 +637,7 @@ msgstr ""
 "      Помилка при проведені іспиту під наглядом\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error.html:10
+#: templates/proctored_exam/error.html:10
 #, python-format
 msgid ""
 "\n"
@@ -652,7 +649,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error.html:19
+#: templates/proctored_exam/error.html:19
 msgid ""
 "\n"
 "      Once the error is resolved, you will need to restart the exam\n"
@@ -661,11 +658,11 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error_modal.html:7
+#: templates/proctored_exam/error_modal.html:7
 msgid "Close"
 msgstr "Закрити"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error_wrong_browser.html:10
+#: templates/proctored_exam/error_wrong_browser.html:10
 msgid ""
 "\n"
 "      The content of this exam can only be viewed through the RPNow\n"
@@ -674,19 +671,18 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error_wrong_browser.html:17
+#: templates/proctored_exam/error_wrong_browser.html:17
 msgid ""
 "\n"
 "      Alternatively, you can end your exam.\n"
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/error_wrong_browser.html:22
+#: templates/proctored_exam/error_wrong_browser.html:22
 msgid "End My Exam"
 msgstr "Завершити екзамен"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/expired.html:4
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/expired.html:4
+#: templates/proctored_exam/expired.html:4 templates/timed_exam/expired.html:4
 msgid ""
 "\n"
 "      The due date for this exam has passed\n"
@@ -696,8 +692,7 @@ msgstr ""
 "      Термін проходження цього іспиту минув\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/expired.html:9
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/expired.html:9
+#: templates/proctored_exam/expired.html:9 templates/timed_exam/expired.html:9
 msgid ""
 "\n"
 "      Because the due date has passed, you are no longer able to take this "
@@ -708,7 +703,7 @@ msgstr ""
 "      Оскільки термін закінчився, ви більше не можете складати цей іспит.\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/failed-prerequisites.html:9
+#: templates/proctored_exam/failed-prerequisites.html:9
 msgid ""
 "\n"
 "    You did not satisfy the requirements for taking this exam with "
@@ -716,7 +711,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/failed-prerequisites.html:14
+#: templates/proctored_exam/failed-prerequisites.html:14
 msgid ""
 "\n"
 "    You did not satisfy the following prerequisites:\n"
@@ -726,7 +721,7 @@ msgstr ""
 "    Ви не задовольнили наступні вимоги:\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/failed-prerequisites.html:32
+#: templates/proctored_exam/failed-prerequisites.html:32
 msgid ""
 "\n"
 "        Due to unsatisfied prerequisites, you can only take this exam "
@@ -738,7 +733,7 @@ msgstr ""
 "нагляду \n"
 "      "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/failed-prerequisites.html:40
+#: templates/proctored_exam/failed-prerequisites.html:40
 #, python-format
 msgid ""
 "\n"
@@ -747,7 +742,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/footer.html:5
+#: templates/proctored_exam/footer.html:5
 msgid ""
 "\n"
 "        About Proctored Exams\n"
@@ -757,7 +752,7 @@ msgstr ""
 "        Про іспит під наглядом\n"
 "        "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:6
+#: templates/proctored_exam/id_verification.html:6
 msgid ""
 "\n"
 "                Complete your verification before starting the proctored "
@@ -769,7 +764,7 @@ msgstr ""
 "наглядом.\n"
 "            "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:11
+#: templates/proctored_exam/id_verification.html:11
 msgid ""
 "\n"
 "                You must successfully complete identity verification before "
@@ -781,7 +776,7 @@ msgstr ""
 "зможете розпочати іспит під наглядом.\n"
 "            "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:17
+#: templates/proctored_exam/id_verification.html:17
 msgid ""
 "\n"
 "                    Your verification is pending. Results should be "
@@ -795,7 +790,7 @@ msgstr ""
 "                    вашого підтвердження.\n"
 "                "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:24
+#: templates/proctored_exam/id_verification.html:24
 msgid ""
 "\n"
 "                    Your verification attempt failed. Please read our "
@@ -813,11 +808,11 @@ msgstr ""
 "                    потім спробуйте ще раз.\n"
 "                "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:32
+#: templates/proctored_exam/id_verification.html:32
 msgid "Retry Verification"
 msgstr "Повторити спробу підтвердження особи"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:37
+#: templates/proctored_exam/id_verification.html:37
 msgid ""
 "\n"
 "                    Your verification has expired. You must successfully "
@@ -831,12 +826,12 @@ msgstr ""
 "                    перед тим, як ви зможете розпочати іспит під наглядом.\n"
 "                "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:44
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:56
+#: templates/proctored_exam/id_verification.html:44
+#: templates/proctored_exam/id_verification.html:56
 msgid "Continue to Verification"
 msgstr "Перейти до перевірки"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/id_verification.html:49
+#: templates/proctored_exam/id_verification.html:49
 msgid ""
 "\n"
 "                    Make sure you are on a computer with a webcam, and that "
@@ -852,14 +847,14 @@ msgstr ""
 "продовжувати.\n"
 "                "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:6
+#: templates/proctored_exam/instructions.html:6
 msgid ""
 "\n"
 "      Set up and start your proctored exam\n"
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:12
+#: templates/proctored_exam/instructions.html:12
 msgid ""
 "\n"
 "          Note: As part of the proctored exam setup, you will be asked\n"
@@ -870,7 +865,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:27
+#: templates/proctored_exam/instructions.html:27
 #, python-format
 msgid ""
 "\n"
@@ -881,24 +876,24 @@ msgid ""
 "          "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:32
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:75
+#: templates/proctored_exam/instructions.html:32
+#: templates/proctored_exam/instructions.html:75
 msgid "Start System Check"
 msgstr "Розпочати перевірку системи"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:34
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:93
+#: templates/proctored_exam/instructions.html:34
+#: templates/proctored_exam/instructions.html:93
 msgid "Start Exam"
 msgstr "Розпочати іспит"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:38
+#: templates/proctored_exam/instructions.html:38
 msgid ""
 "\n"
 "          Step 1\n"
 "        "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:43
+#: templates/proctored_exam/instructions.html:43
 msgid ""
 "\n"
 "          Copy this unique exam code. You will be prompted to paste this "
@@ -906,11 +901,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:49
+#: templates/proctored_exam/instructions.html:49
 msgid "Copy Exam Code"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:52
+#: templates/proctored_exam/instructions.html:52
 msgid ""
 "\n"
 "        Select the exam code, then copy it using Control + C (Windows) or "
@@ -918,14 +913,14 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:57
+#: templates/proctored_exam/instructions.html:57
 msgid ""
 "\n"
 "          Step 2\n"
 "        "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:62
+#: templates/proctored_exam/instructions.html:62
 msgid ""
 "\n"
 "        Start your system check now. A new window will open for this step "
@@ -933,29 +928,29 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:67
+#: templates/proctored_exam/instructions.html:67
 msgid ""
 "\n"
 "        Make sure you:\n"
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:72
+#: templates/proctored_exam/instructions.html:72
 msgid "Have a computer with a functioning webcam"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:73
+#: templates/proctored_exam/instructions.html:73
 msgid "Have your valid photo ID (e.g. driver's license or passport) ready"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:77
+#: templates/proctored_exam/instructions.html:77
 msgid ""
 "\n"
 "          Step 3\n"
 "        "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:83
+#: templates/proctored_exam/instructions.html:83
 msgid ""
 "\n"
 "            For security and exam integrity reasons, we ask you to sign in "
@@ -964,7 +959,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:89
+#: templates/proctored_exam/instructions.html:89
 msgid ""
 "\n"
 "            When you've finished the system check and verified your "
@@ -972,12 +967,12 @@ msgid ""
 "          "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/instructions.html:105
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/proctoring_opt_out_button.html:5
+#: templates/proctored_exam/instructions.html:105
+#: templates/proctored_exam/proctoring_opt_out_button.html:5
 msgid "Take this exam without proctoring."
 msgstr "Розпочати цей іспит без нагляду."
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:4
+#: templates/proctored_exam/onboarding_error.html:4
 msgid ""
 "\n"
 "      You must complete an onboarding exam before taking this proctored "
@@ -985,19 +980,19 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:11
+#: templates/proctored_exam/onboarding_error.html:11
 msgid ""
 "\n"
 "      Please complete an onboarding exam before attempting this exam.\n"
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:17
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:32
+#: templates/proctored_exam/onboarding_error.html:17
+#: templates/proctored_exam/onboarding_error.html:32
 msgid "Navigate to onboarding exam"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:21
+#: templates/proctored_exam/onboarding_error.html:21
 msgid ""
 "\n"
 "    Your onboarding exam is being reviewed. Before attempting this exam, "
@@ -1005,14 +1000,14 @@ msgid ""
 "  "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:26
+#: templates/proctored_exam/onboarding_error.html:26
 msgid ""
 "\n"
 "      Your onboarding exam failed to pass all requirements.\n"
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/onboarding_error.html:38
+#: templates/proctored_exam/onboarding_error.html:38
 #, python-format
 msgid ""
 "\n"
@@ -1024,7 +1019,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/pending-prerequisites.html:9
+#: templates/proctored_exam/pending-prerequisites.html:9
 msgid ""
 "\n"
 "    You have not completed the prerequisites for this exam. All requirements "
@@ -1032,7 +1027,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/pending-prerequisites.html:14
+#: templates/proctored_exam/pending-prerequisites.html:14
 msgid ""
 "\n"
 "    The following prerequisites are in a <strong>pending</strong> state and "
@@ -1044,7 +1039,7 @@ msgstr ""
 "потрібно успішно завершити, перш ніж продовжувати:\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/pending-prerequisites.html:30
+#: templates/proctored_exam/pending-prerequisites.html:30
 msgid ""
 "\n"
 "    You can take this exam with proctoring only when all prerequisites have "
@@ -1052,11 +1047,11 @@ msgid ""
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/proctoring_launch_callback.html:164
+#: templates/proctored_exam/proctoring_launch_callback.html:164
 msgid " Your Proctoring Session Has Started "
 msgstr "Ваша сесія з іспиту під наглядом розпочалася"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/proctoring_launch_callback.html:165
+#: templates/proctored_exam/proctoring_launch_callback.html:165
 #, python-format
 msgid ""
 " From this point in time, you must follow the <a href="
@@ -1067,7 +1062,7 @@ msgstr ""
 "\"%(link_urls.online_proctoring_rules)s\" target=\"_blank\">правил онлайн-"
 "прокторінгу,</a> щоб скласти огляд прокторінгу для вашого іспиту."
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/proctoring_launch_callback.html:168
+#: templates/proctored_exam/proctoring_launch_callback.html:168
 msgid ""
 "\n"
 "            Do not close this window before you finish your exam. if you "
@@ -1081,7 +1076,7 @@ msgstr ""
 "успішно проходити іспит, який ви розпочали.\n"
 "          "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/proctoring_launch_callback.html:173
+#: templates/proctored_exam/proctoring_launch_callback.html:173
 #, python-format
 msgid ""
 "\n"
@@ -1100,7 +1095,7 @@ msgstr ""
 "            та завантажити дані сеансу іспиту під наглядом для перевірки.\n"
 "          "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:5
+#: templates/proctored_exam/ready_to_start.html:5
 msgid ""
 "\n"
 "      Important\n"
@@ -1110,7 +1105,7 @@ msgstr ""
 "      Важливо\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:10
+#: templates/proctored_exam/ready_to_start.html:10
 #, python-format
 msgid ""
 "\n"
@@ -1131,14 +1126,14 @@ msgstr ""
 "мій іспит\", оцінюватимуться лише надіслані вами відповіді.\n"
 "      "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:18
+#: templates/proctored_exam/ready_to_start.html:18
 msgid ""
 "\n"
 "      Proctored Exam Rules\n"
 "    "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:23
+#: templates/proctored_exam/ready_to_start.html:23
 msgid ""
 "\n"
 "         You must adhere to the following rules while you complete this "
@@ -1149,7 +1144,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:29
+#: templates/proctored_exam/ready_to_start.html:29
 #, python-format
 msgid ""
 "\n"
@@ -1157,7 +1152,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:36
+#: templates/proctored_exam/ready_to_start.html:36
 msgid ""
 "\n"
 "      Additional Exam Rules\n"
@@ -1167,7 +1162,7 @@ msgstr ""
 "      Додаткові правила іспиту\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:41
+#: templates/proctored_exam/ready_to_start.html:41
 #, python-format
 msgid ""
 "\n"
@@ -1178,15 +1173,15 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:49
+#: templates/proctored_exam/ready_to_start.html:49
 msgid "Start my exam"
 msgstr "Розпочати іспит"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_start.html:50
+#: templates/proctored_exam/ready_to_start.html:50
 msgid "Starting Exam"
 msgstr "Початок іспиту"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:4
+#: templates/proctored_exam/ready_to_submit.html:4
 msgid ""
 "\n"
 "      Are you sure you want to end your proctored exam?\n"
@@ -1196,29 +1191,29 @@ msgstr ""
 "      Ви впевнені, що хочете завершити обмежений за часом іспит?\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:10
+#: templates/proctored_exam/ready_to_submit.html:10
 msgid ""
 "Make sure that you have selected \"Submit\" for each answer before you "
 "submit your exam."
 msgstr ""
-"Переконайтеся, що ви натиснули кнопку  \"Зберегти відповідь\" "
-"під кожним виконаним завданням."
+"Переконайтеся, що ви натиснули кнопку  \"Зберегти відповідь\" під кожним "
+"виконаним завданням."
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:12
+#: templates/proctored_exam/ready_to_submit.html:12
 msgid ""
 "Once you click \"Yes, end my proctored exam\", the exam will be closed, and "
 "your proctoring session will be submitted for review."
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:15
+#: templates/proctored_exam/ready_to_submit.html:15
 msgid "Yes, end my proctored exam"
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:16
+#: templates/proctored_exam/ready_to_submit.html:16
 msgid "Ending Exam"
 msgstr "Завершення іспиту"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/ready_to_submit.html:21
+#: templates/proctored_exam/ready_to_submit.html:21
 msgid ""
 "\n"
 "        No, I'd like to continue working\n"
@@ -1228,7 +1223,7 @@ msgstr ""
 "        Ні, я хотів би продовжувати працювати\n"
 "      "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/rejected.html:5
+#: templates/proctored_exam/rejected.html:5
 msgid ""
 "\n"
 "        Your proctoring session was reviewed, but did not pass all "
@@ -1236,7 +1231,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/rejected.html:13
+#: templates/proctored_exam/rejected.html:13
 #, python-format
 msgid ""
 "\n"
@@ -1245,7 +1240,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/rejected.html:23
+#: templates/proctored_exam/rejected.html:23
 msgid ""
 "\n"
 "        If you have concerns about your proctoring session results, contact "
@@ -1253,7 +1248,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/submitted.html:4
+#: templates/proctored_exam/submitted.html:4
 msgid ""
 "\n"
 "      You have submitted this proctored exam for review\n"
@@ -1263,23 +1258,23 @@ msgstr ""
 "      Ви подали цей іспит під наглядом на перевірку\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/submitted.html:9
+#: templates/proctored_exam/submitted.html:9
 msgid "Your recorded data should now be uploaded for review."
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/submitted.html:11
+#: templates/proctored_exam/submitted.html:11
 msgid ""
 "If the proctoring software window is still open, close it now and confirm "
 "that you want to quit the application."
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/submitted.html:13
+#: templates/proctored_exam/submitted.html:13
 msgid ""
 "Proctoring results are usually available within 5 business days after you "
 "submit your exam."
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/submitted.html:19
+#: templates/proctored_exam/submitted.html:19
 #, python-format
 msgid ""
 "\n"
@@ -1292,7 +1287,7 @@ msgstr ""
 "надійшов до служби, зв’яжіться з нами %(platform_name)s служба підтримки.\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/verified.html:5
+#: templates/proctored_exam/verified.html:5
 msgid ""
 "\n"
 "                Your proctoring session was reviewed successfully. Go to "
@@ -1300,7 +1295,7 @@ msgid ""
 "            "
 msgstr ""
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/visit_exam_content.html:5
+#: templates/proctored_exam/visit_exam_content.html:5
 msgid ""
 "\n"
 "      To view your exam questions and responses, select <strong>View my "
@@ -1314,313 +1309,103 @@ msgstr ""
 "на лівій навігаційній панелі.\n"
 "    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/proctored_exam/visit_exam_content.html:11
+#: templates/proctored_exam/visit_exam_content.html:11
 msgid "View my exam"
 msgstr "Переглянути мій іспит"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/declined.html:4
+#: templates/timed_exam/check_camera_hardware.html:4
 msgid ""
 "\n"
-"      You have declined your timed exam.\n"
+"     Follow these steps to test your computer hardware before beginning the "
+"test %(exam_name)s:\n"
 "    "
 msgstr ""
 "\n"
-"      Ви відмовилися від іспитування та завершили іспит достроково.\n"
-"            "
+"      Виконайте ці дії, щоб перевірити обладнання комп'ютера перед "
+"початком іспитування \"%(exam_name)s\":\n"
+"    "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:4
-#, python-format
+
+#: templates/timed_exam/check_camera_hardware.html:12
+msgid ""
+"Make sure the camera on your computer is running before you start the time-"
+"limited exam."
+msgstr ""
+"Перш ніж розпочати обмежений за часом іспит, переконайтеся, що камера на "
+"вашому комп’ютері працює."
+
+#: templates/timed_exam/check_camera_hardware.html:17
+#, fuzzy
+#| msgid "Start Exam"
+msgid "Start camera"
+msgstr "Розпочати іспит"
+
+#: templates/timed_exam/check_camera_hardware.html:28
+msgid "Do you see yourself on the screen?"
+msgstr "Ви бачите себе на екрані?"
+
+#: templates/timed_exam/check_camera_hardware.html:35
+#: templates/timed_exam/check_camera_hardware.html:42        "
 msgid ""
 "\n"
-"    %(exam_name)s is a Timed Exam (%(total_time)s)\n"
-"    "
+"        Yes\n"
+"        "
 msgstr ""
 "\n"
-"    Іспит \"%(exam_name)s\" обмежений за часом (%(total_time)s).\n"
-"    "
+"            Так\n"
+"          "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:9
-msgid "This exam has a time limit associated with it."
-msgstr "Цей іспит має часове обмеження."
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:11
-msgid "To pass this exam, you must complete the problems in the time allowed."
-msgstr "Щоб скласти його, потрібно виконати завдання впродовж установленого часу."
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:13
-msgid "After you select "
-msgstr "Після натискання"
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:15
-msgid "I am ready to start this timed exam,"
-msgstr "\"Розпочати обмежений за часом іспит\","
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:17
-msgid "you will have "
-msgstr "ви матимете"
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:17
-msgid " to complete and submit the exam."
-msgstr "щоб його скласти й надіслати для перевіряння."
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/entrance.html:21
+#: templates/timed_exam/check_camera_hardware.html:49
 msgid ""
 "\n"
-"        I am ready to start this timed exam.\n"
-"      "
+"        No\n"
+"        "
 msgstr ""
 "\n"
-"        Розпочати обмежений за часом іспит.\n"
-"      "
+"        Ні\n"
+"        "
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/footer.html:3
-msgid "Can I request additional time to complete my exam?"
-msgstr "Чи можна попросити додатковий час для складання іспиту?"
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/footer.html:4
+#: templates/timed_exam/check_camera_hardware.html:56
 msgid ""
-"\n"
-"      If you have disabilities,\n"
-"      you might be eligible for an additional time allowance on timed "
-"exams.\n"
-"      Ask your course team for information about additional time "
-"allowances.\n"
-"    "
+"If you do not see yourself on the screen, seek the help of an instructor or "
+"follow the recommended steps:"
 msgstr ""
-"\n"
-"      За певних умов \n"
-"      ви можете отримати додатковий час на складання цього іспиту.\n"
-"      Зверніться, будь ласка, до інструктора.\n"
-"    "
+"Якщо ви не бачите себе на екрані, зверніться по допомогу до інструктора або "
+"виконайте рекомендовані дії:"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_decline.html:4
-#| msgid ""
-#| "\n"
-#| "      Are you sure that you want to submit your timed exam?\n"
-#| "    "
+#: templates/timed_exam/check_camera_hardware.html:60
+msgid "make sure the external camera is properly connected to the computer;"
+msgstr "переконайтеся, що зовнішня камера правильно під’єднана до комп’ютера;"
+
+#: templates/timed_exam/check_camera_hardware.html:63
 msgid ""
-"\n"
-"      Are you sure that you want to decline your timed exam?\n"
-"    "
+"make sure the camera is positioned correctly and the camera lens is not "
+"closed;"
 msgstr ""
-"\n"
-"      Ви впевнені, що хочете відмовитися від іспитування та завершити іспит достроково?\n"
-"    "
+"переконайтеся, що камера правильно розташована, а об’єктив камери не "
+"закритий;"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_decline.html:9
-#| msgid ""
-#| "\n"
-#| "      Yes, submit my timed exam.\n"
-#| "    "
+#: templates/timed_exam/check_camera_hardware.html:66
 msgid ""
-"\n"
-"      Yes, decline my timed exam.\n"
-"    "
+"check cables, plugs, sockets, and connection reliability for the external "
+"wired camera;"
 msgstr ""
-"\n"
-"      Так, завершити іспит.\n"
-"    "
+"перевірте кабелі, штекери, гнізда та надійність з'єднання для зовнішньої "
+"дротової камери;"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_decline.html:15
-#| msgid ""
-#| "\n"
-#| "        No, I want to continue working.\n"
-#| "      "
+#: templates/timed_exam/check_camera_hardware.html:69
 msgid ""
-"\n"
-"      No, I want to continue working.\n"
-"    "
+"make sure your privacy settings are set correctly (allow your browser to use "
+"your camera and microphone);"
 msgstr ""
-"\n"
-"        Ні, я хочу продовжити виконання завдань.\n"
-"      "
+"переконайтеся, що ваші налаштування конфіденційності встановлені належним "
+"чином (дайте дозвіл браузеру використовувати камеру та мікрофон);"
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:4
-msgid ""
-"\n"
-"      Are you sure that you want to submit your timed exam?\n"
-"    "
-msgstr ""
-"\n"
-"      Ви впевнені, що хочете завершити обмежений за часом іспит?\n"
-"    "
+#: templates/timed_exam/check_camera_hardware.html:72
+msgid "check the camera`s system settings."
+msgstr "перевірте системні налаштування камери."
 
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:9
-msgid ""
-"\n"
-"      Make sure that you have selected \"Submit\" for each problem before "
-"you submit your exam.\n"
-"    "
-msgstr ""
-"\n"
-"      Переконайтеся, що ви натиснули кнопку \"Зберегти відповідь\" "
-"під кожним виконаним завданням.\n"
-"    "
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:14
-msgid ""
-"\n"
-"      After you submit your exam, your exam will be graded.\n"
-"    "
-msgstr ""
-"\n"
-"      Після завершення розпочнеться процедура оцінювання іспиту.\n"
-"    "
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:19
-msgid ""
-"\n"
-"      Yes, submit my timed exam.\n"
-"    "
-msgstr ""
-"\n"
-"      Так, завершити іспит.\n"
-"    "
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/ready_to_submit.html:25
-msgid ""
-"\n"
-"        No, I want to continue working.\n"
-"      "
-msgstr ""
-"\n"
-"        Ні, я хочу продовжити виконання завдань.\n"
-"      "
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/submitted.html:6
-msgid ""
-"\n"
-"                The time allotted for this exam has expired. Your exam has "
-"been submitted and any work you completed\n"
-"                will be graded.\n"
-"            "
-msgstr ""
-"\n"
-"                Час, призначений для цього іспиту, минув. Ваш іспит подано, "
-"і роботу, яку ви виконали\n"
-"                буде оцінено.\n"
-"            "
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/submitted.html:11
-msgid ""
-"\n"
-"                You have submitted your timed exam.\n"
-"            "
-msgstr ""
-"\n"
-"                Ви вже завершили обмежений за часом іспит.\n"
-"            "
-
-#: openedx/edx-proctoring/edx_proctoring/templates/timed_exam/submitted.html:21
-msgid ""
-"\n"
-"                After the due date has passed, you can review the exam, but "
-"you cannot change your answers.\n"
-"            "
-msgstr ""
-"\n"
-"                Після завершення відведеного строку ви можете переглянути завдання іспиту, але "
-"не зможете змінити відповіді.\n"
-"            "
-
-#: openedx/edx-proctoring/edx_proctoring/utils.py:78
-#, python-brace-format
-msgid "{num_of_hours} hour"
-msgstr "{num_of_hours} година"
-
-#: openedx/edx-proctoring/edx_proctoring/utils.py:81
-#, python-brace-format
-msgid "{num_of_hours} hours"
-msgstr "{num_of_hours} годин"
-
-msgid "%d hour"
-msgid_plural "%d hours"
-msgstr[0] "%d година"
-msgstr[1] "%d години"
-msgstr[2] "%d годин"
-msgstr[3] "%d годин"
-
-msgid "%d minute"
-msgid_plural "%d minutes"
-msgstr[0] "%d хвилина"
-msgstr[1] "%d хвилини"
-msgstr[2] "%d хвилин"
-msgstr[3] "%d хвилин"
-
-msgid "and"
-msgstr "та"
-
-#: openedx/edx-proctoring/edx_proctoring/utils.py:89
-#: openedx/edx-proctoring/edx_proctoring/utils.py:99
-#, python-brace-format
-msgid "{num_of_minutes} minutes"
-msgstr "{num_of_minutes} хвилин"
-
-#: openedx/edx-proctoring/edx_proctoring/utils.py:92
-#, python-brace-format
-msgid " and {num_of_minutes} minute"
-msgstr " та {num_of_minutes} хвилина"
-
-#: openedx/edx-proctoring/edx_proctoring/utils.py:94
-#, python-brace-format
-msgid "{num_of_minutes} minute"
-msgstr "{num_of_minutes} хвилина"
-
-#: openedx/edx-proctoring/edx_proctoring/utils.py:97
-#, python-brace-format
-msgid " and {num_of_minutes} minutes"
-msgstr " та {num_of_minutes} хвилин"
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:111
-msgid "could not determine the course_id"
-msgstr "не вдалося визначити ідентифікатор курсу"
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:120
-msgid "Must be a Staff User to Perform this request."
-msgstr "Для виконання цього запиту повинен бути доступ персонала."
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:349
-#: openedx/edx-proctoring/edx_proctoring/views.py:559
-#, python-brace-format
-msgid "you have {remaining_time} remaining"
-msgstr "залишилось {remaining_time} часу"
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:355
-msgid "you have less than a minute remaining"
-msgstr "у вас залишилося менше хвилини"
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:548
-msgid "a timed exam"
-msgstr "обмежений за часом"
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:549
-msgid "a proctored exam"
-msgstr "іспит під наглядом"
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:550
-msgid "an onboarding exam"
-msgstr ""
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:550
-msgid "a practice exam"
-msgstr ""
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:1054
-#, python-brace-format
-msgid "No exams in course {course_id}."
-msgstr ""
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:1060
-#, python-brace-format
-msgid "No proctored exams in course {course_id}"
-msgstr ""
-
-#: openedx/edx-proctoring/edx_proctoring/views.py:1079
-#, python-brace-format
-msgid "No instructor dashboard for {proctor_service}"
-msgstr ""
-
-#: templates/timed_exam/check_hardware.html
+#: templates/timed_exam/check_headphones_hardware.html:4
 #, python-format
 msgid ""
 "\n"
@@ -1633,7 +1418,7 @@ msgstr ""
 "початком іспитування \"%(exam_name)s\".\n"
 "    "
 
-#: templates/timed_exam/check_hardware.html
+#: templates/timed_exam/check_headphones_hardware.html:11
 msgid ""
 "\n"
 "          Before you start a timed exam, make sure that headphones or "
@@ -1642,12 +1427,12 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"          Перш ніж розпочати обмежений за часом іспит, переконайтеся, "
-"що навушники або колонки працюють.\n"
+"          Перш ніж розпочати обмежений за часом іспит, переконайтеся, що "
+"навушники або колонки працюють.\n"
 "          Прослухайте, будь ласка, тестовий звукозапис.\n"
 "        "
 
-#: templates/timed_exam/check_hardware.html
+#: templates/timed_exam/check_headphones_hardware.html:22
 msgid ""
 "\n"
 "          Have you heard the sound record?\n"
@@ -1657,17 +1442,8 @@ msgstr ""
 "        Ви чули звукозапис?\n"
 "        "
 
-#: templates/timed_exam/check_hardware.html
-msgid ""
-"\n"
-"            Yes\n"
-"            "
-msgstr ""
-"\n"
-"            Так\n"
-"            "
-
-#: templates/timed_exam/check_hardware.html
+#: templates/timed_exam/check_headphones_hardware.html:31
+#: templates/timed_exam/check_headphones_hardware.html:37
 msgid ""
 "\n"
 "            Yes\n"
@@ -1677,7 +1453,8 @@ msgstr ""
 "            Так\n"
 "          "
 
-#: templates/timed_exam/check_hardware.html
+#: templates/timed_exam/check_headphones_hardware.html:43
+#: templates/timed_exam/check_microphone_hardware.html:41
 msgid ""
 "\n"
 "          No\n"
@@ -1696,11 +1473,14 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"          Якщо ви не чули звукозапису, зверніться по допомогу до інструктора\n"
-"          або виконайте рекомендовані дії, пробуючи прослухати тестовий звукозапис\n"
+"          Якщо ви не чули звукозапису, зверніться по допомогу до "
+"інструктора\n"
+"          або виконайте рекомендовані дії, пробуючи прослухати тестовий "
+"звукозапис\n"
 "          після кожної з них:\n"
 "        "
 
+#: templates/timed_exam/check_headphones_hardware.html:58
 msgid ""
 "\n"
 "            check the volume level set on the computer;\n"
@@ -1742,6 +1522,7 @@ msgstr ""
 "            перевірте налаштування з'єднання для бездротових навушників;\n"
 "          "
 
+#: templates/timed_exam/check_headphones_hardware.html:78
 msgid ""
 "\n"
 "            check the system sound settings.\n"
@@ -1750,3 +1531,389 @@ msgstr ""
 "\n"
 "            перевірте системні налаштування звуку.\n"
 "          "
+
+#: templates/timed_exam/check_microphone_hardware.html:4
+msgid ""
+"\n"
+"     Follow these steps to check your computer or a device hardware and "
+"start a timed exam %(exam_name)s:\n"
+"    "
+msgstr ""
+"\n"
+"      Виконайте ці дії, щоб перевірити звукове обладнання комп'ютера перед "
+"початком іспитування \"%(exam_name)s\".\n"
+"    "
+
+#: templates/timed_exam/check_microphone_hardware.html:12
+msgid ""
+"\n"
+"            Before you begin a timed exam, you must make sure you have "
+"working microphone.\n"
+"          "
+msgstr ""
+
+#: templates/timed_exam/check_microphone_hardware.html:20
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "          Have you heard the sound record?\n"
+#| "        "
+msgid ""
+"\n"
+"          Have you seen sound volume delays?\n"
+"        "
+msgstr ""
+"\n"
+"        Ви чули звукозапис?\n"
+"        "
+
+#: templates/timed_exam/check_microphone_hardware.html:29
+#: templates/timed_exam/check_microphone_hardware.html:35
+msgid ""
+"\n"
+"            Yes\n"
+"            "
+msgstr ""
+"\n"
+"            Так\n"
+"            "
+
+#: templates/timed_exam/check_microphone_hardware.html:48
+msgid ""
+"\n"
+"          If you’re having microphone problems, the following suggestions "
+"might help.\n"
+"        "
+msgstr ""
+
+#: templates/timed_exam/check_microphone_hardware.html:54
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "            check the system sound settings.\n"
+#| "          "
+msgid ""
+"\n"
+"            Check your speaker output\n"
+"          "
+msgstr ""
+"\n"
+"            перевірте системні налаштування звуку.\n"
+"          "
+
+#: templates/timed_exam/check_microphone_hardware.html:59
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "            check cables, plugs, sockets and the reliability of the wired "
+#| "headphone connection;\n"
+#| "          "
+msgid ""
+"\n"
+"            Check your cables, plugs, jacks, volume, speaker, and headphone "
+"connections\n"
+"          "
+msgstr ""
+"\n"
+"            перевірте кабелі, штекери, гнізда та надійність з'єднання для "
+"дротових навушників;\n"
+"          "
+
+#: templates/timed_exam/check_microphone_hardware.html:64
+msgid ""
+"\n"
+"            If you have microphone issues, make sure your privacy settings "
+"are configured properly\n"
+"          "
+msgstr ""
+
+#: templates/timed_exam/check_microphone_hardware.html:70
+msgid ""
+"\n"
+"          If you still have hardware problems, you can contact technical "
+"support by emailing or by calling.\n"
+"        "
+msgstr ""
+
+#: templates/timed_exam/declined.html:4
+msgid ""
+"\n"
+"      You have declined your timed exam.\n"
+"    "
+msgstr ""
+"\n"
+"      Ви відмовилися від іспитування та завершили іспит достроково.\n"
+"            "
+
+#: templates/timed_exam/entrance.html:4
+#, python-format
+msgid ""
+"\n"
+"    %(exam_name)s is a Timed Exam (%(total_time)s)\n"
+"    "
+msgstr ""
+"\n"
+"    Іспит \"%(exam_name)s\" обмежений за часом (%(total_time)s).\n"
+"    "
+
+#: templates/timed_exam/entrance.html:9
+msgid "This exam has a time limit associated with it."
+msgstr "Цей іспит має часове обмеження."
+
+#: templates/timed_exam/entrance.html:11
+msgid "To pass this exam, you must complete the problems in the time allowed."
+msgstr ""
+"Щоб скласти його, потрібно виконати завдання впродовж установленого часу."
+
+#: templates/timed_exam/entrance.html:13
+msgid "After you select "
+msgstr "Після натискання"
+
+#: templates/timed_exam/entrance.html:15
+msgid "I am ready to start this timed exam,"
+msgstr "\"Розпочати обмежений за часом іспит\","
+
+#: templates/timed_exam/entrance.html:17
+msgid "you will have "
+msgstr "ви матимете"
+
+#: templates/timed_exam/entrance.html:17
+msgid " to complete and submit the exam."
+msgstr "щоб його скласти й надіслати для перевіряння."
+
+#: templates/timed_exam/entrance.html:21
+msgid ""
+"\n"
+"        I am ready to start this timed exam.\n"
+"      "
+msgstr ""
+"\n"
+"        Розпочати обмежений за часом іспит.\n"
+"      "
+
+#: templates/timed_exam/footer.html:3
+msgid "Can I request additional time to complete my exam?"
+msgstr "Чи можна попросити додатковий час для складання іспиту?"
+
+#: templates/timed_exam/footer.html:4
+msgid ""
+"\n"
+"      If you have disabilities,\n"
+"      you might be eligible for an additional time allowance on timed "
+"exams.\n"
+"      Ask your course team for information about additional time "
+"allowances.\n"
+"    "
+msgstr ""
+"\n"
+"      За певних умов \n"
+"      ви можете отримати додатковий час на складання цього іспиту.\n"
+"      Зверніться, будь ласка, до інструктора.\n"
+"    "
+
+#: templates/timed_exam/ready_to_decline.html:4
+msgid ""
+"\n"
+"      Are you sure that you want to decline your timed exam?\n"
+"    "
+msgstr ""
+"\n"
+"      Ви впевнені, що хочете відмовитися від іспитування та завершити іспит "
+"достроково?\n"
+"    "
+
+#: templates/timed_exam/ready_to_decline.html:9
+msgid ""
+"\n"
+"      Yes, decline my timed exam.\n"
+"    "
+msgstr ""
+"\n"
+"      Так, завершити іспит.\n"
+"    "
+
+#: templates/timed_exam/ready_to_decline.html:15
+msgid ""
+"\n"
+"      No, I want to continue working.\n"
+"    "
+msgstr ""
+"\n"
+"        Ні, я хочу продовжити виконання завдань.\n"
+"      "
+
+#: templates/timed_exam/ready_to_submit.html:4
+msgid ""
+"\n"
+"      Are you sure that you want to submit your timed exam?\n"
+"    "
+msgstr ""
+"\n"
+"      Ви впевнені, що хочете завершити обмежений за часом іспит?\n"
+"    "
+
+#: templates/timed_exam/ready_to_submit.html:9
+msgid ""
+"\n"
+"      Make sure that you have selected \"Submit\" for each problem before "
+"you submit your exam.\n"
+"    "
+msgstr ""
+"\n"
+"      Переконайтеся, що ви натиснули кнопку \"Зберегти відповідь\" під "
+"кожним виконаним завданням.\n"
+"    "
+
+#: templates/timed_exam/ready_to_submit.html:14
+msgid ""
+"\n"
+"      After you submit your exam, your exam will be graded.\n"
+"    "
+msgstr ""
+"\n"
+"      Після завершення розпочнеться процедура оцінювання іспиту.\n"
+"    "
+
+#: templates/timed_exam/ready_to_submit.html:19
+msgid ""
+"\n"
+"      Yes, submit my timed exam.\n"
+"    "
+msgstr ""
+"\n"
+"      Так, завершити іспит.\n"
+"    "
+
+#: templates/timed_exam/ready_to_submit.html:25
+msgid ""
+"\n"
+"        No, I want to continue working.\n"
+"      "
+msgstr ""
+"\n"
+"        Ні, я хочу продовжити виконання завдань.\n"
+"      "
+
+#: templates/timed_exam/submitted.html:6
+msgid ""
+"\n"
+"                The time allotted for this exam has expired. Your exam has "
+"been submitted and any work you completed\n"
+"                will be graded.\n"
+"            "
+msgstr ""
+"\n"
+"                Час, призначений для цього іспиту, минув. Ваш іспит подано, "
+"і роботу, яку ви виконали\n"
+"                буде оцінено.\n"
+"            "
+
+#: templates/timed_exam/submitted.html:11
+msgid ""
+"\n"
+"                You have submitted your timed exam.\n"
+"            "
+msgstr ""
+"\n"
+"                Ви вже завершили обмежений за часом іспит.\n"
+"            "
+
+#: templates/timed_exam/submitted.html:21
+msgid ""
+"\n"
+"                After the due date has passed, you can review the exam, but "
+"you cannot change your answers.\n"
+"            "
+msgstr ""
+"\n"
+"                Після завершення відведеного строку ви можете переглянути "
+"завдання іспиту, але не зможете змінити відповіді.\n"
+"            "
+
+#: utils.py:79
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d година"
+msgstr[1] "%d години"
+msgstr[2] "%d годин"
+msgstr[3] "%d годин"
+
+#: utils.py:89
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d хвилина"
+msgstr[1] "%d хвилини"
+msgstr[2] "%d хвилин"
+msgstr[3] "%d хвилин"
+
+#: utils.py:93
+msgid "and"
+msgstr "та"
+
+#: views.py:112
+msgid "could not determine the course_id"
+msgstr "не вдалося визначити ідентифікатор курсу"
+
+#: views.py:121
+msgid "Must be a Staff User to Perform this request."
+msgstr "Для виконання цього запиту повинен бути доступ персонала."
+
+#: views.py:350 views.py:567
+#, python-brace-format
+msgid "you have {remaining_time} remaining"
+msgstr "залишилось {remaining_time} часу"
+
+#: views.py:356
+msgid "you have less than a minute remaining"
+msgstr "у вас залишилося менше хвилини"
+
+#: views.py:556
+msgid "a timed exam"
+msgstr "обмежений за часом"
+
+#: views.py:557
+msgid "a proctored exam"
+msgstr "іспит під наглядом"
+
+#: views.py:558
+msgid "an onboarding exam"
+msgstr ""
+
+#: views.py:558
+msgid "a practice exam"
+msgstr ""
+
+#: views.py:1062
+#, python-brace-format
+msgid "No exams in course {course_id}."
+msgstr ""
+
+#: views.py:1068
+#, python-brace-format
+msgid "No proctored exams in course {course_id}"
+msgstr ""
+
+#: views.py:1087
+#, python-brace-format
+msgid "No instructor dashboard for {proctor_service}"
+msgstr ""
+
+#~ msgid "{num_of_hours} hour"
+#~ msgstr "{num_of_hours} година"
+
+#~ msgid "{num_of_hours} hours"
+#~ msgstr "{num_of_hours} годин"
+
+#~ msgid "{num_of_minutes} minutes"
+#~ msgstr "{num_of_minutes} хвилин"
+
+#~ msgid " and {num_of_minutes} minute"
+#~ msgstr " та {num_of_minutes} хвилина"
+
+#~ msgid "{num_of_minutes} minute"
+#~ msgstr "{num_of_minutes} хвилина"
+
+#~ msgid " and {num_of_minutes} minutes"
+#~ msgstr " та {num_of_minutes} хвилин"
