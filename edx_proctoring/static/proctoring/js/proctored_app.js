@@ -16,6 +16,12 @@ $(function() {
                 counterView : true,
                 dispatchStop : true
             });
+        } catch (e) {
+            console.error("jQuery.microphoneChecker plugin not connected or not found");
+        }
+        $(this).prop("disabled", true)
+        $(".check-microphone-alert").fadeIn("slow");
+    });
             $(this).prop("disabled", true)
             $(".check-microphone-alert").fadeIn("slow");
         });

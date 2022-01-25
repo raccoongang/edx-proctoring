@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-proctoring\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 14:32+0000\n"
+"POT-Creation-Date: 2022-01-25 11:58+0000\n"
 "PO-Revision-Date: 2016-12-20 19:55+0000\n"
 "Last-Translator: Danylo Shcherbak <danylo.shcherbak@raccoongang.com>, 2021\n"
 "Language-Team: Ukrainian (https://www.transifex.com/open-edx/teams/6205/"
@@ -42,8 +42,6 @@ msgstr ""
 #: edx_proctoring/static/proctoring/js/exam_action_handler.js:127
 #: edx_proctoring/static/proctoring/js/exam_action_handler.js:187
 #: edx_proctoring/static/proctoring/js/exam_action_handler.js:198
-#, fuzzy
-#| msgid "Ending Exam"
 msgid "Error Ending Exam"
 msgstr "Завершення іспиту"
 
@@ -56,8 +54,6 @@ msgstr ""
 
 #: edx_proctoring/static/proctoring/js/exam_action_handler.js:151
 #: edx_proctoring/static/proctoring/js/exam_action_handler.js:162
-#, fuzzy
-#| msgid "Starting Exam"
 msgid "Error Starting Exam"
 msgstr "Початок іспиту"
 
@@ -84,14 +80,10 @@ msgid "Required field"
 msgstr ""
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_add_allowance_view.js:169
-#, fuzzy
-#| msgid "Practice Exam Failed"
 msgid "Practice Exam"
 msgstr "Практичний іспит провалено"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_add_allowance_view.js:171
-#, fuzzy
-#| msgid "Taking As Proctored Exam"
 msgid "Proctored Exam"
 msgstr "Розпочати як екзамен під наглядом"
 
@@ -100,8 +92,6 @@ msgid "Timed Exam"
 msgstr "Іспити з обмеженням за часом"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_add_allowance_view.js:198
-#, fuzzy
-#| msgid "Additional Time (minutes)"
 msgid "Additional Time"
 msgstr "Додатковий час (хв.)"
 
@@ -132,8 +122,6 @@ msgid "Download Software Clicked"
 msgstr "Натисніть для завантаження програмного забезпечення"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:13
-#, fuzzy
-#| msgid "Ready To Start"
 msgid "Ready to start"
 msgstr "Готовий до старту"
 
@@ -142,8 +130,6 @@ msgid "Started"
 msgstr "Розпочався"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:15
-#, fuzzy
-#| msgid "Ready To Submit"
 msgid "Ready to submit"
 msgstr "Готовий до відправки"
 
@@ -152,8 +138,6 @@ msgid "Declined"
 msgstr "Відхилений"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:17
-#, fuzzy
-#| msgid "Timed Out"
 msgid "Timed out"
 msgstr "Час вийшов"
 
@@ -198,28 +182,16 @@ msgid "Practice"
 msgstr ""
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:162
-#, fuzzy
-#| msgid "Taking as Proctored"
 msgid "Proctored"
 msgstr "Здача іспиту під наглядом"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:164
-#, fuzzy
-#| msgid "Timed Out"
 msgid "Timed"
 msgstr "Час вийшов"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:189
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "        Are you sure you want to take this exam without proctoring?\n"
-#| "      "
 msgid "Are you sure you want to remove this student's exam attempt?"
-msgstr ""
-"\n"
-"        Ви впевнені, що хочете скласти цей іспит без нагляду?\n"
-"      "
+msgstr "Ви впевнені, що хочете скласти цей іспит без нагляду?"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_view.js:206
 msgid ""
