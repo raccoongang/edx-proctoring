@@ -22,8 +22,7 @@ from edx_proctoring.models import (
     ProctoredExamReviewPolicy,
     ProctoredExamSoftwareSecureReview,
     ProctoredExamSoftwareSecureReviewHistory,
-    ProctoredExamStudentAttempt,
-    CourseBlockHardwareChecker
+    ProctoredExamStudentAttempt
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 from edx_proctoring.utils import locate_attempt_by_attempt_code
@@ -484,4 +483,3 @@ admin.site.register(ProctoredExamStudentAttempt, ProctoredExamStudentAttemptAdmi
 admin.site.register(ProctoredExamReviewPolicy, ProctoredExamReviewPolicyAdmin)
 admin.site.register(ProctoredExamSoftwareSecureReview, ProctoredExamSoftwareSecureReviewAdmin)
 admin.site.register(ProctoredExamSoftwareSecureReviewHistory, ProctoredExamSoftwareSecureReviewHistoryAdmin)
-admin.site.register(CourseBlockHardwareChecker)
