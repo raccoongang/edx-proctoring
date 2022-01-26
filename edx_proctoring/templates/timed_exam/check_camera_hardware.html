@@ -29,7 +29,7 @@
       </p>
       {% if is_checking_microphone_enabled or is_checking_audio_enabled %}
       <a type="button"
-         class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
+         class="exam-action-button btn btn-pl-primary btn-success-checking-hardware hardware-checker"
          href="{% if is_checking_audio_enabled %}{% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_audio_enabled' hardware_checked='camera' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_microphone_enabled' hardware_checked='camera' %}{% endif %}"
       >
         {% blocktrans %}
@@ -83,24 +83,12 @@
     $('.footer-sequence').hide();
 
     $('.btn-success-checking-hardware').click(() => {
-        if (confirm(`{% trans "Are you wondering what the camera does?" %}`)) return;
+        if (confirm(`{% trans "Are you wondering what the camera does?" %}`) || $(this).hasClass('hardware-checker')) return;
+
+        $('.checking-hardware-steps').hide();
+        $('.entrance').show();
+        $('.footer-sequence').show();
     });
-  $('.btn-success-checking-hardware').click(function () {
-    let msg = "Ви впевнені, що камера працює?";
-
-    if (!confirm(msg) || $(this).hasClass('hardware-checker')) {
-      return;
-    }
-
-    $('.checking-hardware-steps').hide();
-    $('.entrance').show();
-    $('.footer-sequence').show();
-
-  });
-
-  $('.btn-fail-checking-hardware').click(function () {
-    $('.camera-problem-solving-tips').show();
-  });
 
     $('.btn-fail-checking-hardware').click(() => $('.camera-problem-solving-tips').show());
 </script>
