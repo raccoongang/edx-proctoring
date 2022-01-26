@@ -14,6 +14,41 @@
           {% endblocktrans %}
         </p>
       </li>
+      {% endif %}
+      <li class="check-microphone-alert">
+        <p class="check-microphone-alert-loading">{% trans "Please speak loud and clear, we are checking the volume of your device" %}</p>
+      </li>
+      <li class="check-microphone-next">
+        <p>{% trans "Verification completed successfully" %}</p>
+        <a class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
+           href="{% if is_checking_camera_enabled %}
+           {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='microphone' %}
+           {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_audio_enabled' hardware_checked='microphone' %}
+           {% endif %}">{% trans "Continue" %}</a>
+      </li>
+      <li class="microphone-problem-solving-tips">
+        <p>{% trans "If you’re having microphone problems, the following suggestions might help:" %}</p>
+        <ul>
+          <li>
+            <p>{% trans "Make sure the microphone or headset is properly connected to the computer" %}</p>
+          </li>
+          <li>
+            <p>{% trans "Make sure the microphone is positioned correctly" %}</p>
+          </li>
+          <li>
+            <p>{% trans "Make sure your privacy settings are configured properly" %}</p>
+          </li>
+          <li>
+            <p>{% trans "Check the microphone or headset volume" %}</p>
+          </li>
+          <li>
+            <p>{% trans "Update or install drivers for your sound card and microphone" %}</p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+{% endif %}
     {% endif %}
     <li>
       <p>

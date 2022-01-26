@@ -83,8 +83,8 @@ diff_cover: test
 ## Localization targets
 
 extract_translations: ## extract strings to be translated, outputting .mo files
-	cd edx_proctoring && ../manage.py makemessages -l en -v1 -d django
-	cd edx_proctoring && ../manage.py makemessages -l en -v1 -d djangojs
+	cd edx_proctoring && ../manage.py makemessages -l uk -v1 -d django
+	cd edx_proctoring && ../manage.py makemessages -l uk -v1 -d djangojs
 
 compile_translations: ## compile translation files, outputting .po files for each supported language
 	cd edx_proctoring && ../manage.py compilemessages
