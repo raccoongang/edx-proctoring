@@ -23,7 +23,7 @@
       </p>
         {% if is_checking_audio_enabled or is_checking_camera_enabled %}
         <a type="button"
-           class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
+           class="exam-action-button btn btn-pl-primary btn-success-checking-hardware hardware-checker"
            href="{% if is_checking_camera_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='microphone' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_audio_enabled' hardware_checked='microphone' %} {% endif %}"
         >
             {% blocktrans %}
@@ -82,6 +82,17 @@
   $('.microphone-problem-solving-tips').hide();
   $('.entrance').hide();
   $('.footer-sequence').hide();
+
+  $('.btn-success-checking-hardware').click(function () {
+    if (!confirm(`{% trans "Are you sure the microphone works?" %}`) || $(this).hasClass('hardware-checker')) {
+      return;
+    }
+
+    $('.checking-hardware-steps').hide();
+    $('.entrance').show();
+    $('.footer-sequence').show();
+
+  });
 
   $('.btn-fail-checking-hardware').click(function () {
     $('.microphone-problem-solving-tips').show();

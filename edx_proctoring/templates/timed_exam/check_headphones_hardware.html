@@ -25,7 +25,7 @@
       </p>
       {% if is_checking_microphone_enabled or is_checking_camera_enabled %}
         <a type="button"
-           class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
+           class="exam-action-button btn btn-pl-primary btn-success-checking-hardware hardware-checker"
            href="{% if is_checking_microphone_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_microphone_enabled' hardware_checked='headphones' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='headphones' %} {% endif %}"
         >
           {% blocktrans %}
@@ -93,9 +93,7 @@
   $('.footer-sequence').hide();
 
   $('.btn-success-checking-hardware').click(function () {
-    var msg = "Ви впевнені, що чули звукозапис?";
-
-    if (!confirm(msg)) {
+    if (!confirm(`{% trans "Are you sure you heard the soundtrack?" %}`) || $(this).hasClass('hardware-checker')) {
       return;
     }
 

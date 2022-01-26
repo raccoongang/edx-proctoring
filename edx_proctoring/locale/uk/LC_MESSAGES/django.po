@@ -1604,6 +1604,12 @@ msgstr ""
 msgid "Are you wondering what the camera does?"
 msgstr "Ви впевнені, що камера працює?"
 
+msgid "Are you sure you heard the soundtrack?"
+msgstr "Ви впевнені, що чули звукозапис?"
+
+msgid "Are you sure the microphone works?"
+msgstr "Ви впевнені, що мікрофон працює?"
+
 #: templates/timed_exam/declined.html:4
 msgid ""
 "\n"

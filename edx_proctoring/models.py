@@ -851,7 +851,7 @@ class CourseBlockHardwareChecker(models.Model):
             return False
 
         exam_hardware_to_check, __ = cls.objects.get_or_create(
-            defaults={
+            **{
                 'user_id': user_id,
                 'content_id': content_id,
             }
