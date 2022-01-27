@@ -6,7 +6,6 @@
     {% endblocktrans %}
   </h3>
   <ol>
-    {% if is_checking_audio_enabled %}
       <li>
         <p>
           {% blocktrans %}
@@ -14,7 +13,6 @@
           {% endblocktrans %}
         </p>
       </li>
-      {% endif %}
       <li class="check-microphone-alert">
         <p class="check-microphone-alert-loading">{% trans "Please speak loud and clear, we are checking the volume of your device" %}</p>
       </li>
@@ -48,8 +46,6 @@
       </li>
     </ol>
   </div>
-{% endif %}
-    {% endif %}
     <li>
       <p>
         {% blocktrans %}
