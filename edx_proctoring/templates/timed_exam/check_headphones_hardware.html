@@ -28,20 +28,16 @@
            class="exam-action-button btn btn-pl-primary btn-success-checking-hardware hardware-checker"
            href="{% if is_checking_microphone_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_microphone_enabled' hardware_checked='headphones' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='headphones' %} {% endif %}"
         >
-          {% blocktrans %}
-            Yes
-          {% endblocktrans %}
+          {% trans "Yes" %}
         </a>
       {% else %}
         <button type="button" class="exam-action-button btn btn-pl-primary btn-success-checking-hardware" data-action="submit">
-          {% blocktrans %}
-            Yes
-          {% endblocktrans %}
+          {% trans "Yes" %}
         </button>
       {% endif %}
       <button type="button" class="exam-action-button btn btn-secondary btn-fail-checking-hardware" data-action="start" style="box-shadow: none">
         {% blocktrans %}
-          No
+        No
         {% endblocktrans %}
       </button>
     </li>
@@ -102,8 +98,5 @@
     $('.footer-sequence').show();
   });
 
-  $('.btn-fail-checking-hardware').click(function () {
-    $('.audio-problem-solving-tips').show();
-  });
-
+  $('.btn-fail-checking-hardware').click(() => $('.audio-problem-solving-tips').show());
 </script>
