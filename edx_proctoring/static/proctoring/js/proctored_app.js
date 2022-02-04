@@ -22,4 +22,17 @@ $(function() {
             console.error('The Video checker failed, the following error occurred:', e);
         }
     });
+
+    $('#check-microphone-btn').on('click', function () {
+        try {
+            $(this).microphoneChecker({
+                counterView: true,
+                dispatchStop: true
+            });
+        } catch (e) {
+            console.error("jQuery.microphoneChecker plugin not connected or not found");
+        }
+        $(this).prop("disabled", true)
+        $(".check-microphone-alert").fadeIn("slow");
+    });
 });
