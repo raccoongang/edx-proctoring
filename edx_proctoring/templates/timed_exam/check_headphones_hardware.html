@@ -5,7 +5,7 @@
       Follow these steps to check your computer's audio equipment before starting a timed exam {{exam_name}}.
     {% endblocktrans %}
   </h3>
-  <ol>
+  <ol class="check-headphone">
     <li>
       <p>
         {% blocktrans %}
@@ -24,7 +24,7 @@
         {% endblocktrans %}
       </p>
       {% if is_checking_microphone_enabled or is_checking_camera_enabled %}
-        <a style="border-radius: 40px" type="button"
+        <a type="button"
            class="exam-action-button btn btn-pl-primary btn-success-checking-hardware hardware-checker"
            href="{% if is_checking_microphone_enabled %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_microphone_enabled' hardware_checked='headphones' %} {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='headphones' %} {% endif %}"
         >
