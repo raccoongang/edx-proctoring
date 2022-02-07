@@ -1338,6 +1338,10 @@ msgstr ""
 msgid "Start camera"
 msgstr "Розпочати іспит"
 
+#: templates/timed_exam/check_camera_hardware.html:39
+msgid "Not"
+msgstr "Ні"
+
 #: templates/timed_exam/check_camera_hardware.html:28
 msgid "Do you see yourself on the screen?"
 msgstr "Ви бачите себе на екрані?"

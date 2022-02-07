@@ -5,7 +5,7 @@
       Follow these steps to check your computer's audio equipment before starting a timed exam {{exam_name}}.
     {% endblocktrans %}
   </h3>
-  <ol>
+  <ol class="check-headphone">
     <li>
       <p>
         {% blocktrans %}
@@ -36,9 +36,7 @@
         </button>
       {% endif %}
       <button type="button" class="exam-action-button btn btn-secondary btn-fail-checking-hardware" data-action="start" style="box-shadow: none">
-        {% blocktrans %}
-        No
-        {% endblocktrans %}
+        {% trans "Not" %}
       </button>
     </li>
     <li class="audio-problem-solving-tips" style="margin-top: 20px">
