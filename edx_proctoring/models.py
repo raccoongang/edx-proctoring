@@ -250,6 +250,17 @@ class ProctoredExamStudentAttemptManager(models.Manager):
         filtered_query = Q(proctored_exam__course_id=course_id)
         return self.filter(filtered_query).order_by('-created')  # pylint: disable=no-member
 
+    def get_users_involved_in(self, course_id, datetime_range=None):
+        """
+        Returns a queryset of User for every user involved in the course proctored exam.
+        """
+        filter_kwargs = {
+            'proctoredexamstudentattempt__proctored_exam__course_id': course_id,
+        }
+        if datetime_range:
+            filter_kwargs['proctoredexamstudentattempt__created__range'] = tuple(datetime_range)
+        return USER_MODEL.objects.filter(**filter_kwargs)
+
     def get_filtered_exam_attempts(self, course_id, search_by):
         """
         Returns the Student Exam Attempts for the given course_id filtered by search_by.
