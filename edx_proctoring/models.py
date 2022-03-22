@@ -259,7 +259,7 @@ class ProctoredExamStudentAttemptManager(models.Manager):
         }
         if datetime_range:
             filter_kwargs['proctoredexamstudentattempt__created__range'] = tuple(datetime_range)
-        return USER_MODEL.objects.filter(**filter_kwargs)
+        return USER_MODEL.objects.filter(**filter_kwargs).distinct()
 
     def get_filtered_exam_attempts(self, course_id, search_by):
         """
