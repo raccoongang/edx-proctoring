@@ -23,7 +23,6 @@ from django.shortcuts import redirect
 from django.urls import NoReverseMatch, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
-from registry_portal.signals import exam_task_reviewed
 
 from edx_proctoring import constants
 from edx_proctoring.api import (
@@ -400,10 +399,6 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
                 attempt['proctored_exam']['id'],
                 request.user.id,
                 ProctoredExamStudentAttemptStatus.submitted
-            )
-            exam_task_reviewed.send(
-                ProctoredExamStudentAttempt,
-                instance=ProctoredExamStudentAttempt.objects.get(id=attempt_id)
             )
         elif action == 'click_download_software':
             exam_attempt_id = update_attempt_status(
