@@ -1872,3 +1872,17 @@ msgstr "{num_of_minutes} хвилина"
 
 msgid " and {num_of_minutes} minutes"
 msgstr " та {num_of_minutes} хвилин"
+
+#: edx_proctoring/templates/timed_exam/confirmed_submission.html
+msgid ""
+"\n"
+"      You have only a single attempt to pass exam. Dou you actually confirm "
+"the intention to send provided answers\n"
+"      and finish the work on the test, after that it would be impossible to "
+"return to the work?\n"
+"    "
+msgstr ""
+"\n"
+"      Для складання іспиту відведена лише одна спроба. Чи дійсно Ви "
+"підтверджуєте намір надіслати надані відповіді      та завершити роботу над "
+"тестом, після чого повернутися до роботи буде не можливо?    "

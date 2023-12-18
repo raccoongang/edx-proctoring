@@ -383,6 +383,7 @@ class ProctoredExamAttemptForm(forms.ModelForm):
         (ProctoredExamStudentAttemptStatus.verified, _('Verified')),
         (ProctoredExamStudentAttemptStatus.rejected, _('Rejected')),
         (ProctoredExamStudentAttemptStatus.error, _('Error')),
+        (ProctoredExamStudentAttemptStatus.confirmed_submission, _('Confirmed submission')),
     ]
     if settings.DEBUG:
         STATUS_CHOICES.extend([

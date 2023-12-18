@@ -288,7 +288,8 @@ class ProctoredExamStudentAttemptManager(models.Manager):
         """
         filtered_query = Q(user_id=user_id) & (Q(status=ProctoredExamStudentAttemptStatus.started) |
                                                Q(status=ProctoredExamStudentAttemptStatus.ready_to_submit) |
-                                               Q(status=ProctoredExamStudentAttemptStatus.ready_to_decline))
+                                               Q(status=ProctoredExamStudentAttemptStatus.ready_to_decline) |
+                                               Q(status=ProctoredExamStudentAttemptStatus.confirmed_submission))
         if course_id is not None:
             filtered_query = filtered_query & Q(proctored_exam__course_id=course_id)
 

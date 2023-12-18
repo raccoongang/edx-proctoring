@@ -1719,6 +1719,8 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
         return None
     elif attempt_status == ProctoredExamStudentAttemptStatus.ready_to_submit:
         student_view_template = 'timed_exam/ready_to_submit.html'
+    elif attempt_status == ProctoredExamStudentAttemptStatus.confirmed_submission:
+        student_view_template = 'timed_exam/confirmed_submission.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.ready_to_decline:
         student_view_template = 'timed_exam/ready_to_decline.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.declined:

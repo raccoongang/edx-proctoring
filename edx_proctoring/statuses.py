@@ -41,6 +41,10 @@ class ProctoredExamStudentAttemptStatus:
     # the student has completed the exam
     ready_to_submit = 'ready_to_submit'
 
+    # the student have seen the first submission alert and confirmed his
+    # intention to finish the work
+    confirmed_submission = 'confirmed_submission'
+
     # the student want to decline the exam
     ready_to_decline = 'ready_to_decline'
 
@@ -85,7 +89,7 @@ class ProctoredExamStudentAttemptStatus:
 
     onboarding_errors = (onboarding_missing, onboarding_pending, onboarding_failed, onboarding_expired)
 
-    failed_exam_end_states = (started, ready_to_submit, ready_to_decline)
+    failed_exam_end_states = (started, ready_to_submit, ready_to_decline, confirmed_submission)
 
     @classmethod
     def is_completed_status(cls, status):
@@ -106,7 +110,7 @@ class ProctoredExamStudentAttemptStatus:
         """
         return status in [
             cls.eligible, cls.created, cls.download_software_clicked, cls.ready_to_start, cls.started,
-            cls.ready_to_submit, cls.ready_to_decline
+            cls.ready_to_submit, cls.ready_to_decline, cls.confirmed_submission
         ]
 
     @classmethod
@@ -159,7 +163,7 @@ class ProctoredExamStudentAttemptStatus:
         Returns a boolean if the status passed is "in progress".
         """
         return status in [
-            cls.started, cls.ready_to_submit
+            cls.started, cls.ready_to_submit, cls.confirmed_submission
         ]
 
     @classmethod
@@ -170,6 +174,7 @@ class ProctoredExamStudentAttemptStatus:
         status_transition_map = {
             cls.started: cls.submitted,
             cls.ready_to_submit: cls.submitted,
+            cls.confirmed_submission: cls.submitted,
             cls.ready_to_decline: cls.declined,
         }
         return status_transition_map.get(incomplete_status)
