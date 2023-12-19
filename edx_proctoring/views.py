@@ -394,6 +394,12 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
                 exam_id=attempt['proctored_exam']['id'],
                 user_id=request.user.id
             )
+        elif action == 'confirm_submission':
+            exam_attempt_id = update_attempt_status(
+                attempt['proctored_exam']['id'],
+                request.user.id,
+                ProctoredExamStudentAttemptStatus.confirmed_submission,
+            )
         elif action == 'submit':
             exam_attempt_id = update_attempt_status(
                 attempt['proctored_exam']['id'],
