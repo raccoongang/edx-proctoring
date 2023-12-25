@@ -1783,6 +1783,7 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
                 args=[attempt['id']]
             ) if attempt else '',
             'course_id': course_id,
+            'user_id': user_id,
         })
         return template.render(context)
 
