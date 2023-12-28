@@ -10,19 +10,23 @@
           return item.endsWith(handler);
         });
       });
-      for (var i = 0; i < submissions.length; i += 1) {
-        var submit_url = submissions[i].slice(user_prefix.length),
-            payload = sessionStorage.getItem(submissions[i]);
-        $.ajax({
-          url: submit_url,
-          type: 'POST',
-          data: payload,
-          dataType: 'json',
-          success: function(data) {
-            sessionStorage.clear();
-          },
+
+      return submissions.map(function(item) {
+        var submit_url = item.slice(user_prefix.length);
+        var payload = sessionStorage.getItem(item);
+
+        return new Promise(function(resolve) {
+          $.ajax({
+            url: submit_url,
+            type: 'POST',
+            data: payload,
+            dataType: 'json',
+            success: function(data) {
+              resolve(data);
+            },
+          });
         });
-      }
+      });
     }
 
     $('.exam-action-button').click(
@@ -39,9 +43,15 @@
           data: {action: action},
           success: function() {
             if (action === 'submit') {
-              submitUnsavedProblems(user_id);
+              var submitted_problems = submitUnsavedProblems(user_id);
+              Promise.all(submitted_problems)
+                .finally(function() {
+                  sessionStorage.clear();
+                  location.reload();
+                });
+            } else {
+              location.reload();
             }
-            location.reload();
           },
         });
       }
