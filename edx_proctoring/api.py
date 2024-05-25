@@ -1339,6 +1339,17 @@ def get_last_exam_completion_date(course_id, username):
     return exam_attempts[0].completed_at if exam_attempts and are_all_exams_attempted else None
 
 
+def are_all_exams_completed(user_id, course_id):
+    """
+    Returns True if all needed student exam attempts for given course are completed else False.
+    """
+    all_exams = ProctoredExam.get_all_exams_for_course(course_id, active_only=True)
+    completed_exams_count = ProctoredExamStudentAttempt.objects.get_completed_student_attempts(
+        user_id=user_id, course_id=course_id,
+    ).count()
+    return completed_exams_count == all_exams.count()
+
+
 def get_active_exams_for_user(user_id, course_id=None):
     """
     This method will return a list of active exams for the user,
