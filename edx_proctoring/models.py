@@ -295,6 +295,16 @@ class ProctoredExamStudentAttemptManager(models.Manager):
 
         return self.filter(filtered_query).order_by('-created')  # pylint: disable=no-member
 
+    def get_completed_student_attempts(self, user_id, course_id=None):
+        """
+        Returns all completed student exam attempts for given student and course.
+        """
+        filtered_query = Q(user_id=user_id) & Q(status=ProctoredExamStudentAttemptStatus.submitted)
+        if course_id is not None:
+            filtered_query = filtered_query & Q(proctored_exam__course_id=course_id)
+
+        return self.filter(filtered_query).order_by('-created')  # pylint: disable=no-member
+
     def clear_onboarding_errors(self, user_id):
         """
         Removes any attempts in the onboarding error states.
