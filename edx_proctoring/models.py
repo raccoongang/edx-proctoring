@@ -427,7 +427,7 @@ class ProctoredExamStudentAttemptHistory(TimeStampedModel):
 
     # started/completed date times
     started_at = models.DateTimeField(null=True)
-    completed_at = models.DateTimeField(null=True)
+    completed_at = models.DateTimeField(null=True, db_index=True)
 
     # this will be a unique string ID that the user
     # will have to use when starting the proctored exam
