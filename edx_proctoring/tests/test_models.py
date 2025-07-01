@@ -6,6 +6,7 @@ All tests for the models.py
 
 from __future__ import absolute_import
 
+from django.db import IntegrityError
 import six
 from six.moves import range
 
@@ -16,7 +17,8 @@ from edx_proctoring.models import (
     ProctoredExamStudentAllowance,
     ProctoredExamStudentAllowanceHistory,
     ProctoredExamStudentAttempt,
-    ProctoredExamStudentAttemptHistory
+    ProctoredExamStudentAttemptHistory,
+    CourseBlockHardwareChecker,
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 
@@ -370,3 +372,82 @@ class ProctoredExamStudentAttemptTests(LoggedInTestCase):
         attempts = ProctoredExamStudentAttemptHistory.objects.all()
         self.assertEqual(len(attempts), 1)
         self.assertEqual(attempts[0].review_policy_id, deleted_id)
+
+
+class CourseBlockHardwareCheckerDuplicationTest(LoggedInTestCase):
+    """
+    Tests to verify the prevention of duplicate records in the CourseBlockHardwareChecker model.
+
+    It ensures that the `unique_together` constraint on `user_id` and `content_id`
+    is properly enforced, preventing the creation of duplicate records.
+    It also verifies that distinct records can be created.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.user_id = 99
+        self.content_id_1 = 'block-v1:Org+Course+TestBlock1'
+        self.content_id_2 = 'block-v1:Org+Course+TestBlock2'
+
+        self.record_data_1 = {
+            'user_id': self.user_id,
+            'content_id': self.content_id_1,
+            'is_checking_audio_enabled': False,
+            'is_checking_microphone_enabled': True,
+            'is_checking_camera_enabled': False,
+        }
+        self.record_1 = CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+
+        self.record_data_2 = {
+            'user_id': self.user_id,
+            'content_id': self.content_id_2,
+            'is_checking_audio_enabled': True,
+            'is_checking_microphone_enabled': True,
+            'is_checking_camera_enabled': False,
+        }
+
+    def test_unique_together_prevention(self):
+        """
+        Verify that duplicate entries are prevented by unique_together constraint.
+
+        It attempts to create a second record with the same `user_id` and `content_id`
+        as an existing record. It asserts that an `IntegrityError`is raised to prevent duplicates.
+        The total count of records should be unchanged.
+        """
+        self.assertIsNotNone(self.record_1.id)
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
+
+        with self.assertRaises(IntegrityError):
+            CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
+
+    def test_different_records_can_be_created(self):
+        """
+        Verify that records with different of user_id and content_id can be created.
+
+        It checks the creation new record with a unique combination of `user_id` and `content_id`
+        (different from previously created record) without errors.
+        It asserts that the total count of records increased.
+        """
+        self.record_2 = CourseBlockHardwareChecker.objects.create(**self.record_data_2)
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 2)
+
+
+    def test_are_hardwares_enabled_updates_existing_record(self):
+        """
+        Verify that `are_hardwares_enabled` updates an existing record and returns correct status.
+
+        It asserts that no new record is created when calling with existing `user_id` and `content_id`,
+        and the specified `hardware_checked` field is updated on the existing record.
+        """
+        self.assertFalse(self.record_1.is_checking_audio_enabled)
+
+        CourseBlockHardwareChecker.are_hardwares_enabled(
+            user_id=self.user_id,
+            content_id=self.content_id_1,
+            enabled_hardwares=['is_checking_audio_enabled'],
+            hardware_checked='headphones'
+        )
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
+        self.record_1.refresh_from_db()
+        self.assertTrue(self.record_1.is_checking_audio_enabled)
