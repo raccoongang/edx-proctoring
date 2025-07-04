@@ -399,7 +399,6 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
             'is_checking_microphone_enabled': True,
             'is_checking_camera_enabled': False,
         }
-        self.record_1 = CourseBlockHardwareChecker.objects.create(**self.record_data_1)
 
         self.record_data_2 = {
             'user_id': self.user_id,
@@ -417,6 +416,7 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
         as an existing record. It asserts that an `IntegrityError`is raised to prevent duplicates.
         The total count of records should be unchanged.
         """
+        self.record_1 = CourseBlockHardwareChecker.objects.create(**self.record_data_1)
         self.assertIsNotNone(self.record_1.id)
         self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
 
@@ -432,7 +432,8 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
         (different from previously created record) without errors.
         It asserts that the total count of records increased.
         """
-        self.record_2 = CourseBlockHardwareChecker.objects.create(**self.record_data_2)
+        CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+        CourseBlockHardwareChecker.objects.create(**self.record_data_2)
         self.assertEqual(CourseBlockHardwareChecker.objects.count(), 2)
 
     @ddt.data(
@@ -478,8 +479,6 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
            if `hardware_checked_param` is valid.
         3. The method returns the expected boolean status based on the `enabled_hardwares` list.
         """
-        CourseBlockHardwareChecker.objects.all().delete()
-
         current_record_initial_data = self.record_data_1.copy()
         current_record_initial_data.update(initial_field_states)
         self.record_1 = CourseBlockHardwareChecker.objects.create(**current_record_initial_data)
@@ -505,23 +504,23 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
         if expected_updated_field:
             self.assertEqual(
                 getattr(self.record_1, expected_updated_field), expected_updated_value,
-                f"Test '{test_name}': Expected field '{expected_updated_field}' to be {expected_updated_value}."
+                "Test '{0}': Expected field '{1}' to be {2}.".format(test_name, expected_updated_field, expected_updated_value)
             )
         else:
             self.assertEqual(
                 self.record_1.is_checking_audio_enabled, initial_audio_enabled,
-                f"Test '{test_name}': Audio enabled should not change."
+                "Test '{0}': Audio enabled should not change.".format(test_name)
             )
             self.assertEqual(
                 self.record_1.is_checking_microphone_enabled, initial_microphone_enabled,
-                f"Test '{test_name}': Microphone enabled should not change."
+                "Test '{0}': Microphone enabled should not change.".format(test_name)
             )
             self.assertEqual(
                 self.record_1.is_checking_camera_enabled, initial_camera_enabled,
-                f"Test '{test_name}': Camera enabled should not change."
+                "Test '{0}': Camera enabled should not change.".format(test_name)
             )
 
         self.assertEqual(
             result, expected_return_value,
-            f"Test '{test_name}': Expected return value {expected_return_value}"
+            "Test '{0}': Expected return value {1}".format(test_name, expected_return_value)
         )
