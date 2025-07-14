@@ -861,6 +861,9 @@ class CourseBlockHardwareChecker(models.Model):
     is_checking_microphone_enabled = models.BooleanField(default=False)
     is_checking_camera_enabled = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = (('user_id', 'content_id'),)
+
     @classmethod
     def are_hardwares_enabled(
         cls,

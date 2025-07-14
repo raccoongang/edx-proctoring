@@ -6,17 +6,20 @@ All tests for the models.py
 
 from __future__ import absolute_import
 
+import ddt
+from django.db import IntegrityError
 import six
 from six.moves import range
 
 from edx_proctoring.models import (
+    CourseBlockHardwareChecker,
     ProctoredExam,
     ProctoredExamReviewPolicy,
     ProctoredExamReviewPolicyHistory,
     ProctoredExamStudentAllowance,
     ProctoredExamStudentAllowanceHistory,
     ProctoredExamStudentAttempt,
-    ProctoredExamStudentAttemptHistory
+    ProctoredExamStudentAttemptHistory,
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 
@@ -370,3 +373,154 @@ class ProctoredExamStudentAttemptTests(LoggedInTestCase):
         attempts = ProctoredExamStudentAttemptHistory.objects.all()
         self.assertEqual(len(attempts), 1)
         self.assertEqual(attempts[0].review_policy_id, deleted_id)
+
+
+@ddt.ddt
+class CourseBlockHardwareCheckerTest(LoggedInTestCase):
+    """
+    Tests for the CourseBlockHardwareChecker model and its methods.
+
+    This test suite comprehensively verifies the functionality of the
+    `CourseBlockHardwareChecker` model, including its unique constraints,
+    record creation, and the behavior of the `are_hardwares_enabled` method
+    for both updating existing records and creating new ones.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.user_id = 99
+        self.content_id_1 = 'block-v1:Org+Course+TestBlock1'
+        self.content_id_2 = 'block-v1:Org+Course+TestBlock2'
+
+        self.record_data_1 = {
+            'user_id': self.user_id,
+            'content_id': self.content_id_1,
+            'is_checking_audio_enabled': False,
+            'is_checking_microphone_enabled': True,
+            'is_checking_camera_enabled': False,
+        }
+
+        self.record_data_2 = {
+            'user_id': self.user_id,
+            'content_id': self.content_id_2,
+            'is_checking_audio_enabled': True,
+            'is_checking_microphone_enabled': True,
+            'is_checking_camera_enabled': False,
+        }
+
+    def test_unique_together_prevention(self):
+        """
+        Verify that duplicate entries are prevented by unique_together constraint.
+
+        It attempts to create a second record with the same `user_id` and `content_id`
+        as an existing record. It asserts that an `IntegrityError`is raised to prevent duplicates.
+        The total count of records should be unchanged.
+        """
+        self.record_1 = CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+        self.assertIsNotNone(self.record_1.id)
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
+
+        with self.assertRaises(IntegrityError):
+            CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
+
+    def test_different_records_can_be_created(self):
+        """
+        Verify that records with different of user_id and content_id can be created.
+
+        It checks the creation new record with a unique combination of `user_id` and `content_id`
+        (different from previously created record) without errors.
+        It asserts that the total count of records increased.
+        """
+        CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+        CourseBlockHardwareChecker.objects.create(**self.record_data_2)
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), 2)
+
+    @ddt.data(
+        (
+                'microphone_check',
+                {'is_checking_microphone_enabled': False}, 'microphone',
+                ['is_checking_microphone_enabled'], 'is_checking_microphone_enabled', True, False
+        ),
+        (
+                'headphones_check',
+                {'is_checking_audio_enabled': False}, 'headphones',
+                ['is_checking_audio_enabled'], 'is_checking_audio_enabled', True, False
+        ),
+        (
+                'camera_check',
+                {'is_checking_camera_enabled': False}, 'camera',
+                ['is_checking_camera_enabled'], 'is_checking_camera_enabled', True, False
+        ),
+        (
+                'non_existent_checker',
+                {'is_checking_audio_enabled': False}, 'non_existent_hardware',
+                ['is_checking_audio_enabled'], None, None, True
+        ),
+        (
+                'empty_enabled_hardwares',
+                {'is_checking_audio_enabled': False}, 'headphones',
+                [], 'is_checking_audio_enabled', True, False),
+    )
+    @ddt.unpack
+    def test_are_hardwares_enabled_updates_existing_record(
+            self, test_name,
+            initial_field_states, hardware_checked_param,
+            enabled_hardwares_param, expected_updated_field,
+            expected_updated_value, expected_return_value
+    ):
+        """
+        Verify that `are_hardwares_enabled` updates an existing record and returns correct status.
+
+        This test uses a data provider to test various scenarios for `are_hardwares_enabled`.
+        It asserts that:
+        1. No new record is created when calling with existing `user_id` and `content_id`.
+        2. The specified `hardware_checked` field is correctly updated on the existing record
+           if `hardware_checked_param` is valid.
+        3. The method returns the expected boolean status based on the `enabled_hardwares` list.
+        """
+        current_record_initial_data = self.record_data_1.copy()
+        current_record_initial_data.update(initial_field_states)
+        self.record_1 = CourseBlockHardwareChecker.objects.create(**current_record_initial_data)
+        self.record_1.refresh_from_db()
+
+        initial_count = CourseBlockHardwareChecker.objects.count()
+        self.assertEqual(initial_count, 1)
+
+        initial_audio_enabled = self.record_1.is_checking_audio_enabled
+        initial_microphone_enabled = self.record_1.is_checking_microphone_enabled
+        initial_camera_enabled = self.record_1.is_checking_camera_enabled
+
+        result = CourseBlockHardwareChecker.are_hardwares_enabled(
+            user_id=self.user_id,
+            content_id=self.content_id_1,
+            enabled_hardwares=enabled_hardwares_param,
+            hardware_checked=hardware_checked_param
+        )
+        self.record_1.refresh_from_db()
+
+        self.assertEqual(CourseBlockHardwareChecker.objects.count(), initial_count)
+
+        if expected_updated_field:
+            self.assertEqual(
+                getattr(self.record_1, expected_updated_field), expected_updated_value,
+                "Test '{0}': Expected field '{1}' to be {2}.".format(test_name, expected_updated_field, expected_updated_value)
+            )
+        else:
+            self.assertEqual(
+                self.record_1.is_checking_audio_enabled, initial_audio_enabled,
+                "Test '{0}': Audio enabled should not change.".format(test_name)
+            )
+            self.assertEqual(
+                self.record_1.is_checking_microphone_enabled, initial_microphone_enabled,
+                "Test '{0}': Microphone enabled should not change.".format(test_name)
+            )
+            self.assertEqual(
+                self.record_1.is_checking_camera_enabled, initial_camera_enabled,
+                "Test '{0}': Camera enabled should not change.".format(test_name)
+            )
+
+        self.assertEqual(
+            result, expected_return_value,
+            "Test '{0}': Expected return value {1}".format(test_name, expected_return_value)
+        )
