@@ -21,7 +21,10 @@
     </li>
     <li class="check-microphone-next">
       <p>{% trans "Verification completed successfully" %}</p>
-      <a class="exam-action-button btn btn-pl-primary btn-success-checking-hardware"
+      <a class="exam-action-button btn btn-primary btn-success-checking-hardware"
+         data-confirmation="true"
+         data-confirmation-modal-id="hardwareCheckConfirmationModal"
+         data-confirmation-action="navigate"
          href="{% if is_checking_camera_enabled %}
            {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_camera_enabled' hardware_checked='microphone' %}
            {% else %} {% extend_url_with_query_parameters request_full_path hardware_checker='is_checking_audio_enabled' hardware_checked='microphone' %}
@@ -50,25 +53,25 @@
     </ol>
   </div>
 
+{% trans "Confirmation" as confirmation_title %}
+{% trans "Are you sure the microphone works?" as confirmation_msg %}
+{% trans "YES" as confirmation_confirm_label %}
+{% trans "NO" as confirmation_cancel_label %}
+
+{% include "timed_exam/hardware_check_confirmation_modal.html" with seb_modal_id="hardwareCheckConfirmationModal" confirmation_title=confirmation_title confirmation_msg=confirmation_msg confirmation_confirm_label=confirmation_confirm_label confirmation_cancel_label=confirmation_cancel_label %}
 {% include 'timed_exam/entrance.html' %}
 
 <script type="text/javascript">
-  $('.microphone-problem-solving-tips').hide();
-  $('.check-microphone-alert').hide();
-  $('.entrance').hide();
-  $('.footer-sequence').hide();
-  $('.check-microphone-verification').hide();
-  $('.check-microphone-next').hide();
+  (function () {
+    "use strict";
 
-  $('.btn-success-checking-hardware').click(function () {
-    if (!confirm(`{% trans "Are you sure the microphone works?" %}`) || $(this).hasClass('hardware-checker')) {
-      return false;
-    }
+	  $(".microphone-problem-solving-tips").hide();
+	  $(".check-microphone-alert").hide();
+	  $(".entrance").hide();
+	  $(".footer-sequence").hide();
+	  $(".check-microphone-verification").hide();
+	  $(".check-microphone-next").hide();
 
-    $('.checking-hardware-steps').hide();
-    $('.entrance').show();
-    $('.footer-sequence').show();
-  });
-
-  $('.btn-fail-checking-hardware').click(() => $('.microphone-problem-solving-tips').show());
+	  $(".btn-fail-checking-hardware").click(() => $(".microphone-problem-solving-tips").show());
+  })();
 </script>
