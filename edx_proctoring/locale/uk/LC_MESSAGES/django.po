@@ -1375,6 +1375,14 @@ msgstr "Так"
 msgid "No"
 msgstr "Ні"
 
+#: templates/timed_exam/check_camera_hardware.html:49
+msgid "YES"
+msgstr "Так"
+
+#: templates/timed_exam/check_camera_hardware.html:49
+msgid "NO"
+msgstr "Ні"
+
 #: templates/timed_exam/check_camera_hardware.html:56
 msgid ""
 "If you do not see yourself on the screen, seek the help of an instructor or "
@@ -1845,6 +1853,10 @@ msgstr ""
 #: templates/timed_exam/check_microphone_hardware.html
 msgid "Are you sure the microphone works?"
 msgstr "Ви впевнені, що мікрофон працює?"
+
+#: templates/timed_exam/check_camera_hardware.html
+msgid "Are you sure the camera works?"
+msgstr "Ви впевнені, що камера працює?"
 
 #: templates/timed_exam/check_microphone_hardware.html
 msgid "Are you sure you heard the soundtrack?"

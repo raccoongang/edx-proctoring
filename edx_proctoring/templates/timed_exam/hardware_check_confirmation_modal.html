@@ -1,0 +1,128 @@
+{% load i18n %}
+
+<div
+  class="timed-exam hardware-check-confirmation-modal"
+  id="{{ seb_modal_id }}"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="hardware-check-confirmation-modal__overlay" data-confirmation-close="true"></div>
+  <div class="hardware-check-confirmation-modal__dialog" role="document" tabindex="-1">
+    <div class="hardware-check-confirmation-modal__header">
+      <h4 class="hardware-check-confirmation-modal__title">{{ confirmation_title }}</h4>
+      <button
+        type="button"
+        class="hardware-check-confirmation-modal__close"
+        data-confirmation-close="true"
+        aria-label="{% trans "Close" %}"
+      >
+        &times;
+      </button>
+    </div>
+
+    <div class="hardware-check-confirmation-modal__body">
+      <p class="hardware-check-confirmation-modal__text">{{ confirmation_msg }}</p>
+    </div>
+
+    <div class="hardware-check-confirmation-modal__footer">
+      <button
+        type="button"
+        class="exam-action-button btn btn-secondary"
+        data-confirmation-cancel="true"
+      >
+        {{ confirmation_cancel_label }}
+      </button>
+      <button
+        type="button"
+        class="exam-action-button btn btn-primary"
+        data-confirmation-ok="true"
+      >
+        {{ confirmation_confirm_label }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  (function () {
+    "use strict";
+
+    const MODAL_OPEN_CLASS = "is-open";
+    const MODAL_SELECTOR = ".hardware-check-confirmation-modal";
+
+    function openModal($modal) {
+      $modal.addClass(MODAL_OPEN_CLASS).attr("aria-hidden", "false");
+      const $dialog = $modal.find(".hardware-check-confirmation-modal__dialog");
+      if ($dialog.length) {
+        $dialog.focus();
+      }
+    }
+
+    function closeModal($modal) {
+      $modal.removeClass(MODAL_OPEN_CLASS).attr("aria-hidden", "true");
+      $modal.removeData("hardwareCheckConfirmationTrigger");
+    }
+
+    function getModalById(modalId) {
+      if (!modalId) return $();
+      return $("#" + modalId);
+    }
+
+    function proceedToEntrance() {
+      // SEB blocks native confirm/alert; we emulate confirm with in-page modal.
+      $(".checking-hardware-steps").hide();
+      $(".entrance").show();
+      $(".footer-sequence").show();
+    }
+
+    $(document).on("click", "[data-confirmation='true']", function (e) {
+      const $trigger = $(this);
+      const modalId = $trigger.data("confirmation-modal-id");
+      const action = $trigger.data("confirmation-action");
+
+      // If modalId is not provided, fallback to default browser behavior.
+      if (!modalId) return;
+
+      e.preventDefault();
+
+      const $modal = getModalById(modalId);
+      if (!$modal.length) return;
+
+      $modal.data("hardwareCheckConfirmationTrigger", {
+        action: action,
+        href: $trigger.attr("href") || "",
+      });
+
+      openModal($modal);
+    });
+
+    $(document).on("click", "[data-confirmation-close='true'], [data-confirmation-cancel='true']", function () {
+      const $modal = $(this).closest(MODAL_SELECTOR);
+      closeModal($modal);
+    });
+
+    $(document).on("click", "[data-confirmation-ok='true']", function () {
+      const $modal = $(this).closest(MODAL_SELECTOR);
+      const triggerData = $modal.data("hardwareCheckConfirmationTrigger") || {};
+      const action = triggerData.action;
+      const href = triggerData.href;
+
+      closeModal($modal);
+
+      if (action === "navigate" && href) {
+        window.location.href = href;
+        return;
+      }
+
+      proceedToEntrance();
+    });
+
+    $(document).on("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      const $openModal = $(MODAL_SELECTOR + "." + MODAL_OPEN_CLASS);
+      if (!$openModal.length) return;
+      closeModal($openModal);
+    });
+  })();
+</script>
