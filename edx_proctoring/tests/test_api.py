@@ -638,7 +638,8 @@ class ProctoredExamApiTests(ProctoredExamTestCase):
         attempt = self._create_unstarted_exam_attempt()
         start_exam_attempt_by_code(attempt.attempt_code)
 
-    def test_restart_a_started_attempt(self):
+    @patch('edx_proctoring.api.complete_exam_if_attempt_fails.apply_async')
+    def test_restart_a_started_attempt(self, mocked_apply_async):
         """
         Test to attempt starting an attempt which has been created but not started.
         """
@@ -646,6 +647,7 @@ class ProctoredExamApiTests(ProctoredExamTestCase):
         start_exam_attempt(self.proctored_exam_id, self.user_id)
         with self.assertRaises(StudentExamAttemptedAlreadyStarted):
             start_exam_attempt(self.proctored_exam_id, self.user_id)
+        mocked_apply_async.assert_called_once()
 
     def test_stop_exam_attempt(self):
         """
@@ -657,6 +659,23 @@ class ProctoredExamApiTests(ProctoredExamTestCase):
             proctored_exam_student_attempt.proctored_exam.id, self.user_id
         )
         self.assertEqual(proctored_exam_student_attempt.id, proctored_exam_attempt_id)
+
+    def test_stop_completed_attempt_is_idempotent(self):
+        """
+        Keep a submitted attempt terminal when a stale stop request arrives.
+        """
+        exam_attempt = self._create_started_exam_attempt(is_proctored=False)
+        update_attempt_status(
+            exam_attempt.proctored_exam_id,
+            self.user.id,
+            ProctoredExamStudentAttemptStatus.submitted,
+        )
+
+        attempt_id = stop_exam_attempt(exam_attempt.proctored_exam_id, self.user.id)
+        exam_attempt.refresh_from_db()
+
+        self.assertEqual(attempt_id, exam_attempt.id)
+        self.assertEqual(exam_attempt.status, ProctoredExamStudentAttemptStatus.submitted)
 
     def test_remove_exam_attempt(self):
         """
@@ -891,6 +910,35 @@ class ProctoredExamApiTests(ProctoredExamTestCase):
             credit_status['credit_requirement_status'][0]['status'],
             'submitted'
         )
+
+    @freeze_time("2026-01-01 00:00:00")
+    def test_repeated_status_update_does_not_rewrite_attempt(self):
+        """
+        Avoid rewriting an attempt or replaying effects when submission is retried.
+        """
+        exam_attempt = self._create_started_exam_attempt(is_proctored=False)
+        credit_service = get_runtime_service('credit')
+        update_attempt_status(
+            exam_attempt.proctored_exam_id,
+            self.user.id,
+            ProctoredExamStudentAttemptStatus.submitted,
+        )
+        exam_attempt.refresh_from_db()
+        completed_at = exam_attempt.completed_at
+        modified = exam_attempt.modified
+        credit_update_count = credit_service.order
+
+        with freeze_time("2026-01-02 00:00:00"):
+            update_attempt_status(
+                exam_attempt.proctored_exam_id,
+                self.user.id,
+                ProctoredExamStudentAttemptStatus.submitted,
+            )
+        exam_attempt.refresh_from_db()
+
+        self.assertEqual(exam_attempt.completed_at, completed_at)
+        self.assertEqual(exam_attempt.modified, modified)
+        self.assertEqual(credit_service.order, credit_update_count)
 
     def test_error_credit_state(self):
         """
