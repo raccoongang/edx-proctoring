@@ -2,6 +2,7 @@
 -c constraints.txt
 
 # Django/Framework Packages
+celery==3.1.26.post2      # Match the Celery version provided by Open edX Juniper.
 Django>=2.2
 django-model-utils
 djangorestframework
@@ -21,4 +22,3 @@ edx-opaque-keys>=0.4
 edx-drf-extensions
 edx-rest-api-client>=1.9.2
 edx-when>=0.1.3
-
