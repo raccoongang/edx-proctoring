@@ -19,6 +19,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db import transaction
 from django.shortcuts import redirect
 from django.urls import NoReverseMatch, reverse
 from django.utils.decorators import method_decorator
@@ -288,6 +289,7 @@ class ProctoredExamView(ProctoredAPIView):
         return Response(data)
 
 
+@method_decorator(transaction.non_atomic_requests, name="dispatch")
 class StudentProctoredExamAttempt(ProctoredAPIView):
     """
     Endpoint for the StudentProctoredExamAttempt
@@ -399,6 +401,8 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
                 attempt['proctored_exam']['id'],
                 request.user.id,
                 ProctoredExamStudentAttemptStatus.confirmed_submission,
+                # Submission or timeout can win a race with this stale UI action.
+                skip_if_completed=True,
             )
         elif action == 'submit':
             exam_attempt_id = update_attempt_status(

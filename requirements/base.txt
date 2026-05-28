@@ -4,8 +4,12 @@
 #
 #    make upgrade
 #
+amqp==1.4.9               # via kombu
+anyjson==0.3.3            # via kombu
 appdirs==1.4.3            # via fs
+billiard==3.3.0.23        # via celery
 certifi==2020.4.5.1       # via requests
+celery==3.1.26.post2      # via -r requirements/base.in
 chardet==3.0.4            # via requests
 django-crum==0.7.6        # via -r requirements/base.in
 django-ipware==2.1.0      # via -r requirements/base.in
@@ -25,6 +29,7 @@ fs==2.4.11                # via xblock
 future==0.18.2            # via pyjwkest
 idna==2.9                 # via requests
 jsonfield2==3.0.3         # via -c requirements/constraints.txt, -r requirements/base.in
+kombu==3.0.37             # via celery
 lxml==4.5.0               # via xblock
 markupsafe==1.1.1         # via xblock
 newrelic==5.12.0.140      # via edx-django-utils

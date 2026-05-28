@@ -1191,7 +1191,42 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             content_type='application/json'
         )
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
+        attempt = get_exam_attempt_by_id(old_attempt_id)
+        self.assertEqual(attempt['status'], expected_status)
+
+    def test_confirm_submission_after_submit_is_idempotent(self):
+        """
+        Ignore a confirmation PUT that arrives after submission has completed.
+        """
+        exam = ProctoredExam.objects.create(
+            course_id="a/b/c",
+            content_id="test_content",
+            exam_name="Test Exam",
+            external_id="123aXqe3",
+            time_limit_mins=90,
+            is_proctored=False,
+            backend="null",
+        )
+        attempt_id = create_exam_attempt(exam.id, self.user.id, False)
+        attempt = get_exam_attempt_by_id(attempt_id)
+        url = reverse("edx_proctoring:proctored_exam.attempt", args=[attempt["id"]])
+
+        submit_response = self.client.put(
+            url,
+            json.dumps({"action": "submit"}),
+            content_type="application/json"
+        )
+        confirm_response = self.client.put(
+            url,
+            json.dumps({"action": "confirm_submission"}),
+            content_type="application/json"
+        )
+
+        self.assertEqual(submit_response.status_code, 200)
+        self.assertEqual(confirm_response.status_code, 200)
+        attempt = get_exam_attempt_by_id(attempt["id"])
+        self.assertEqual(attempt["status"], ProctoredExamStudentAttemptStatus.submitted)
 
     @patch('edx_proctoring.views.waffle.switch_is_active')
     def test_attempt_ping_failure_when_submitted(self, mocked_switch_is_active):

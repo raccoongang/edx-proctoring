@@ -12,12 +12,13 @@ from datetime import datetime, timedelta
 
 import pytz
 import six
+from crum import get_current_request
 from waffle import switch_is_active
 
-from crum import get_current_request
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail.message import EmailMessage
+from django.db import transaction
 from django.template import loader
 from django.urls import NoReverseMatch, reverse
 from django.utils.translation import ugettext as _
@@ -819,9 +820,17 @@ def _start_exam_attempt(existing_attempt):
 
 def stop_exam_attempt(exam_id, user_id):
     """
-    Marks the exam attempt as completed (sets the completed_at field and updates the record)
+    Mark an attempt as ready to submit unless it is already terminal.
+
+    A stale stop action can arrive after a timeout or submission has already
+    completed the attempt; in that case the terminal status remains unchanged.
     """
-    return update_attempt_status(exam_id, user_id, ProctoredExamStudentAttemptStatus.ready_to_submit)
+    return update_attempt_status(
+        exam_id,
+        user_id,
+        ProctoredExamStudentAttemptStatus.ready_to_submit,
+        skip_if_completed=True,
+    )
 
 
 def mark_exam_attempt_timeout(exam_id, user_id):
@@ -841,76 +850,113 @@ def mark_exam_attempt_as_ready(exam_id, user_id):
 # pylint: disable=inconsistent-return-statements
 def update_attempt_status(exam_id, user_id, to_status,
                           raise_if_not_found=True, cascade_effects=True, timeout_timestamp=None,
-                          update_attributable_to=None):
+                          update_attributable_to=None, skip_if_completed=False):
     """
-    Internal helper to handle state transitions of attempt status
+    Internal helper to handle state transitions of attempt status.
+
+    Serialize writes for one attempt and avoid replaying submission effects.
+
+    ``skip_if_completed`` is intended for stale learner actions whose desired
+    intermediate status must not replace any terminal status. Invalid state
+    changes still raise unless their caller explicitly opts into that policy.
     """
+    with transaction.atomic():
+        try:
+            exam_attempt_obj = ProctoredExamStudentAttempt.objects.select_for_update().get(
+                proctored_exam_id=exam_id,
+                user_id=user_id,
+            )
+        except ProctoredExamStudentAttempt.DoesNotExist:
+            if raise_if_not_found:
+                raise StudentExamAttemptDoesNotExistsException('Error. Trying to look up an exam that does not exist.')
+            return
 
-    exam_attempt_obj = ProctoredExamStudentAttempt.objects.get_exam_attempt(exam_id, user_id)
-    if exam_attempt_obj is None:
-        if raise_if_not_found:
-            raise StudentExamAttemptDoesNotExistsException('Error. Trying to look up an exam that does not exist.')
-        return
+        from_status = exam_attempt_obj.status
 
-    from_status = exam_attempt_obj.status
-
-    log_msg = (
-        u'Updating attempt status for exam_id {exam_id} '
-        u'for user_id {user_id} from status "{from_status}" to "{to_status}"'.format(
-            exam_id=exam_id, user_id=user_id, from_status=from_status, to_status=to_status
+        # In some configuration we may treat timeouts the same
+        # as the user saying he/she wishes to submit the exam.
+        allow_timeout_state = settings.PROCTORING_SETTINGS.get('ALLOW_TIMED_OUT_STATE', False)
+        treat_timeout_as_submitted = (
+            to_status == ProctoredExamStudentAttemptStatus.timed_out and not allow_timeout_state
         )
-    )
-    log.info(log_msg)
-    # In some configuration we may treat timeouts the same
-    # as the user saying he/she wishes to submit the exam
-    allow_timeout_state = settings.PROCTORING_SETTINGS.get('ALLOW_TIMED_OUT_STATE', False)
-    treat_timeout_as_submitted = to_status == ProctoredExamStudentAttemptStatus.timed_out and not allow_timeout_state
 
-    user_trying_to_reattempt = is_reattempting_exam(from_status, to_status)
-    if treat_timeout_as_submitted or user_trying_to_reattempt:
-        to_status = ProctoredExamStudentAttemptStatus.submitted
+        user_trying_to_reattempt = is_reattempting_exam(from_status, to_status)
+        if treat_timeout_as_submitted or user_trying_to_reattempt:
+            to_status = ProctoredExamStudentAttemptStatus.submitted
 
-    exam = get_exam_by_id(exam_id)
-    # don't allow state transitions from a completed state to an incomplete state
-    # if a re-attempt is desired then the current attempt must be deleted
-    #
-    in_completed_status = ProctoredExamStudentAttemptStatus.is_completed_status(from_status)
-    to_incompleted_status = ProctoredExamStudentAttemptStatus.is_incomplete_status(to_status)
+        if (
+                from_status == ProctoredExamStudentAttemptStatus.submitted and
+                to_status == ProctoredExamStudentAttemptStatus.submitted
+        ):
+            return exam_attempt_obj.id
 
-    if in_completed_status and to_incompleted_status:
-        err_msg = (
-            u'A status transition from {from_status} to {to_status} was attempted '
-            u'on exam_id {exam_id} for user_id {user_id}. This is not '
-            u'allowed!'.format(
-                from_status=from_status,
-                to_status=to_status,
-                exam_id=exam_id,
-                user_id=user_id
+        in_completed_status = ProctoredExamStudentAttemptStatus.is_completed_status(from_status)
+        if skip_if_completed and in_completed_status and from_status != to_status:
+            log.info(
+                'Ignoring stale status update for exam_id %d and user_id %d: '
+                'current status "%s", requested status "%s".',
+                exam_id,
+                user_id,
+                from_status,
+                to_status,
+            )
+            return exam_attempt_obj.id
+
+        exam = get_exam_by_id(exam_id)
+        log_msg = (
+            'Updating attempt status for exam_id {exam_id} '
+            'for user_id {user_id} from status "{from_status}" to "{to_status}"'.format(
+                exam_id=exam_id, user_id=user_id, from_status=from_status, to_status=to_status
             )
         )
-        raise ProctoredExamIllegalStatusTransition(err_msg)
+        log.info(log_msg)
+        # Do not allow state transitions from a completed state to an incomplete state.
+        # If a re-attempt is desired then the current attempt must be deleted.
+        to_incompleted_status = ProctoredExamStudentAttemptStatus.is_incomplete_status(to_status)
 
-    # OK, state transition is fine, we can proceed
-    exam_attempt_obj.status = to_status
+        if in_completed_status and to_incompleted_status:
+            err_msg = (
+                'A status transition from {from_status} to {to_status} was attempted '
+                'on exam_id {exam_id} for user_id {user_id}. This is not '
+                'allowed!'.format(
+                    from_status=from_status,
+                    to_status=to_status,
+                    exam_id=exam_id,
+                    user_id=user_id
+                )
+            )
+            raise ProctoredExamIllegalStatusTransition(err_msg)
 
-    # if we have transitioned to started and haven't set our
-    # started_at timestamp and calculate allowed minutes, do so now
-    add_start_time = (
-        to_status == ProctoredExamStudentAttemptStatus.started and
-        not exam_attempt_obj.started_at
-    )
-    if add_start_time:
-        exam_attempt_obj.started_at = datetime.now(pytz.UTC)
-        exam_attempt_obj.allowed_time_limit_mins = _calculate_allowed_mins(exam, exam_attempt_obj.user_id)
+        # OK, state transition is fine, we can proceed.
+        exam_attempt_obj.status = to_status
 
-    elif treat_timeout_as_submitted:
-        exam_attempt_obj.completed_at = timeout_timestamp
-    elif to_status in (ProctoredExamStudentAttemptStatus.submitted, ProctoredExamStudentAttemptStatus.declined):
-        # likewise, when we transit to submitted or declined mark
-        # when the exam has been completed
-        exam_attempt_obj.completed_at = datetime.now(pytz.UTC)
+        # If we have transitioned to started and have not set our
+        # started_at timestamp and calculated allowed minutes, do so now.
+        add_start_time = (
+            to_status == ProctoredExamStudentAttemptStatus.started and
+            not exam_attempt_obj.started_at
+        )
+        if add_start_time:
+            exam_attempt_obj.started_at = datetime.now(pytz.UTC)
+            exam_attempt_obj.allowed_time_limit_mins = _calculate_allowed_mins(exam, exam_attempt_obj.user_id)
 
-    exam_attempt_obj.save()
+        elif treat_timeout_as_submitted:
+            exam_attempt_obj.completed_at = timeout_timestamp
+        elif to_status in (ProctoredExamStudentAttemptStatus.submitted, ProctoredExamStudentAttemptStatus.declined):
+            # Likewise, when we transit to submitted or declined mark
+            # when the exam has been completed.
+            exam_attempt_obj.completed_at = datetime.now(pytz.UTC)
+
+        if (
+                cascade_effects and
+                to_status == ProctoredExamStudentAttemptStatus.declined
+        ):
+            # Clear backend fields in the same write as the status change so
+            # deletion cannot interleave between two writes to this attempt.
+            exam_attempt_obj.taking_as_proctored = False
+            exam_attempt_obj.external_id = None
+
+        exam_attempt_obj.save()
 
     # make sure that attempt to pass timed exam hasn't ended in failure (incomplete state),
     # else update status of exam attempt
@@ -961,13 +1007,6 @@ def update_attempt_status(exam_id, user_id, to_status,
         )
 
     if cascade_effects and ProctoredExamStudentAttemptStatus.is_a_cascadable_failure(to_status):
-        if to_status == ProctoredExamStudentAttemptStatus.declined:
-            # if user declines attempt, make sure we clear out the external_id and
-            # taking_as_proctored fields
-            exam_attempt_obj.taking_as_proctored = False
-            exam_attempt_obj.external_id = None
-            exam_attempt_obj.save()
-
         # some state transitions (namely to a rejected or declined status)
         # will mark other exams as declined because once we fail or decline
         # one exam all other (un-completed) proctored exams will be likewise
@@ -1223,26 +1262,32 @@ def remove_exam_attempt(attempt_id, requesting_user):
     """
 
     log_msg = (
-        u'Removing exam attempt {attempt_id}'.format(attempt_id=attempt_id)
+        'Removing exam attempt {attempt_id}'.format(attempt_id=attempt_id)
     )
     log.info(log_msg)
 
-    existing_attempt = ProctoredExamStudentAttempt.objects.get_exam_attempt_by_id(attempt_id)
-    if not existing_attempt:
-        err_msg = (
-            u'Cannot remove attempt for attempt_id = {attempt_id} '
-            u'because it does not exist!'
-        ).format(attempt_id=attempt_id)
+    with transaction.atomic():
+        try:
+            existing_attempt = (
+                ProctoredExamStudentAttempt.objects.select_for_update().get(id=attempt_id)
+            )
+        except ProctoredExamStudentAttempt.DoesNotExist:
+            err_msg = (
+                'Cannot remove attempt for attempt_id = {attempt_id} '
+                'because it does not exist!'
+            ).format(attempt_id=attempt_id)
 
-        raise StudentExamAttemptDoesNotExistsException(err_msg)
+            raise StudentExamAttemptDoesNotExistsException(err_msg)
 
-    username = existing_attempt.user.username
-    user_id = existing_attempt.user.id
-    course_id = existing_attempt.proctored_exam.course_id
-    content_id = existing_attempt.proctored_exam.content_id
-    to_status = existing_attempt.status
+        username = existing_attempt.user.username
+        user_id = existing_attempt.user.id
+        course_id = existing_attempt.proctored_exam.course_id
+        content_id = existing_attempt.proctored_exam.content_id
+        to_status = existing_attempt.status
 
-    existing_attempt.delete_exam_attempt()
+        # Use the same attempt row lock as status updates before archiving and deleting.
+        existing_attempt.delete_exam_attempt()
+
     instructor_service = get_runtime_service('instructor')
     grades_service = get_runtime_service('grades')
 

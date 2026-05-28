@@ -4,11 +4,15 @@
 #
 #    make upgrade
 #
+amqp==1.4.9               # via kombu
+anyjson==0.3.3            # via kombu
 apipkg==1.5               # via execnet
 appdirs==1.4.3            # via fs
 attrs==19.3.0             # via pytest
+billiard==3.3.0.23        # via celery
 bok-choy==1.0.1           # via -r requirements/test.in
 certifi==2020.4.5.1       # via requests
+celery==3.1.26.post2      # via -r requirements/base.in
 chardet==3.0.4            # via requests
 click==7.1.2              # via code-annotations
 code-annotations==0.3.3   # via -r requirements/test.in
@@ -37,6 +41,7 @@ idna==2.9                 # via requests
 importlib-metadata==1.6.0  # via path, pluggy, pytest
 jinja2==2.11.2            # via code-annotations
 jsonfield2==3.0.3         # via -c requirements/constraints.txt, -r requirements/base.in
+kombu==3.0.37             # via celery
 lazy==1.4                 # via bok-choy
 logilab-common==1.5.2     # via -r requirements/test.in
 lxml==4.5.0               # via xblock
