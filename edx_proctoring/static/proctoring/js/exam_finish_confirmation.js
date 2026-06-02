@@ -2,6 +2,20 @@
   'use strict';
 
   $(document).ready(function () {
+    var inProcess = false;
+
+    function disableClickEvent() {
+      inProcess = true;
+      $('body').css('cursor', 'wait');
+      $('.exam-action-button').prop('disabled', true).css('cursor', 'wait');
+    }
+
+    function enableClickEvent() {
+      inProcess = false;
+      $('body').css('cursor', 'auto');
+      $('.exam-action-button').prop('disabled', false).css('cursor', 'auto');
+    }
+
     function submitUnsavedProblems(user_id) {
       var user_prefix = user_id + ':';
       var handler_suffixes = ['problem_check', 'submit_problem', 'student_submit'];
@@ -30,7 +44,15 @@
     }
 
     $('.exam-action-button').click(
-      function(_) {
+      function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (inProcess) {
+          return false;
+        }
+
+        disableClickEvent();
         $(window).unbind('beforeunload');
 
         var action_url = $(this).data('change-state-url');
@@ -53,7 +75,10 @@
               location.reload();
             }
           },
+          error: enableClickEvent,
         });
+
+        return false;
       }
     );
   });
