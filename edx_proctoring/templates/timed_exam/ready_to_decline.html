@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 <div class="sequence timed-exam completed" data-exam-id="{{exam_id}}">
   <h3>
     {% blocktrans %}
@@ -18,27 +18,4 @@
   </button>
   {% endif %}
 </div>
-<script type="text/javascript">
-  $('.exam-action-button').click(
-    function(event) {
-
-      // cancel any warning messages to end user about leaving timed exam
-      $(window).unbind('beforeunload');
-
-      var action_url = $(this).data('change-state-url'),
-          exam_id = $(this).data('exam-id'),
-          action = $(this).data('action');
-
-      $.ajax({
-        url: action_url,
-        type: 'PUT',
-        data: {
-          action: action
-        },
-        success: function() {
-          location.reload();
-        }
-      });
-    }
-  );
-</script>
+<script type="text/javascript" src="{% static 'proctoring/js/exam_finish_confirmation.js' %}"></script>
