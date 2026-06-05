@@ -97,7 +97,7 @@ edx = edx || {};
             this.render();
         },
         render: function() {
-            var html, self, $end_exam_btn;
+            var html, self, $end_exam_btn, $cancel_exam_btn;
             if (this.template !== null) {
                 if (
                     this.model.get('in_timed_exam') &&
@@ -164,7 +164,8 @@ edx = edx || {};
                         }
                     });
 
-                    $('.exam-button-cancel-in-exam').click(function() {
+                    $cancel_exam_btn = $('.exam-button-cancel-in-exam');
+                    $cancel_exam_btn.click(function() {
                         $(window).unbind('beforeunload', self.unloadMessage);
 
                         var $nextQuestionBtn = $('.next-btn'),
@@ -180,6 +181,7 @@ edx = edx || {};
                         } else if ( $stopRecordingBtn.closest('.tab').css('display') === 'block' && !$stopRecordingBtn.prop('disabled') ) {
                             window.alert(needToSubmitAnswerMessage);
                         } else {
+                            $cancel_exam_btn.attr('disabled', 'disabled').addClass('disabled');
                             $.ajax({
                                 url: '/api/edx_proctoring/v1/proctored_exam/attempt/' + self.model.get('attempt_id'),
                                 type: 'PUT',
@@ -190,6 +192,9 @@ edx = edx || {};
                                     // change the location of the page to the active exam page
                                     // which will reflect the new state of the attempt
                                     location.href = self.model.get('exam_url_path');
+                                },
+                                error: function(data) {
+                                    $cancel_exam_btn.removeAttr('disabled').removeClass('disabled');
                                 }
                             });
                             // Generate event for button click to keep student answer
