@@ -958,11 +958,12 @@ def update_attempt_status(exam_id, user_id, to_status,
 
         exam_attempt_obj.save()
 
-    # make sure that attempt to pass timed exam hasn't ended in failure (incomplete state),
-    # else update status of exam attempt
+    # Verify that the timed exam attempt hasn't ended in an incomplete state
+    # and schedule a background task to update its status if needed
     if (
             exam_attempt_obj.status == ProctoredExamStudentAttemptStatus.started and
-            exam_attempt_obj.allowed_time_limit_mins
+            exam_attempt_obj.allowed_time_limit_mins and
+            ProctoredExamStudentAttemptStatus.is_pre_started_status(from_status)
     ):
         complete_exam_if_attempt_fails.apply_async(
             countdown=timedelta(
