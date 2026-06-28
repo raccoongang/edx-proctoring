@@ -8,10 +8,56 @@ from typing import Optional
 
 from celery.task import task
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
+from edx_proctoring.exceptions import StudentExamAttemptDoesNotExistsException
 from edx_proctoring.models import ProctoredExamStudentAttempt
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 
 log = logging.getLogger('edx.celery.task')
+
+ATTEMPT_REMOVAL_ROUTING_KEY = getattr(
+    settings,
+    'PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY',
+    getattr(settings, 'HIGH_MEM_QUEUE', None),
+)
+USER_MODEL = get_user_model()
+
+
+@task(routing_key=ATTEMPT_REMOVAL_ROUTING_KEY)
+def remove_exam_attempt_task(attempt_id: int, requesting_user_id: int) -> Optional[None]:
+    """
+    Remove a proctored exam attempt in a background worker.
+
+    :param attempt_id: The ID of the proctored exam attempt to remove.
+    :param requesting_user_id: The ID of the staff user who requested the removal.
+    :return: None
+    """
+    api = import_module('edx_proctoring.api')
+
+    log.info(
+        'Removing proctored exam attempt %d requested by user %d.',
+        attempt_id,
+        requesting_user_id,
+    )
+    requesting_user = USER_MODEL.objects.get(id=requesting_user_id)
+
+    try:
+        api.remove_exam_attempt(attempt_id, requesting_user=requesting_user)
+    except StudentExamAttemptDoesNotExistsException:
+        # The endpoint validates existence before queueing; this can happen after duplicate queued requests.
+        log.info(
+            'Skipping removal for proctored exam attempt %d because it no longer exists.',
+            attempt_id,
+        )
+        return
+
+    log.info(
+        'Finished removing proctored exam attempt %d requested by user %d.',
+        attempt_id,
+        requesting_user_id,
+    )
 
 
 @task(bind=True)
