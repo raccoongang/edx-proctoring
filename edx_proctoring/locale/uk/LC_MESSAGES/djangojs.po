@@ -191,7 +191,7 @@ msgstr "Час вийшов"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_attempt_view.js:189
 msgid "Are you sure you want to remove this student's exam attempt?"
-msgstr "Ви впевнені, що хочете скласти цей іспит без нагляду?"
+msgstr "Ви впевнені, що хочете видалити спробу складання іспиту цього учасника?"
 
 #: edx_proctoring/static/proctoring/js/views/proctored_exam_view.js:206
 msgid ""
@@ -805,3 +805,6 @@ msgstr ""
 
  msgid "a timed exam"
  msgstr "тест з обмеженням по часу"
+
+ msgid "Queued for removal"
+ msgstr "Поставлено в чергу на видалення"

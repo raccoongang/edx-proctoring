@@ -1840,6 +1840,10 @@ msgstr ""
 msgid "a practice exam"
 msgstr ""
 
+#: views.py
+msgid "Exam attempt removal has been queued."
+msgstr "Видалення спроб іспиту поставлено в чергу."
+
 #: views.py:1062
 #, python-brace-format
 msgid "No exams in course {course_id}."
