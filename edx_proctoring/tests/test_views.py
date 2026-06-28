@@ -878,9 +878,10 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertRaises(ProctoredExamPermissionDenied)
 
-    def test_remove_attempt(self):
+    @patch('edx_proctoring.views.remove_exam_attempt_task.apply_async')
+    def test_remove_attempt(self, mocked_remove_attempt_task):
         """
-        Confirms that an attempt can be removed
+        Confirms that an attempt removal can be queued.
         """
         # Create an exam.
         proctored_exam = ProctoredExam.objects.create(
@@ -896,21 +897,19 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+        self.assertFalse(mocked_remove_attempt_task.called)
 
-        attempt_data = {
-            'exam_id': proctored_exam.id,
-            'external_id': proctored_exam.external_id,
-            'start_clock': True,
-        }
-        response = self.client.post(
-            reverse('edx_proctoring:proctored_exam.attempt.collection'),
-            attempt_data
+        exam_attempt = ProctoredExamStudentAttempt.objects.create(
+            proctored_exam_id=proctored_exam.id,
+            user_id=self.student_taking_exam.id,
+            student_name='test_student',
+            external_id=proctored_exam.external_id,
+            started_at=datetime.now(pytz.UTC),
+            status=ProctoredExamStudentAttemptStatus.started,
+            allowed_time_limit_mins=90,
+            taking_as_proctored=True,
         )
-
-        self.assertEqual(response.status_code, 200)
-        response_data = json.loads(response.content.decode('utf-8'))
-        attempt_id = response_data['exam_attempt_id']
-        self.assertGreater(attempt_id, 0)
+        attempt_id = exam_attempt.id
 
         self.user.is_staff = False
         self.user.save()
@@ -918,7 +917,11 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             reverse('edx_proctoring:proctored_exam.attempt', args=[attempt_id])
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 202)
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data['detail'], 'Exam attempt removal has been queued.')
+        self.assertIsNotNone(get_exam_attempt_by_id(attempt_id))
+        mocked_remove_attempt_task.assert_called_once_with(args=[attempt_id, self.user.id])
 
     def test_remove_attempt_non_staff(self):
         """
@@ -934,20 +937,17 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
             time_limit_mins=90
         )
 
-        attempt_data = {
-            'exam_id': proctored_exam.id,
-            'external_id': proctored_exam.external_id,
-            'start_clock': True,
-        }
-        response = self.client.post(
-            reverse('edx_proctoring:proctored_exam.attempt.collection'),
-            attempt_data
+        exam_attempt = ProctoredExamStudentAttempt.objects.create(
+            proctored_exam_id=proctored_exam.id,
+            user_id=self.student_taking_exam.id,
+            student_name='test_student',
+            external_id=proctored_exam.external_id,
+            started_at=datetime.now(pytz.UTC),
+            status=ProctoredExamStudentAttemptStatus.started,
+            allowed_time_limit_mins=90,
+            taking_as_proctored=True,
         )
-
-        self.assertEqual(response.status_code, 200)
-        response_data = json.loads(response.content.decode('utf-8'))
-        attempt_id = response_data['exam_attempt_id']
-        self.assertGreater(attempt_id, 0)
+        attempt_id = exam_attempt.id
 
         # now set the user is_staff to False
         # and also user is not a course staff

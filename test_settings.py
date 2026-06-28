@@ -25,6 +25,7 @@ SECRET_KEY='SHHHHHH'
 PLATFORM_NAME='Open edX'
 FEATURES = {}
 HTTPS = 'off'
+PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY = 'edx.core.high_mem'
 
 DATABASES = {
     'default': {
