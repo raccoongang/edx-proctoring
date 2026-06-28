@@ -55,6 +55,7 @@ edx = edx || {};
             this.collection.url = this.initial_url + this.course_id;
             this.inSearchMode = false;
             this.searchText = '';
+            this.pendingAttemptRemovals = {};
 
             /* re-render if the model changes */
             this.listenTo(this.collection, 'change', this.collectionChanged);
@@ -136,9 +137,10 @@ edx = edx || {};
             this.hydrate();
         },
         render: function() {
-            var dataJson, startPage, endPage, data, html;
+            var dataJson, startPage, endPage, data, html, pendingAttemptRemovals;
             if (this.template !== null) {
                 dataJson = this.collection.toJSON()[0];
+                pendingAttemptRemovals = this.pendingAttemptRemovals;
 
                 // calculate which pages ranges to display
                 // show no more than 5 pages at the same time
@@ -162,6 +164,8 @@ edx = edx || {};
                         var proctoredText = isPractice ? gettext('Practice') : gettext('Proctored');
                         // eslint-disable-next-line no-param-reassign
                         proctoredExamAttempt.exam_attempt_type = !isProctored ? gettext('Timed') : proctoredText;
+                        // eslint-disable-next-line no-param-reassign
+                        proctoredExamAttempt.is_removal_pending = !!pendingAttemptRemovals[proctoredExamAttempt.id];
                     }
                 );
 
@@ -200,8 +204,11 @@ edx = edx || {};
                 },
                 type: 'DELETE',
                 success: function() {
-                    // fetch the attempts again.
-                    self.hydrate();
+                    self.pendingAttemptRemovals[attemptId] = true;
+                    self.render();
+                    $('body').css('cursor', 'auto');
+                },
+                error: function() {
                     $('body').css('cursor', 'auto');
                 }
             });
