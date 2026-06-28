@@ -111,12 +111,16 @@
                             <% } %>
                             </td>
                             <td>
-                             <% if (proctored_exam_attempt.status){ %>
-                                <a href="#" class="remove-attempt" data-attempt-id="<%= proctored_exam_attempt.id %>" >[x]</a>
+                                <% if (proctored_exam_attempt.is_removal_pending){ %>
+                                    <%- gettext("Queued for removal") %>
+                                <% } else if (proctored_exam_attempt.status){ %>
+                                    <a href="#"
+                                       class="remove-attempt"
+                                       data-attempt-id="<%= proctored_exam_attempt.id %>">[x]</a>
+                                <% } else { %>
+                                    N/A
+                                <% } %>
                             </td>
-                            <% } else { %>
-                                N/A
-                            <% } %>
                         </tr>
                     <% }); %>
                 </tbody>
