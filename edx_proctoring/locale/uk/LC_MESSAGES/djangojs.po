@@ -807,4 +807,4 @@ msgstr ""
  msgstr "тест з обмеженням по часу"
 
  msgid "Queued for removal"
- msgstr "Поставлено в чергу на видалення"
+ msgstr "Очікує видалення"
