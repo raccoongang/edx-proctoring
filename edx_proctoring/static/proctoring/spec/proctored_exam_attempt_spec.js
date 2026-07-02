@@ -117,9 +117,10 @@ describe('ProctoredExamAttemptView', function() {
         ' <% if (proctored_exam_attempt.status){ %> <%= proctored_exam_attempt.status %> <% } else { %> N/A  <% } %> ' +
         '</td>' +
         '<td>' +
-        ' <% if (proctored_exam_attempt.status){ %> ' +
-        '<a href="#" class="remove-attempt" data-attempt-id="<%= proctored_exam_attempt.id %>" >[x]</a>  </td>' +
-        ' <% } else { %>N/A <% } %>' +
+        ' <% if (proctored_exam_attempt.is_removal_pending){ %> Queued for removal ' +
+        '<% } else if (proctored_exam_attempt.status){ %> ' +
+        '<a href="#" class="remove-attempt" data-attempt-id="<%= proctored_exam_attempt.id %>" >[x]</a>' +
+        ' <% } else { %>N/A <% } %></td>' +
         '</tr>' +
         ' <% }); %> ' +
         '</tbody>' +
@@ -165,7 +166,7 @@ describe('ProctoredExamAttemptView', function() {
         expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('Normal Exam');
     });
 
-    it('should delete the proctored exam attempt', function() {
+    it('should queue deletion for the proctored exam attempt', function() {
         this.server.respondWith('GET', '/api/edx_proctoring/v1/proctored_exam/attempt/course_id/test_course_id',
             [
                 200,
@@ -187,23 +188,11 @@ describe('ProctoredExamAttemptView', function() {
         // delete the proctored exam attempt
         this.server.respondWith('DELETE', '/api/edx_proctoring/v1/proctored_exam/attempt/43',
             [
-                200,
+                202,
                 {
                     'Content-Type': 'application/json'
                 },
-                JSON.stringify([])
-            ]
-        );
-
-
-        // again fetch the results after the proctored exam attempt deletion
-        this.server.respondWith('GET', '/api/edx_proctoring/v1/proctored_exam/attempt/course_id/test_course_id',
-            [
-                200,
-                {
-                    'Content-Type': 'application/json'
-                },
-                JSON.stringify(deletedProctoredExamAttemptJson)
+                JSON.stringify({detail: 'Exam attempt removal has been queued.'})
             ]
         );
 
@@ -215,12 +204,13 @@ describe('ProctoredExamAttemptView', function() {
         spyOnEvent('.remove-attempt', 'click');
         $('.remove-attempt').trigger('click');
 
-        // process the deleted attempt requests.
-        this.server.respond();
+        // process the queued attempt removal request.
         this.server.respond();
 
-        expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).not.toContain('testuser1');
-        expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).not.toContain('Normal Exam');
+        expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('testuser1');
+        expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('Normal Exam');
+        expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('Queued for removal');
+        expect(this.proctored_exam_attempt_view.$el.find('.remove-attempt').length).toBe(0);
     });
 
     it('should search for the proctored exam attempt', function() {

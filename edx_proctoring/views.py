@@ -41,7 +41,6 @@ from edx_proctoring.api import (
     is_exam_passed_due,
     mark_exam_attempt_as_ready,
     remove_allowance_for_user,
-    remove_exam_attempt,
     start_exam_attempt,
     stop_exam_attempt,
     update_attempt_status,
@@ -67,6 +66,7 @@ from edx_proctoring.models import (
 from edx_proctoring.runtime import get_runtime_service
 from edx_proctoring.serializers import ProctoredExamSerializer, ProctoredExamStudentAttemptSerializer
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus, ReviewStatus, SoftwareSecureReviewStatus
+from edx_proctoring.tasks import remove_exam_attempt_task
 from edx_proctoring.utils import (
     AuthenticatedAPIView,
     get_time_remaining_for_attempt,
@@ -452,8 +452,9 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
     @method_decorator(require_course_or_global_staff)
     def delete(self, request, attempt_id):  # pylint: disable=unused-argument
         """
-        HTTP DELETE handler. Removes an exam attempt.
+        HTTP DELETE handler. Queues removal of an exam attempt.
         """
+        attempt_id = int(attempt_id)
         attempt = get_exam_attempt_by_id(attempt_id)
 
         if not attempt:
@@ -468,8 +469,11 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
             'User [%s] sends an HTTP request to delete proctored exam attempt [%s]',
             request.user.id, attempt_id
         )
-        remove_exam_attempt(attempt_id, request.user)
-        return Response()
+        remove_exam_attempt_task.apply_async(args=[attempt_id, request.user.id])
+        return Response(
+            status=status.HTTP_202_ACCEPTED,
+            data={'detail': _('Exam attempt removal has been queued.')}
+        )
 
 
 class StudentProctoredExamAttemptCollection(ProctoredAPIView):
