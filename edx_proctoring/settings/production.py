@@ -7,11 +7,7 @@ def plugin_settings(settings):
     env_tokens = getattr(settings, 'ENV_TOKENS', {})
     settings.PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY = env_tokens.get(
         'PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY',
-        getattr(
-            settings,
-            'PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY',
-            getattr(settings, 'HIGH_MEM_QUEUE', None),
-        ),
+        getattr(settings, 'HIGH_MEM_QUEUE', None),
     )
     if env_tokens.get('PROCTORING_SETTINGS'):
         settings.PROCTORING_SETTINGS = env_tokens['PROCTORING_SETTINGS']
