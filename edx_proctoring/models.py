@@ -374,11 +374,23 @@ class ProctoredExamStudentAttempt(TimeStampedModel):
     # else always false
     is_status_acknowledged = models.BooleanField(default=False)
 
+    # Persist the removal request so instructor dashboards remain consistent across page reloads.
+    removal_requested_at = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         """ Meta class for this Django model """
         db_table = 'proctoring_proctoredexamstudentattempt'
         verbose_name = 'proctored exam attempt'
         unique_together = (('user', 'proctored_exam'),)
+
+    @property
+    def is_removal_pending(self) -> bool:
+        """
+        Return whether asynchronous removal has been requested.
+
+        :return: ``True`` while the attempt is waiting to be removed.
+        """
+        return self.removal_requested_at is not None
 
     @classmethod
     def create_exam_attempt(cls, exam_id, user_id, student_name, attempt_code,
@@ -866,12 +878,13 @@ class CourseBlockHardwareChecker(models.Model):
 
     @classmethod
     def are_hardwares_enabled(
-        cls,
-        user_id,
-        content_id,
-        enabled_hardwares,
-        hardware_checked=''
+            cls,
+            user_id,
+            content_id,
+            enabled_hardwares,
+            hardware_checked=''
     ):
+        """Mark a completed hardware check and report whether more checks remain."""
         if not enabled_hardwares:
             return False
 
