@@ -1,4 +1,6 @@
 node_modules/
+.tox/
+venv/
 build/
 edx_proctoring/static/proctoring/js/vendor/
 htmlcov/
