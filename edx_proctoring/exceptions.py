@@ -54,6 +54,12 @@ class StudentExamAttemptDoesNotExistsException(ProctoredBaseException):
     """
 
 
+class StudentExamAttemptRemovalQueueUnavailable(ProctoredBaseException):
+    """
+    Raised when an exam attempt removal cannot be published to Celery.
+    """
+
+
 class StudentExamAttemptedAlreadyStarted(ProctoredBaseException):
     """
     Raised when the same exam attempt is being started twice
