@@ -22,8 +22,6 @@ module.exports = function(config) {
         // plugins required for running the karma tests
         plugins: [
             'karma-jasmine',
-            'karma-jasmine-jquery',
-            'karma-jasmine-jquery',
             'karma-chrome-launcher',
             'karma-phantomjs-launcher',
             'karma-coverage',
@@ -34,7 +32,7 @@ module.exports = function(config) {
         browsers: ['PhantomJS'],
 
         // frameworks to use
-        frameworks: ['jasmine-jquery', 'jasmine', 'sinon'],
+        frameworks: ['jasmine', 'sinon'],
 
         // patterns to load all files in child folders
         files: [
@@ -42,6 +40,7 @@ module.exports = function(config) {
             'node_modules/babel-polyfill/dist/polyfill.js', // polyfills for e.g. Promises
             'edx_proctoring/static/proctoring/js/vendor/i18n.js',
             'edx_proctoring/static/proctoring/js/vendor/jquery.js',
+            'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
             'edx_proctoring/static/proctoring/js/vendor/underscore.js',
             'edx_proctoring/static/proctoring/js/vendor/backbone.js',
             'edx_proctoring/static/proctoring/js/vendor/date.js',
@@ -97,4 +96,3 @@ module.exports = function(config) {
 
     });
 };
-
