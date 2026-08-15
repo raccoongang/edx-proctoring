@@ -52,7 +52,8 @@ from edx_proctoring.exceptions import (
     ProctoredBaseException,
     ProctoredExamPermissionDenied,
     ProctoredExamReviewAlreadyExists,
-    StudentExamAttemptDoesNotExistsException
+    StudentExamAttemptDoesNotExistsException,
+    StudentExamAttemptRemovalQueueUnavailable
 )
 from edx_proctoring.models import (
     ProctoredExam,
@@ -66,7 +67,7 @@ from edx_proctoring.models import (
 from edx_proctoring.runtime import get_runtime_service
 from edx_proctoring.serializers import ProctoredExamSerializer, ProctoredExamStudentAttemptSerializer
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus, ReviewStatus, SoftwareSecureReviewStatus
-from edx_proctoring.tasks import remove_exam_attempt_task
+from edx_proctoring.use_cases import RequestExamAttemptRemoval
 from edx_proctoring.utils import (
     AuthenticatedAPIView,
     get_time_remaining_for_attempt,
@@ -469,7 +470,18 @@ class StudentProctoredExamAttempt(ProctoredAPIView):
             'User [%s] sends an HTTP request to delete proctored exam attempt [%s]',
             request.user.id, attempt_id
         )
-        remove_exam_attempt_task.apply_async(args=[attempt_id, request.user.id])
+        try:
+            RequestExamAttemptRemoval().execute(attempt_id, request.user.id)
+        except StudentExamAttemptRemovalQueueUnavailable:
+            LOG.exception(
+                'Failed to queue removal of proctored exam attempt [%s] requested by user [%s]',
+                attempt_id,
+                request.user.id,
+            )
+            return Response(
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                data={'detail': _('Exam attempt removal could not be queued. Please try again.')},
+            )
         return Response(
             status=status.HTTP_202_ACCEPTED,
             data={'detail': _('Exam attempt removal has been queued.')}
