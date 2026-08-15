@@ -1753,22 +1753,24 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
 
     attempt_status = attempt['status'] if attempt else None
     has_due_date = exam['due_date'] is not None
+    current_request = get_current_request()
     if not attempt_status:
         if is_exam_passed_due(exam, user=user_id):
             student_view_template = 'timed_exam/expired.html'
         elif (
-                'hardware_checker' in get_current_request().GET.keys() and
+                current_request is not None and
+                'hardware_checker' in current_request.GET.keys() and
                 CourseBlockHardwareChecker.are_hardwares_enabled(
                     user_id,
                     exam['content_id'],
                     ExamHardwareChecker.get_enabled_hardware_names(context),
-                    get_current_request().GET.get('hardware_checked')
+                    current_request.GET.get('hardware_checked')
                 )
         ):
             student_view_template = CHECK_HARDWARE_TEMPLATES_MAP.get(
-                get_current_request().GET['hardware_checker'], 'timed_exam/check_headphones_hardware.html'
+                current_request.GET['hardware_checker'], 'timed_exam/check_headphones_hardware.html'
             )
-            context['request_full_path'] = get_current_request().get_full_path()
+            context['request_full_path'] = current_request.get_full_path()
         else:
             student_view_template = 'timed_exam/entrance.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.started:
