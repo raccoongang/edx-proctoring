@@ -17,15 +17,15 @@ from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 
 log = logging.getLogger('edx.celery.task')
 
-ATTEMPT_REMOVAL_ROUTING_KEY = getattr(
+PROCTORING_JOB_QUEUE = getattr(
     settings,
-    'PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY',
-    getattr(settings, 'HIGH_MEM_QUEUE', None),
+    'PROCTORING_JOB_QUEUE',
+    'edx.lms.core.proctoring',
 )
 USER_MODEL = get_user_model()
 
 
-@task(routing_key=ATTEMPT_REMOVAL_ROUTING_KEY)
+@task(queue=PROCTORING_JOB_QUEUE, routing_key=PROCTORING_JOB_QUEUE)
 def remove_exam_attempt_task(attempt_id: int, requesting_user_id: int) -> Optional[None]:
     """
     Remove a proctored exam attempt in a background worker.

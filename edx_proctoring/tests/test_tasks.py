@@ -9,7 +9,7 @@ from mock import patch
 from edx_proctoring.exceptions import StudentExamAttemptDoesNotExistsException
 from edx_proctoring.models import ProctoredExamStudentAttempt
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
-from edx_proctoring.tasks import complete_exam_if_attempt_fails, remove_exam_attempt_task
+from edx_proctoring.tasks import PROCTORING_JOB_QUEUE, complete_exam_if_attempt_fails, remove_exam_attempt_task
 
 from .utils import ProctoredExamTestCase
 
@@ -18,6 +18,14 @@ class RemoveExamAttemptTaskTests(ProctoredExamTestCase):
     """
     Tests for asynchronous proctored exam attempt removal.
     """
+
+    def test_task_uses_dedicated_proctoring_queue(self):
+        """
+        Route attempt removals to the dedicated proctoring worker.
+        """
+        self.assertEqual(PROCTORING_JOB_QUEUE, "edx.lms.core.proctoring")
+        self.assertEqual(remove_exam_attempt_task.queue, PROCTORING_JOB_QUEUE)
+        self.assertEqual(remove_exam_attempt_task.routing_key, PROCTORING_JOB_QUEUE)
 
     def test_remove_exam_attempt_deletes_attempt(self):
         """
