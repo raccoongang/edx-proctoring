@@ -85,6 +85,7 @@ class ProctoredExamStudentAttemptSerializer(serializers.ModelSerializer):
     started_at = DateTimeField(format=None)
     completed_at = DateTimeField(format=None)
     last_poll_timestamp = DateTimeField(format=None)
+    is_removal_pending = serializers.BooleanField(read_only=True)
 
     class Meta:
         """
@@ -96,7 +97,8 @@ class ProctoredExamStudentAttemptSerializer(serializers.ModelSerializer):
             "id", "created", "modified", "user", "started_at", "completed_at",
             "external_id", "status", "proctored_exam", "allowed_time_limit_mins",
             "attempt_code", "is_sample_attempt", "taking_as_proctored", "last_poll_timestamp",
-            "last_poll_ipaddr", "review_policy_id", "student_name", "is_status_acknowledged"
+            "last_poll_ipaddr", "review_policy_id", "student_name", "is_status_acknowledged",
+            "is_removal_pending"
         )
 
 
