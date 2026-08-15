@@ -7,9 +7,10 @@ All tests for the models.py
 from __future__ import absolute_import
 
 import ddt
-from django.db import IntegrityError
 import six
 from six.moves import range
+
+from django.db import IntegrityError, transaction
 
 from edx_proctoring.models import (
     CourseBlockHardwareChecker,
@@ -19,7 +20,7 @@ from edx_proctoring.models import (
     ProctoredExamStudentAllowance,
     ProctoredExamStudentAllowanceHistory,
     ProctoredExamStudentAttempt,
-    ProctoredExamStudentAttemptHistory,
+    ProctoredExamStudentAttemptHistory
 )
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
 
@@ -416,12 +417,13 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
         as an existing record. It asserts that an `IntegrityError`is raised to prevent duplicates.
         The total count of records should be unchanged.
         """
-        self.record_1 = CourseBlockHardwareChecker.objects.create(**self.record_data_1)
-        self.assertIsNotNone(self.record_1.id)
+        record_1 = CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+        self.assertIsNotNone(record_1.id)
         self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
 
         with self.assertRaises(IntegrityError):
-            CourseBlockHardwareChecker.objects.create(**self.record_data_1)
+            with transaction.atomic():
+                CourseBlockHardwareChecker.objects.create(**self.record_data_1)
         self.assertEqual(CourseBlockHardwareChecker.objects.count(), 1)
 
     def test_different_records_can_be_created(self):
@@ -438,29 +440,29 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
 
     @ddt.data(
         (
-                'microphone_check',
-                {'is_checking_microphone_enabled': False}, 'microphone',
-                ['is_checking_microphone_enabled'], 'is_checking_microphone_enabled', True, False
+            'microphone_check',
+            {'is_checking_microphone_enabled': False}, 'microphone',
+            ['is_checking_microphone_enabled'], 'is_checking_microphone_enabled', True, False
         ),
         (
-                'headphones_check',
-                {'is_checking_audio_enabled': False}, 'headphones',
-                ['is_checking_audio_enabled'], 'is_checking_audio_enabled', True, False
+            'headphones_check',
+            {'is_checking_audio_enabled': False}, 'headphones',
+            ['is_checking_audio_enabled'], 'is_checking_audio_enabled', True, False
         ),
         (
-                'camera_check',
-                {'is_checking_camera_enabled': False}, 'camera',
-                ['is_checking_camera_enabled'], 'is_checking_camera_enabled', True, False
+            'camera_check',
+            {'is_checking_camera_enabled': False}, 'camera',
+            ['is_checking_camera_enabled'], 'is_checking_camera_enabled', True, False
         ),
         (
-                'non_existent_checker',
-                {'is_checking_audio_enabled': False}, 'non_existent_hardware',
-                ['is_checking_audio_enabled'], None, None, True
+            'non_existent_checker',
+            {'is_checking_audio_enabled': False}, 'non_existent_hardware',
+            ['is_checking_audio_enabled'], None, None, True
         ),
         (
-                'empty_enabled_hardwares',
-                {'is_checking_audio_enabled': False}, 'headphones',
-                [], 'is_checking_audio_enabled', True, False),
+            'empty_enabled_hardwares',
+            {'is_checking_audio_enabled': False}, 'headphones',
+            [], None, None, False),
     )
     @ddt.unpack
     def test_are_hardwares_enabled_updates_existing_record(
@@ -481,15 +483,15 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
         """
         current_record_initial_data = self.record_data_1.copy()
         current_record_initial_data.update(initial_field_states)
-        self.record_1 = CourseBlockHardwareChecker.objects.create(**current_record_initial_data)
-        self.record_1.refresh_from_db()
+        record_1 = CourseBlockHardwareChecker.objects.create(**current_record_initial_data)
+        record_1.refresh_from_db()
 
         initial_count = CourseBlockHardwareChecker.objects.count()
         self.assertEqual(initial_count, 1)
 
-        initial_audio_enabled = self.record_1.is_checking_audio_enabled
-        initial_microphone_enabled = self.record_1.is_checking_microphone_enabled
-        initial_camera_enabled = self.record_1.is_checking_camera_enabled
+        initial_audio_enabled = record_1.is_checking_audio_enabled
+        initial_microphone_enabled = record_1.is_checking_microphone_enabled
+        initial_camera_enabled = record_1.is_checking_camera_enabled
 
         result = CourseBlockHardwareChecker.are_hardwares_enabled(
             user_id=self.user_id,
@@ -497,26 +499,28 @@ class CourseBlockHardwareCheckerTest(LoggedInTestCase):
             enabled_hardwares=enabled_hardwares_param,
             hardware_checked=hardware_checked_param
         )
-        self.record_1.refresh_from_db()
+        record_1.refresh_from_db()
 
         self.assertEqual(CourseBlockHardwareChecker.objects.count(), initial_count)
 
         if expected_updated_field:
             self.assertEqual(
-                getattr(self.record_1, expected_updated_field), expected_updated_value,
-                "Test '{0}': Expected field '{1}' to be {2}.".format(test_name, expected_updated_field, expected_updated_value)
+                getattr(record_1, expected_updated_field), expected_updated_value,
+                "Test '{0}': Expected field '{1}' to be {2}.".format(
+                    test_name, expected_updated_field, expected_updated_value
+                )
             )
         else:
             self.assertEqual(
-                self.record_1.is_checking_audio_enabled, initial_audio_enabled,
+                record_1.is_checking_audio_enabled, initial_audio_enabled,
                 "Test '{0}': Audio enabled should not change.".format(test_name)
             )
             self.assertEqual(
-                self.record_1.is_checking_microphone_enabled, initial_microphone_enabled,
+                record_1.is_checking_microphone_enabled, initial_microphone_enabled,
                 "Test '{0}': Microphone enabled should not change.".format(test_name)
             )
             self.assertEqual(
-                self.record_1.is_checking_camera_enabled, initial_camera_enabled,
+                record_1.is_checking_camera_enabled, initial_camera_enabled,
                 "Test '{0}': Camera enabled should not change.".format(test_name)
             )
 
