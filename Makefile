@@ -1,4 +1,4 @@
-.PHONY: help upgrade requirements clean quality requirements docs \
+.PHONY: help upgrade requirements install clean quality requirements docs \
 	test test-all coverage pii_check \
 	compile_translations dummy_translations extract_translations \
 	fake_translations pull_translations push_translations
@@ -16,6 +16,8 @@ webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
 endef
 export BROWSER_PYSCRIPT
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
+SYNC_REQUIREMENTS := requirements/base.txt requirements/dev.txt requirements/doc.txt \
+	requirements/quality.txt requirements/test.txt $(wildcard requirements/private.txt)
 
 help: ## display this help message
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -41,11 +43,12 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 
 requirements: ## install development environment requirements
 	pip install -qr requirements/dev.txt --exists-action w
-	pip-sync requirements/*.txt requirements/private.*
+	pip-sync $(SYNC_REQUIREMENTS)
 
 install: requirements
 	./manage.py migrate --settings=test_settings
-	npm install
+	GIT_CONFIG_PARAMETERS="'url.https://github.com/.insteadOf=git://github.com/'" \
+		npm install --no-audit --no-fund --no-optional --no-package-lock --prefer-offline
 
 coverage: clean ## generate and view HTML coverage report
 	py.test --cov=edx_proctoring --cov-report html --ds=test_settings
@@ -67,7 +70,7 @@ test-python: clean ## run tests in the current virtualenv
 	py.test --cov=edx_proctoring --cov-report=html --ds=test_settings -n 3
 
 test-js:
-	gulp test
+	./node_modules/.bin/karma start karma.conf.js --single-run
 
 lint-js:
 	./node_modules/.bin/eslint --ignore-pattern 'edx_proctoring/static/index.js' --ext .js --ext .jsx .

@@ -11,6 +11,8 @@ from __future__ import absolute_import, unicode_literals
 import os
 import sys
 
+from celery import current_app
+
 BASE_DIR = os.path.dirname(__file__)
 
 ENV_ROOT = os.path.dirname(BASE_DIR)
@@ -25,7 +27,13 @@ SECRET_KEY='SHHHHHH'
 PLATFORM_NAME='Open edX'
 FEATURES = {}
 HTTPS = 'off'
-PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY = 'edx.core.high_mem'
+PROCTORING_JOB_QUEUE = 'edx.lms.core.proctoring'
+BROKER_URL = 'memory://'
+
+# django-celery 3 does not copy standalone Django settings into Celery's
+# default app. Configure the in-memory broker explicitly so package tests
+# never depend on a RabbitMQ service running in Devstack.
+current_app.conf.BROKER_URL = BROKER_URL
 
 DATABASES = {
     'default': {

@@ -1844,6 +1844,10 @@ msgstr ""
 msgid "Exam attempt removal has been queued."
 msgstr "Видалення спроб іспиту поставлено в чергу."
 
+#: views.py
+msgid "Exam attempt removal could not be queued. Please try again."
+msgstr "Не вдалося поставити видалення спроби іспиту в чергу. Спробуйте ще раз."
+
 #: views.py:1062
 #, python-brace-format
 msgid "No exams in course {course_id}."

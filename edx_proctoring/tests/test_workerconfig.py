@@ -84,10 +84,19 @@ class TestWorkerConfig(unittest.TestCase):
         self._check_outfile(None)
 
     def test_no_permission(self):
-        self.outfile = '/etc/workers-test.json'
+        real_open = open
+
+        def fail_for_output(path, *args, **kwargs):
+            """Raise the same error as a non-writable output path."""
+            if path == self.outfile:
+                raise IOError
+            return real_open(path, *args, **kwargs)
+
+        self.outfile = '/etc/workers-test-{0}.json'.format(os.getpid())
         backend = TestBackendProvider()
         backend.npm_module = self._make_npm_module('no-perm', 'foo/bar/baz.js')
-        self.assertFalse(make_worker_config([backend], self.outfile))
+        with patch('edx_proctoring.apps.open', side_effect=fail_for_output, create=True):
+            self.assertFalse(make_worker_config([backend], self.outfile))
         self._check_outfile(None)
 
     @patch('django.conf.settings.NODE_MODULES_ROOT', None)

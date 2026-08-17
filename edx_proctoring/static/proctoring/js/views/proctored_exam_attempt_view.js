@@ -165,7 +165,8 @@ edx = edx || {};
                         // eslint-disable-next-line no-param-reassign
                         proctoredExamAttempt.exam_attempt_type = !isProctored ? gettext('Timed') : proctoredText;
                         // eslint-disable-next-line no-param-reassign
-                        proctoredExamAttempt.is_removal_pending = !!pendingAttemptRemovals[proctoredExamAttempt.id];
+                        proctoredExamAttempt.is_removal_pending = proctoredExamAttempt.is_removal_pending ||
+                          !!pendingAttemptRemovals[proctoredExamAttempt.id];
                     }
                 );
 
@@ -188,13 +189,19 @@ edx = edx || {};
             var self = this;
             event.preventDefault();
 
+            $target = $(event.currentTarget);
+            if ($target.data('removalRequestPending')) {
+                return;
+            }
+
             // confirm the user's intent
             // eslint-disable-next-line no-alert
             if (!confirm(gettext('Are you sure you want to remove this student\'s exam attempt?'))) {
                 return;
             }
             $('body').css('cursor', 'wait');
-            $target = $(event.currentTarget);
+            $target.data('removalRequestPending', true);
+            $target.attr('aria-disabled', 'true');
             attemptId = $target.data('attemptId');
 
             self.model.url = this.attempt_url + attemptId;
@@ -209,6 +216,8 @@ edx = edx || {};
                     $('body').css('cursor', 'auto');
                 },
                 error: function() {
+                    $target.data('removalRequestPending', false);
+                    $target.removeAttr('aria-disabled');
                     $('body').css('cursor', 'auto');
                 }
             });

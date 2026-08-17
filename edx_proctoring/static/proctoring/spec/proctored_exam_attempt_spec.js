@@ -28,6 +28,7 @@ describe('ProctoredExamAttemptView', function() {
             created: '2015-08-10T09:15:45Z',
             external_id: '40eceb15-bcc3-4791-b43f-4e843afb7ae8',
             id: 43,
+            is_removal_pending: false,
             is_sample_attempt: false,
             last_poll_ipaddr: null,
             last_poll_timestamp: null,
@@ -203,12 +204,38 @@ describe('ProctoredExamAttemptView', function() {
         // trigger the remove attempt event.
         spyOnEvent('.remove-attempt', 'click');
         $('.remove-attempt').trigger('click');
+        $('.remove-attempt').trigger('click');
+
+        expect(this.server.requests.filter(function(request) {
+            return request.method === 'DELETE';
+        }).length).toBe(1);
 
         // process the queued attempt removal request.
         this.server.respond();
 
         expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('testuser1');
         expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('Normal Exam');
+        expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('Queued for removal');
+        expect(this.proctored_exam_attempt_view.$el.find('.remove-attempt').length).toBe(0);
+    });
+
+    it('should render persisted queued state after page reload', function() {
+        var pendingAttemptJson = JSON.parse(JSON.stringify(expectedProctoredExamAttemptJson));
+        pendingAttemptJson[0].proctored_exam_attempts[0].is_removal_pending = true;
+        this.server.respondWith('GET', '/api/edx_proctoring/v1/proctored_exam/attempt/course_id/test_course_id',
+            [
+                200,
+                {
+                    'Content-Type': 'application/json'
+                },
+                JSON.stringify(pendingAttemptJson)
+            ]
+        );
+
+        this.proctored_exam_attempt_view = new edx.instructor_dashboard.proctoring.ProctoredExamAttemptView();
+        this.server.respond();
+        this.server.respond();
+
         expect(this.proctored_exam_attempt_view.$el.find('tr.allowance-items').html()).toContain('Queued for removal');
         expect(this.proctored_exam_attempt_view.$el.find('.remove-attempt').length).toBe(0);
     });

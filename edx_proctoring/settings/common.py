@@ -7,7 +7,7 @@ def plugin_settings(settings):
     """
     Injects local settings into django settings
     """
-    settings.PROCTORED_EXAM_ATTEMPT_REMOVAL_ROUTING_KEY = getattr(settings, 'HIGH_MEM_QUEUE', None)
+    settings.PROCTORING_JOB_QUEUE = 'edx.lms.core.proctoring'
     settings.PROCTORING_SETTINGS = {}
     settings.PROCTORING_BACKENDS = {
         'DEFAULT': 'null',

@@ -12,6 +12,7 @@ import ddt
 import pytz
 from freezegun import freeze_time
 from httmock import HTTMock
+from kombu.exceptions import ConnectionError as KombuConnectionError
 from mock import Mock, patch
 from six.moves import range
 
@@ -878,7 +879,7 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertRaises(ProctoredExamPermissionDenied)
 
-    @patch('edx_proctoring.views.remove_exam_attempt_task.apply_async')
+    @patch('edx_proctoring.use_cases.remove_exam_attempt_task.apply_async')
     def test_remove_attempt(self, mocked_remove_attempt_task):
         """
         Confirms that an attempt removal can be queued.
@@ -920,8 +921,45 @@ class TestStudentProctoredExamAttempt(LoggedInTestCase):
         self.assertEqual(response.status_code, 202)
         response_data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_data['detail'], 'Exam attempt removal has been queued.')
-        self.assertIsNotNone(get_exam_attempt_by_id(attempt_id))
+        queued_attempt = get_exam_attempt_by_id(attempt_id)
+        self.assertIsNotNone(queued_attempt)
+        self.assertTrue(queued_attempt['is_removal_pending'])
         mocked_remove_attempt_task.assert_called_once_with(args=[attempt_id, self.user.id])
+
+        response = self.client.delete(
+            reverse('edx_proctoring:proctored_exam.attempt', args=[attempt_id])
+        )
+
+        self.assertEqual(response.status_code, 202)
+        mocked_remove_attempt_task.assert_called_once_with(args=[attempt_id, self.user.id])
+
+    @patch('edx_proctoring.use_cases.remove_exam_attempt_task.apply_async')
+    def test_remove_attempt_returns_service_unavailable_when_publish_fails(self, mocked_remove_attempt_task):
+        """
+        Return a retryable response and clear pending state when Celery is unavailable.
+        """
+        proctored_exam = ProctoredExam.objects.create(
+            course_id='a/b/c',
+            content_id='test_content',
+            exam_name='Test Exam',
+            external_id='123aXqe3',
+            time_limit_mins=90,
+        )
+        exam_attempt = ProctoredExamStudentAttempt.objects.create(
+            proctored_exam=proctored_exam,
+            user=self.student_taking_exam,
+            student_name='test_student',
+            status=ProctoredExamStudentAttemptStatus.started,
+        )
+        mocked_remove_attempt_task.side_effect = KombuConnectionError('broker unavailable')
+
+        response = self.client.delete(
+            reverse('edx_proctoring:proctored_exam.attempt', args=[exam_attempt.id])
+        )
+
+        self.assertEqual(response.status_code, 503)
+        exam_attempt.refresh_from_db()
+        self.assertFalse(exam_attempt.is_removal_pending)
 
     def test_remove_attempt_non_staff(self):
         """

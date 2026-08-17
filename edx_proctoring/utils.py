@@ -21,7 +21,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from django.conf import settings
-from django.utils.translation import ungettext, ugettext as _
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
 
 from edx_proctoring.models import ProctoredExamStudentAttempt, ProctoredExamStudentAttemptHistory
 from edx_proctoring.statuses import ProctoredExamStudentAttemptStatus
@@ -84,7 +85,7 @@ def humanized_time(time_in_minutes):
     else:
         template = "error"
 
-    if template != "error":
+    if template != "error" and (minutes or not hours_present):
         minutes_translate = ungettext(
             '%d minute',
             '%d minutes',
@@ -283,6 +284,7 @@ def is_reattempting_exam(from_status, to_status):
 
 
 class ExamHardwareChecker:
+    """Resolve the enabled hardware checks in their display order."""
 
     EXAM_HARDWARE_SEQUENCE = (
         'is_checking_audio_enabled',
@@ -292,6 +294,7 @@ class ExamHardwareChecker:
 
     @classmethod
     def get_enabled_hardware_names(cls, context):
+        """Return the enabled hardware field names from the supplied context."""
         return tuple(
             hardware_name
             for hardware_name in cls.EXAM_HARDWARE_SEQUENCE

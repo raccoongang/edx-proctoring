@@ -48,12 +48,33 @@ To run the tests:
 
     make test-all
 
+For this Juniper fork, run package tests inside the Devstack LMS container so
+the supported Python 3.5 runtime and package indexes are used::
+
+    cd /path-to-devstack/
+    make dev.up.lms
+    make lms-shell
+    cd /edx/src/edx-proctoring
+    python3 -m venv venv
+    source venv/bin/activate
+    make install
+    make test-python
+
+Always activate ``venv`` before running package commands. Run Python tests with
+``make test-python`` from this package; do not run them from ``edx-platform``.
+The install target rewrites obsolete ``git://github.com`` dependency URLs to
+HTTPS for that npm invocation; it does not modify the user's global Git config.
+
 For a full list of Make targets:
 
     make help
 
 Configuration
 -------------
+
+Asynchronous attempt removal is routed to ``edx.lms.core.proctoring``. A
+dedicated LMS Celery worker must consume that queue. The queue can be overridden
+with the ``PROCTORING_JOB_QUEUE`` environment token when necessary.
 
 In order to use edx-proctoring, you must obtain an account (and secret
 configuration - see below) with SoftwareSecure, which provides the proctoring
