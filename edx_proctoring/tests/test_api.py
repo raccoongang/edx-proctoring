@@ -697,6 +697,42 @@ class ProctoredExamApiTests(ProctoredExamTestCase):
         with self.assertRaises(StudentExamAttemptDoesNotExistsException):
             remove_exam_attempt(proctored_exam_student_attempt.id, requesting_user=self.user)
 
+    def test_remove_exam_attempt_keeps_attempt_during_student_state_cleanup(self):
+        """
+        Keep the attempt unique constraint active until student state cleanup finishes.
+        """
+        exam_attempt = self._create_unstarted_exam_attempt()
+        instructor_service = MagicMock()
+
+        def assert_attempt_recreation_is_blocked(
+                _username: str,
+                _course_id: str,
+                _content_id: str,
+                requesting_user: object,
+        ) -> None:
+            """Verify that cleanup cannot overlap creation of a replacement attempt."""
+            self.assertEqual(requesting_user, self.user)
+            self.assertTrue(ProctoredExamStudentAttempt.objects.filter(id=exam_attempt.id).exists())
+            with self.assertRaises(StudentExamAttemptAlreadyExistsException):
+                create_exam_attempt(exam_attempt.proctored_exam_id, exam_attempt.user_id)
+
+        instructor_service.delete_student_attempt.side_effect = assert_attempt_recreation_is_blocked
+        set_runtime_service('instructor', instructor_service)
+
+        remove_exam_attempt(exam_attempt.id, requesting_user=self.user)
+
+        instructor_service.delete_student_attempt.assert_called_once_with(
+            self.user.username,
+            self.course_id,
+            self.content_id,
+            requesting_user=self.user,
+        )
+        self.assertFalse(ProctoredExamStudentAttempt.objects.filter(id=exam_attempt.id).exists())
+        self.assertNotEqual(
+            create_exam_attempt(exam_attempt.proctored_exam_id, exam_attempt.user_id),
+            exam_attempt.id,
+        )
+
     def test_remove_no_user(self):
         """
         Attempting to remove an exam attempt without providing a requesting user will fail.
