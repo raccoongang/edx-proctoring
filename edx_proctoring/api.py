@@ -1284,16 +1284,31 @@ def remove_exam_attempt(attempt_id, requesting_user):
         user_id = existing_attempt.user.id
         course_id = existing_attempt.proctored_exam.course_id
         content_id = existing_attempt.proctored_exam.content_id
-        to_status = existing_attempt.status
-
-        # Use the same attempt row lock as status updates before archiving and deleting.
-        existing_attempt.delete_exam_attempt()
 
     instructor_service = get_runtime_service('instructor')
     grades_service = get_runtime_service('grades')
 
     if instructor_service:
         instructor_service.delete_student_attempt(username, course_id, content_id, requesting_user=requesting_user)
+
+    # Keep the attempt row until student state cleanup finishes. Its unique constraint prevents a new
+    # attempt from being created while cleanup for the previous attempt can still delete its state.
+    with transaction.atomic():
+        try:
+            existing_attempt = (
+                ProctoredExamStudentAttempt.objects.select_for_update().get(id=attempt_id)
+            )
+        except ProctoredExamStudentAttempt.DoesNotExist:
+            err_msg = (
+                'Cannot remove attempt for attempt_id = {attempt_id} '
+                'because it does not exist!'
+            ).format(attempt_id=attempt_id)
+
+            raise StudentExamAttemptDoesNotExistsException(err_msg)
+
+        to_status = existing_attempt.status
+        existing_attempt.delete_exam_attempt()
+
     if grades_service:
         # EDUCATOR-2141: Also remove any grade overrides that may exist
         grades_service.undo_override_subsection_grade(
